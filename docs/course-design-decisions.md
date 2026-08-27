@@ -63,6 +63,8 @@ working in cross-functional pairs.
 | 12/13 | Gates | **Gate catalogue, unwired.** Every check exists as an individually runnable command, each documented on three axes: *what it catches, how long it takes, what signal it gives the agent.* Nothing wired by default — students compose the policy. |
 | 22 | Test layers | **Three layers, none mandatory** — typecheck, fast domain unit/integration tests, BDD E2E. Worked examples of each. Gives the gate exercise real trade-offs and the agent high-quality fast feedback. Process decides what's required. |
 | 21 | Test data & recovery | **Separate ephemeral test database + one-command `reset`.** Tests never wipe the pair's demo data. (Trivial now that the DB is SQLite — a second file.) |
+| 3 | Language | **TypeScript everywhere** — backend, frontend and tests. One toolchain for a mixed room, `playwright-bdd` native rather than substituted, strict typing as high-quality agent feedback, and Node ≥22 ships SQLite in the standard library so there is no native compilation in the setup path. |
+| 27 | App topology | **Separate backend and frontend** — distinct directories and processes, started by a single `dev` script. Layer boundaries visible in the tree and in the running system, and they map onto the pair's division of labour. Bought with the simplicity budget freed by dropping Docker and CI. |
 | 26 | Database & packaging | **SQLite. No Docker.** Everything as simple as possible. Setup is install deps + run one command. Real migrations preserved. |
 | 2 | Onboarding | **Developers set the app up before class** (async, with time to get help). Needs a pre-class doc and a `verify-setup` command giving unambiguous pass/fail — the dangerous failure is "I thought it was working". |
 | 25 | Broken-setup fallback | **Pair up with another pair, and fix it live.** Requirement this imposes: the app must be *slightly failsafe* — minimal services, no native build steps, pinned lockfiles, few ways to fail. |
@@ -100,7 +102,7 @@ machine-readable test output** — see the parked language decision.
 
 | # | Question | What research must produce |
 |---|----------|---------------------------|
-| 3 | **Language / stack** | Resolve *first* — blocks framework, ORM and migration choices. Known constraint: `playwright-bdd` is Node/TS-only (no Python equivalent; Python path is `pytest-bdd` + Playwright Python) — confirm. Arguments accumulated for TS: single toolchain for a mixed room, playwright-bdd native, strict typing as high-quality agent feedback, and Node ≥22 ships SQLite in the standard library (no native compilation, which matters for failsafe setup). |
+| 28 | **TypeScript tooling** | Topology is decided (separate backend + frontend); the remaining choices are researchable facts: backend framework, frontend approach, ORM/migration tool against `node:sqlite`, and unit test runner. Judge on: fewest ways setup can fail, quality of error output *as agent feedback*, and how readable the resulting code is to a non-developer. |
 | 4 | **Domain** | User has an existing course-registration app and wants "something more fun". Must be: instantly understandable, *deterministic* underneath the fun, and rich enough for several feature-shaped holes including one rule-amendment. Candidates floated: office game ladder (players/matches/rankings; feature = seasons + inactivity decay), pub quiz (feature = joker double-points + tie-break by speed), lunch roulette (feature = no repeat pairings within 3 rounds + odd numbers). An open-source backlog/Jira-alternative was floated as a possible domain — only viable as *the app itself*, never as infrastructure. |
 | 8 | **Baseline app origin** | Survey (a) maintained starter templates, (b) existing small OSS apps, (c) agent-built-on-a-starter. Brownfield is pedagogically stronger regardless of effort saved — students go back to brownfield codebases. Counter-risk: students imitate the baseline's structure, naming and test style, so its bones must be deliberately exemplary. |
 
@@ -110,10 +112,11 @@ machine-readable test output** — see the parked language decision.
 
 Ordered by dependency:
 
-1. **Language decision inputs.** Confirm `playwright-bdd` is Node/TS-only. Compare
-   TS-everywhere vs Python-backend on: agent feedback quality (typing strictness,
-   error output), toolchain count for a mixed room, BDD ergonomics, and setup
-   failure modes given the no-Docker/SQLite decision.
+1. **TypeScript tooling.** Resolve *first* — it constrains the baseline app
+   candidates. Backend framework, frontend approach, migration tooling against
+   `node:sqlite`, and unit test runner, for a separate-backend-and-frontend
+   layout. Verify `playwright-bdd`'s current state and its integration with the
+   chosen Playwright version.
 2. **Gherkin-native SDD kits.** Does a BDD/Gherkin-flavoured spec-driven prompt kit
    already exist to adapt rather than invent? (SpecKit template presets, community
    kits, agent-command collections.)

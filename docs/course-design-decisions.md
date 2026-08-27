@@ -65,6 +65,7 @@ working in cross-functional pairs.
 | 21 | Test data & recovery | **Separate ephemeral test database + one-command `reset`.** Tests never wipe the pair's demo data. (Trivial now that the DB is SQLite — a second file.) |
 | 3 | Language | **TypeScript everywhere** — backend, frontend and tests. One toolchain for a mixed room, `playwright-bdd` native rather than substituted, strict typing as high-quality agent feedback, and Node ≥22 ships SQLite in the standard library so there is no native compilation in the setup path. |
 | 27 | App topology | **Separate backend and frontend** — distinct directories and processes, started by a single `dev` script. Layer boundaries visible in the tree and in the running system, and they map onto the pair's division of labour. Bought with the simplicity budget freed by dropping Docker and CI. |
+| 29 | Frontend framework | **React** (with Vite). Chosen on asymmetric risk: if Claude Code is more reliable in React than in Svelte 5 runes, agent noise would contaminate the exact variable the course measures; if that turns out to be wrong, React is merely less pretty — a much smaller cost. Svelte's readability edge rested only on medium-trust commercial blogs. |
 | 26 | Database & packaging | **SQLite. No Docker.** Everything as simple as possible. Setup is install deps + run one command. Real migrations preserved. |
 | 2 | Onboarding | **Developers set the app up before class** (async, with time to get help). Needs a pre-class doc and a `verify-setup` command giving unambiguous pass/fail — the dangerous failure is "I thought it was working". |
 | 25 | Broken-setup fallback | **Pair up with another pair, and fix it live.** Requirement this imposes: the app must be *slightly failsafe* — minimal services, no native build steps, pinned lockfiles, few ways to fail. |
@@ -103,7 +104,6 @@ machine-readable test output** — see the parked language decision.
 | # | Question | What research must produce |
 |---|----------|---------------------------|
 | 4 | **Domain** | User has an existing course-registration app and wants "something more fun". Must be: instantly understandable, *deterministic* underneath the fun, and rich enough for several feature-shaped holes including one rule-amendment. Candidates floated: office game ladder (players/matches/rankings; feature = seasons + inactivity decay), pub quiz (feature = joker double-points + tie-break by speed), lunch roulette (feature = no repeat pairings within 3 rounds + odd numbers). An open-source backlog/Jira-alternative was floated as a possible domain — only viable as *the app itself*, never as infrastructure. |
-| 29 | **Frontend framework** | The weakest call in the research. Svelte's readability advantage rests only on medium-trust commercial blogs, and there is an unsourced counter-argument that Claude Code is more reliable in React than in Svelte 5 runes — which matters disproportionately here, because agent unreliability injects noise directly into the variable the course teaches. Settle with a spike, not more reading. |
 
 ---
 
@@ -117,9 +117,8 @@ Three research documents, all in `docs/research/`:
 
 ### Recommended stack (item 1)
 
-Hono + Zod + `@hono/node-server` (backend), Vite + a frontend framework still to be
-chosen (item 29), `node:sqlite` with a repo-local raw-SQL migration runner,
-Vitest, playwright-bdd. The three backend packages have **zero runtime
+Hono + Zod + `@hono/node-server` (backend), Vite + React (frontend, item 29),
+`node:sqlite` with a repo-local raw-SQL migration runner, Vitest, playwright-bdd. The three backend packages have **zero runtime
 dependencies** — verified from npm registry manifests.
 
 **Skip ORMs entirely.** Every mainstream ORM reintroduces `better-sqlite3` and
@@ -242,8 +241,7 @@ course.
    what guardrails the `spec` command needs.
 3. **Measure the three unmeasured runtimes** so the classroom gate table contains
    real numbers rather than estimates.
-4. **Frontend spike** (item 29) — build the same small component in both candidates
-   with Claude Code and compare agent reliability and readability.
+4. ~~Frontend spike~~ — no longer needed; React chosen on asymmetric risk (item 29).
 
 ### Still to research
 

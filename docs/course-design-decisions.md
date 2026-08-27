@@ -66,6 +66,7 @@ working in cross-functional pairs.
 | 3 | Language | **TypeScript everywhere** — backend, frontend and tests. One toolchain for a mixed room, `playwright-bdd` native rather than substituted, strict typing as high-quality agent feedback, and Node ≥22 ships SQLite in the standard library so there is no native compilation in the setup path. |
 | 27 | App topology | **Separate backend and frontend** — distinct directories and processes, started by a single `dev` script. Layer boundaries visible in the tree and in the running system, and they map onto the pair's division of labour. Bought with the simplicity budget freed by dropping Docker and CI. |
 | 29 | Frontend framework | **React** (with Vite). Chosen on asymmetric risk: if Claude Code is more reliable in React than in Svelte 5 runes, agent noise would contaminate the exact variable the course measures; if that turns out to be wrong, React is merely less pretty — a much smaller cost. Svelte's readability edge rested only on medium-trust commercial blogs. |
+| 30 | ORM & migrations | **Drizzle ORM + drizzle-kit on `better-sqlite3`.** Reverses the research recommendation after its central objection was empirically falsified — see §4a. Chosen on the course's own criterion: a typo'd column becomes a `tsc` error (name-error band, ~77% agent repair rate) instead of a runtime failure (assertion band, ~45%). |
 | 26 | Database & packaging | **SQLite. No Docker.** Everything as simple as possible. Setup is install deps + run one command. Real migrations preserved. |
 | 2 | Onboarding | **Developers set the app up before class** (async, with time to get help). Needs a pre-class doc and a `verify-setup` command giving unambiguous pass/fail — the dangerous failure is "I thought it was working". |
 | 25 | Broken-setup fallback | **Pair up with another pair, and fix it live.** Requirement this imposes: the app must be *slightly failsafe* — minimal services, no native build steps, pinned lockfiles, few ways to fail. |
@@ -118,18 +119,15 @@ Three research documents, all in `docs/research/`:
 ### Recommended stack (item 1)
 
 Hono + Zod + `@hono/node-server` (backend), Vite + React (frontend, item 29),
-`node:sqlite` with a repo-local raw-SQL migration runner, Vitest, playwright-bdd. The three backend packages have **zero runtime
+SQLite via **Drizzle ORM + drizzle-kit on `better-sqlite3`** (item 30 — this
+supersedes the research's `node:sqlite` + raw-SQL recommendation, see §4a),
+Vitest, playwright-bdd. The three backend packages have **zero runtime
 dependencies** — verified from npm registry manifests.
 
-**Skip ORMs entirely.** Every mainstream ORM reintroduces `better-sqlite3` and
-therefore native compilation, violating the failsafe-setup constraint:
-`drizzle-kit` refuses to connect to SQLite without it, Prisma's only local-SQLite
-adapter is built on it, and Kysely's bundled dialect targets it. Drizzle's
-`node:sqlite` support is on the `@rc` line, not stable. A ~60-line `db.exec()`
-migration runner wins on all three criteria — zero fragility, error output we
-control, and readable SQL for the product person — and it is a better gate
-catalogue exhibit than an opaque CLI. Add a gate that greps the lockfile for
-`better-sqlite3`/`node-gyp` and fails.
+~~**Skip ORMs entirely.**~~ **Superseded — see §4a below.** The research argued that
+every mainstream ORM reintroduces `better-sqlite3` and therefore native
+compilation, violating the failsafe-setup constraint, and recommended a ~60-line
+`db.exec()` migration runner instead. The premise was tested and does not hold.
 
 **playwright-bdd is not a risk.** MIT, actively maintained, tracks Playwright
 within weeks of each minor. Pin exactly; residual risk is browser downloads.
@@ -138,6 +136,61 @@ within weeks of each minor. Pin exactly; residual risk is browser downloads.
 (since v19.2.0) and stable snapshots (since v23.4.0). Vitest still wins, but only
 on assertion-diff quality — `node:test` is a credible near-zero-dependency
 fallback.
+
+## 4a. Empirical correction: the ORM objection does not hold
+
+Tested directly on this machine (Node v26.5.0, ABI 147, npm 11.17) on 2026-08-27.
+The research's headline threat to failsafe setup was **falsified by measurement**.
+
+**What was claimed:** `better-sqlite3` requires native compilation via `node-gyp`,
+so any ORM depending on it breaks setup on student laptops.
+
+**What is actually true:** `better-sqlite3` v13.0.3 **bundles all eight platform
+prebuilds inside the npm tarball** — `win32-x64`, `win32-arm64`, `linux-x64`,
+`linux-arm64`, `linuxmusl-x64`, `linuxmusl-arm64`, `darwin-x64`, `darwin-arm64`.
+
+- Install: **0.7 seconds, 2 packages, no `node-gyp`, no separate binary download.**
+- It runs correctly on Node 26.5 because it is built on **`node-addon-api`
+  (Node-API), which is ABI-stable across Node majors** — one prebuild works
+  everywhere. The compilation fear is real for older `nan`-based modules and
+  largely obsolete here.
+- Because the binaries ship *inside* the package rather than being fetched from
+  GitHub releases, this **removes** a corporate-proxy failure mode rather than
+  adding one.
+- `drizzle-kit generate` was run end to end against a sample schema and produced a
+  migration successfully.
+
+**The decisive argument for the ORM is the course's own thesis.** With Drizzle, a
+typo'd column is caught by the typechecker:
+
+```
+src/bad.ts(6,39): error TS2339: Property 'naem' does not exist on type ...
+```
+
+File, line, column, precise reason, at typecheck speed. With raw SQL the same
+mistake is a *runtime* error surfacing as a failed test. Per the gate-catalogue
+research's own measured figures, that is the difference between the **~77%
+name-error repair band and the ~45% assertion band** — the ORM converts a
+hard-to-repair error class into an easy one.
+
+**Honest residual costs, recorded so nobody rediscovers them in class:**
+
+- `drizzle-kit` pulls in `esbuild`, which has a postinstall script. npm 11 blocks
+  postinstall scripts by default and prints an approval warning. It worked anyway,
+  but it is a moving part on student machines — verify during the pre-class setup
+  check.
+- Drizzle's type errors are precise but **verbose** — the sample error dumped a
+  deeply nested generic type inline. Good signal, high token cost.
+- `@types/better-sqlite3` is needed as an extra dev dependency.
+- Generated migrations are magic in a course about examining process — but
+  *inspectable* magic, since students can read the generated SQL.
+
+**Lesson worth keeping:** the research reached a confident, well-cited conclusion
+from a premise that a 60-second experiment disproved. Cheap empirical checks beat
+more reading — which is the same conclusion the pre-course work package reached
+from the other direction.
+
+---
 
 ### Baseline app: build from scratch (item 3)
 
@@ -247,7 +300,8 @@ course.
 
 - **SQLite vs server-database semantics** (former brief item 5) — not researched.
   Limited `ALTER TABLE` support in particular will shape how migrations are written
-  and taught, so it feeds back into the migration-runner recommendation.
+  and taught. Less urgent now that drizzle-kit generates the migrations (item 30),
+  but still worth knowing before the rule-amendment feature is authored.
 - Better-T-Stack's generated code was never inspected; its SQLite driver may pull
   in `better-sqlite3`.
 - Hono's Node-specific ergonomics were not verified hands-on.

@@ -1,8 +1,8 @@
 # Kurs produktutvikling — design decisions (working document)
 
-Status: **grilling complete, awaiting research.** Session date 2026-08-27.
-Records what is decided, what is deliberately parked, and what research must
-answer before we build.
+Status: **grilling complete, research items 1–4 delivered.** Session date 2026-08-27.
+Records what is decided, what is deliberately parked, what the research found,
+and the experiments to run before the course.
 
 ---
 
@@ -102,37 +102,161 @@ machine-readable test output** — see the parked language decision.
 
 | # | Question | What research must produce |
 |---|----------|---------------------------|
-| 28 | **TypeScript tooling** | Topology is decided (separate backend + frontend); the remaining choices are researchable facts: backend framework, frontend approach, ORM/migration tool against `node:sqlite`, and unit test runner. Judge on: fewest ways setup can fail, quality of error output *as agent feedback*, and how readable the resulting code is to a non-developer. |
 | 4 | **Domain** | User has an existing course-registration app and wants "something more fun". Must be: instantly understandable, *deterministic* underneath the fun, and rich enough for several feature-shaped holes including one rule-amendment. Candidates floated: office game ladder (players/matches/rankings; feature = seasons + inactivity decay), pub quiz (feature = joker double-points + tie-break by speed), lunch roulette (feature = no repeat pairings within 3 rounds + odd numbers). An open-source backlog/Jira-alternative was floated as a possible domain — only viable as *the app itself*, never as infrastructure. |
-| 8 | **Baseline app origin** | Survey (a) maintained starter templates, (b) existing small OSS apps, (c) agent-built-on-a-starter. Brownfield is pedagogically stronger regardless of effort saved — students go back to brownfield codebases. Counter-risk: students imitate the baseline's structure, naming and test style, so its bones must be deliberately exemplary. |
+| 29 | **Frontend framework** | The weakest call in the research. Svelte's readability advantage rests only on medium-trust commercial blogs, and there is an unsourced counter-argument that Claude Code is more reliable in React than in Svelte 5 runes — which matters disproportionately here, because agent unreliability injects noise directly into the variable the course teaches. Settle with a spike, not more reading. |
 
 ---
 
-## 4. Research brief (`/nw-research`)
+## 4. Research outcomes (2026-08-27)
 
-Ordered by dependency:
+Three research documents, all in `docs/research/`:
 
-1. **TypeScript tooling.** Resolve *first* — it constrains the baseline app
-   candidates. Backend framework, frontend approach, migration tooling against
-   `node:sqlite`, and unit test runner, for a separate-backend-and-frontend
-   layout. Verify `playwright-bdd`'s current state and its integration with the
-   chosen Playwright version.
-2. **Gherkin-native SDD kits.** Does a BDD/Gherkin-flavoured spec-driven prompt kit
-   already exist to adapt rather than invent? (SpecKit template presets, community
-   kits, agent-command collections.)
-3. **Baseline app candidates.** Maintained starter templates and small OSS apps in
-   the shortlisted stack, judged on quality of bones, licence, bitrot, and whether
-   the domain is swappable or fun enough as-is.
-4. **Gate catalogue evidence.** For each candidate check: typical runtime, class of
-   defect caught, and quality of its output *as agent feedback*.
-5. **SQLite specifics.** Migration tooling, separate-test-file ergonomics, and
-   whether anything about SQLite semantics would mislead students versus a server
-   database. (PGlite noted as a real-Postgres-without-Docker alternative if
-   SQLite's divergence turns out to matter.)
+- `tooling/typescript-stack-and-baseline-apps-comprehensive-research.md`
+- `methodology/gherkin-native-sdd-kits-comprehensive-research.md`
+- `tooling/gate-catalogue-comprehensive-research.md`
+
+### Recommended stack (item 1)
+
+Hono + Zod + `@hono/node-server` (backend), Vite + a frontend framework still to be
+chosen (item 29), `node:sqlite` with a repo-local raw-SQL migration runner,
+Vitest, playwright-bdd. The three backend packages have **zero runtime
+dependencies** — verified from npm registry manifests.
+
+**Skip ORMs entirely.** Every mainstream ORM reintroduces `better-sqlite3` and
+therefore native compilation, violating the failsafe-setup constraint:
+`drizzle-kit` refuses to connect to SQLite without it, Prisma's only local-SQLite
+adapter is built on it, and Kysely's bundled dialect targets it. Drizzle's
+`node:sqlite` support is on the `@rc` line, not stable. A ~60-line `db.exec()`
+migration runner wins on all three criteria — zero fragility, error output we
+control, and readable SQL for the product person — and it is a better gate
+catalogue exhibit than an opaque CLI. Add a gate that greps the lockfile for
+`better-sqlite3`/`node-gyp` and fails.
+
+**playwright-bdd is not a risk.** MIT, actively maintained, tracks Playwright
+within weeks of each minor. Pin exactly; residual risk is browser downloads.
+
+**Correction to a widely-repeated falsehood:** `node:test` does have watch mode
+(since v19.2.0) and stable snapshots (since v23.4.0). Vitest still wins, but only
+on assertion-diff quality — `node:test` is a credible near-zero-dependency
+fallback.
+
+### Baseline app: build from scratch (item 3)
+
+No candidate survives, for a structural reason: every maintained starter is
+optimised for production-readiness (auth, CI, deploy, observability) — exactly
+what this course deleted. The decisive argument is pedagogical: production
+starters are dense with embedded process opinions (commit hooks, conventional
+commits, CI workflows), so **a third-party starter is an unexamined process
+smuggled into a course about examining your process.**
+
+### SDD kit: write from scratch (item 2)
+
+No Gherkin-native SDD kit exists, and the absence is triangulated across three
+independent surveys of the field rather than being a failed search — the
+mainstream is entirely prose-spec-first. SpecKit's release cadence measured at
+roughly one release every 2–3 days, vindicating decision 6.
+
+Counter-signal worth keeping in view: OpenSpec, the most sympathetic candidate,
+**deliberately invented its own plain-markdown scenario format rather than use
+Gherkin.** Not enough to reverse decision 5 — our reason for Gherkin is the
+non-technical reader, a constraint OpenSpec does not have — but it is a real
+signal, not a null result.
+
+**Reframe Gherkin-native as a mechanism, not tidiness.** The consensus failure of
+SDD is spec drift *with no enforcement*. An executable feature file **is** the
+enforcement: drift becomes a red test. Corollary — with no CI, the gate catalogue
+is load-bearing rather than optional.
+
+**Close the false-confidence flank.** The one consensus failure mode our decisions
+do not address, and executability makes it worse: a green suite on the wrong
+scenario is very convincing. Cheap fixes — the product person reads the feature
+file aloud before implementation, and one prepared feature is seeded with a
+deliberately ambiguous rule so a pair ships the wrong thing and finds it in the
+retro.
+
+**Worth stealing:** SpecKit's inline `[NEEDS CLARIFICATION: ...]` marker (a
+sanctioned way for the agent to say "I don't know" inside the artifact); agent
+instructions in HTML comments (invisible on GitHub, readable by the agent);
+requirement IDs re-expressed as `@FR-001` Gherkin tags (traceability without a
+separate matrix); OpenSpec's delta-spec change proposals, which map onto the
+rule-amendment exercise.
+
+### Gate catalogue (item 4)
+
+The two-masters insight is now evidenced rather than asserted:
+
+- **Vitest ships an AI-agent reporter and auto-detects when an agent runs it**,
+  switching to minimal output. A first-tier vendor treating agent-consumed output
+  as a distinct target from human output.
+- **Measured repair rates across seven models** (arXiv:2604.10508): name errors
+  ~77%, syntax ~66%, assertion errors — "ran fine, wrong answer" — only **~45%**.
+  Typecheck and lint failures are location-and-reason shaped; a BDD "scenario
+  failed" is the degenerate assertion error. Two repair rounds capture 76–95% of
+  total achievable improvement, so gate output only needs optimising for rounds
+  one and two.
+- **Static types catch 15% of 400 bugs across 389 repos** (Gao/Bird/Barr, ICSE
+  2017, peer-reviewed). Justifies strict typing *and* the three test layers, since
+  ~85% of bugs are beyond types' reach.
+
+**May change decision 22:** because `node:sqlite` runs in-process, the traditional
+unit-vs-integration cost gap largely collapses — "integration tests are slow" is
+an artefact of Postgres and Docker, not a law. If confirmed, integration tests
+belong in the *fast* gate. Currently unmeasured; top measurement priority.
+
+**Classroom traps documented:** paying twice for types (type-aware lint took Biome
+from ~1s to ~8s on 5k files, vendor's own figure); gating on format (zero defects
+caught, self-fixing); trusting `build` as a typecheck (bundlers strip types
+without checking them).
+
+**Deliverable is two tables**, and they **invert at the extremes**: E2E is bottom
+for agent signal and top for human confidence, and is the only check a product
+person can read against their own acceptance criteria. That inversion is the gate
+design exercise in one view.
+
+**Honest correction:** there is *no* evidence on TypeScript strictness settings
+versus agent-generated code quality. Keep the decision, but rest its justification
+on the 45%→77% band-shift argument rather than on nothing.
+
+### Provenance warning
+
+Runtime figures are the weak spot throughout and are tagged measured / estimated /
+unmeasured. Six SEO- or AI-generated "2026 benchmark" articles were found,
+assessed and **rejected** — logged so nobody re-finds and trusts them. Three
+numbers the course most needs are unmeasured: Vitest vs `node:test` startup,
+`node:sqlite` suite runtime, and playwright-bdd E2E runtime.
 
 ---
 
-## 5. Reversed during grilling — do not resurrect without cause
+## 5. Pre-course work package
+
+Both the SDD-kit and gate-catalogue research independently converged on the same
+conclusion: small experiments beat more reading. All four are feasible before the
+course.
+
+1. **Correction-round experiment.** Seed one defect; count Claude Code's correction
+   rounds under E2E-only vs unit-only vs typecheck-only gates. Converts the
+   course's central hypothesis into its own measured evidence — and makes a strong
+   live demo.
+2. **Declarative vs imperative Gherkin pre-test** (~30 min). No evidence exists on
+   whether agents *author* declarative or imperative Gherkin. The answer determines
+   what guardrails the `spec` command needs.
+3. **Measure the three unmeasured runtimes** so the classroom gate table contains
+   real numbers rather than estimates.
+4. **Frontend spike** (item 29) — build the same small component in both candidates
+   with Claude Code and compare agent reliability and readability.
+
+### Still to research
+
+- **SQLite vs server-database semantics** (former brief item 5) — not researched.
+  Limited `ALTER TABLE` support in particular will shape how migrations are written
+  and taught, so it feeds back into the migration-runner recommendation.
+- Better-T-Stack's generated code was never inspected; its SQLite driver may pull
+  in `better-sqlite3`.
+- Hono's Node-specific ergonomics were not verified hands-on.
+
+---
+
+## 6. Reversed during grilling — do not resurrect without cause
 
 - **SpecKit** → replaced by a hand-rolled, repo-local suite built in class.
 - **Robust CI/CD pipeline** → no CI/CD at all; local gates only.
@@ -146,7 +270,7 @@ Ordered by dependency:
 
 ---
 
-## 6. Environment facts (verified — do not re-ask)
+## 7. Environment facts (verified — do not re-ask)
 
 - Repo empty, no commits. Remote `git@github.com:SmidigStorm/kurs-produktutvikling.git`
 - `SmidigStorm` is a **personal** GitHub account (not an org); `gh` authenticated.

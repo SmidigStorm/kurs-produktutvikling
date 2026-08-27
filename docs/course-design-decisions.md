@@ -1,8 +1,8 @@
 # Kurs produktutvikling — design decisions (working document)
 
-Status: **grilling complete, research items 1–4 delivered.** Session date 2026-08-27.
-Records what is decided, what is deliberately parked, what the research found,
-and the experiments to run before the course.
+Status: **all decisions made, research delivered — ready to build.** Session date
+2026-08-27. Records every decision, what the research found, and the experiments to
+run before the course.
 
 ---
 
@@ -42,6 +42,7 @@ working in cross-functional pairs.
 | 10/20 | Cycle structure | **Cycles 1 and 2 use similarly-shaped features** so process improvement is the only variable and is directly felt. A **third, differently-shaped item — amending an existing rule** — waits for fast pairs and take-home. |
 | 23 | Improvement evidence | **Retro discussion, nothing formally recorded.** Note: the process Mermaid file is committed, so `git log` on it is a free record of every process change. |
 | 18 | Language of artifacts | **Everything English** — specs, features, code, docs |
+| 4 | Domain | **Live queue app for a `legevakt`** (out-of-hours emergency clinic) — patient sees position, triage level and estimated wait. Patient view plus a minimal staff view. Full specification in §3a. |
 | 19 | Process model | **Map on a whiteboard, encode as Mermaid, commit it.** Diffs readably between cycles, renders in GitHub, agent can edit it. BPMN concepts without BPMN's file format. |
 
 ### Method & tooling
@@ -100,11 +101,79 @@ machine-readable test output** — see the parked language decision.
 
 ---
 
-## 3. Parked — decide after research
+## 3. Parked
 
-| # | Question | What research must produce |
-|---|----------|---------------------------|
-| 4 | **Domain** | User has an existing course-registration app and wants "something more fun". Must be: instantly understandable, *deterministic* underneath the fun, and rich enough for several feature-shaped holes including one rule-amendment. Candidates floated: office game ladder (players/matches/rankings; feature = seasons + inactivity decay), pub quiz (feature = joker double-points + tie-break by speed), lunch roulette (feature = no repeat pairings within 3 rounds + odd numbers). An open-source backlog/Jira-alternative was floated as a possible domain — only viable as *the app itself*, never as infrastructure. **New from §4b — the Gilded Rose test:** a domain that survives real training rooms has an invariant, at least one deliberate exception to the main rule, and a rule amendment held in reserve. Against that test the **office game ladder** scores best of the three: decay is the invariant, an inactive or provisional player is the natural exception, and "seasons reset rankings" is a clean withheld amendment. Still the user's call. |
+**Nothing.** The domain was the last open item and is now decided — see §3a.
+
+---
+
+## 3a. The domain (decision 4)
+
+**A live queue app for a `legevakt` (out-of-hours emergency clinic).** Patients see
+their position in the queue, their triage level, and an estimated wait.
+
+**Why this one.** Everyone in the room has sat in a legevakt waiting area with no
+idea what is happening, so it needs zero explanation. It is a real unsolved product
+problem rather than a toy, which engages product people directly — and *engagement*
+was what the earlier "make it fun" criterion was really proxying for. It sits
+adjacent to a medical-journal company's world without being their product, which
+matters: if the domain were their actual system, the room would argue about their
+real requirements instead of learning the process.
+
+### The Gilded Rose shape (§4b test)
+
+| Element | In this domain |
+|---|---|
+| **Invariant** | Patients are seen in triage-level order, then by arrival time within a level |
+| **Exception** | Re-triage — a patient whose condition worsens jumps the queue |
+| **Withheld amendment** | Queue aging: after 60 minutes waiting, a patient escalates one level. This *amends* the ordering invariant, so existing passing scenarios must change rather than merely be added to |
+| **Planted ambiguity** | *"Your position in the queue."* Position among **everyone**, or among **your own triage level**? Both readings are defensible. Under one, a patient sees "number 3" that stays at 3 while their real wait grows because reds keep arriving. Wrong behaviour, **green test suite**, furious patient — the false-confidence trap the SDD research asked for (§4) |
+
+### Scope (decided)
+
+**Patient view plus a deliberately minimal staff view.** The patient sees position,
+triage level and estimate. A bare staff screen registers arrivals and performs
+re-triage — needed to demonstrate the rules live in the room, but kept ugly and
+thin on purpose. Not a real triage interface.
+
+### Three design constraints — non-negotiable, locked at build time
+
+These exist because this domain's natural failure mode is flaky tests, which would
+discredit the BDD layer in front of the room.
+
+1. **The wait estimate is a defined function, not a prediction.**
+   `estimate = (patients ahead) × (average consultation minutes for their level)`,
+   with the averages as constants. "Estimated wait time" is otherwise exactly the
+   fuzzy rule that produces fuzzy specs. Bonus teaching moment: the spec must
+   *define* the estimate, not gesture at it.
+2. **The clock is injectable.** Everything depends on "now", and time-dependent E2E
+   tests are the classic flake source. A controllable clock from day one or every
+   scenario is a coin flip. Also a good artifact in its own right — "how do you test
+   time?" is worth a slide.
+3. **"Live" means polling, not websockets.** A 15–30 second refresh reads as live,
+   keeps the stack at two processes, and stays inside the failsafe-setup constraint.
+   Websockets would buy nothing visible and cost real complexity.
+
+### Data model (indicative)
+
+`Patient` (fictional, minimal) → `Visit` (arrival time, triage level, status:
+waiting / in-consultation / done) → `TriageEvent` (re-triage history, needed by the
+cycle-3 amendment). Triage levels as a constant table with target times. **No
+clinical content of any kind** — a visit needs no more than a fictional name and a
+level. A room of health-tech people will otherwise spend twenty minutes on data
+protection instead of on process.
+
+### Backlog (per decision 20 — cycles 1 and 2 same shape, 3 different)
+
+- **Cycle 1** — an urgent (red) arrival jumps the queue; everyone behind sees their
+  position and estimate change. *Shape: a rule plus its visible effect.*
+- **Cycle 2** — a patient who leaves without being seen is removed and the queue
+  recalculates. *Same shape*, so process improvement is the only variable in the
+  retro.
+- **Cycle 3 (amendment, for fast pairs and take-home)** — queue aging: after 60
+  minutes, escalate one level. Existing scenarios must be revised, not extended.
+  Alternative amendment if a second is wanted: change what "position" means, which
+  directly detonates the planted ambiguity.
 
 ---
 

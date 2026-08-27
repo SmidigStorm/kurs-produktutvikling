@@ -287,10 +287,87 @@ teaching material reserved, is the conventional and correct split.
 
 ### Highest-value follow-up
 
-`vitalets/playwright-bdd/examples/` contains an **`ai`** directory — the tool
-vendor's own worked opinion on agent-authored Gherkin, on a tool already chosen,
-bearing directly on pre-course experiment 2, where the earlier research established
-that *no* evidence exists. Verified to exist but not read (~15 minutes).
+~~`vitalets/playwright-bdd/examples/ai`~~ — **done, see §4c.** It turned out to be
+about fixing failing tests rather than authoring Gherkin, so experiment 2 stands;
+but it produced a correction to the gate catalogue and a free teaching artifact.
+
+---
+
+## 4c. playwright-bdd `examples/ai/` — read 2026-08-27
+
+Read directly from `vitalets/playwright-bdd` (`examples/ai/`,
+`src/ai/promptBuilder.ts`, `src/ai/promptTemplate.ts`,
+`docs/guides/fix-with-ai.md`).
+
+**It is not about agent-authored Gherkin.** It demonstrates **"Fix with AI"**
+(playwright-bdd ≥8.1.0, Playwright ≥1.49): when a scenario fails, playwright-bdd
+pre-builds a structured prompt and attaches it to the Cucumber HTML report.
+Pre-course experiment 2 is therefore **not** answered by it — that gap stands.
+
+### But it corrects the gate catalogue's weakest row
+
+The gate research rated E2E the worst agent feedback: "the scenario failed" is a
+degenerate assertion error, the ~45% repair band. **`aiFix` is the vendor's own fix
+for exactly that**, and it materially changes the rating. Enabled with:
+
+```ts
+defineBddConfig({ featuresRoot: './features', aiFix: { promptAttachment: true } })
+```
+
+The generated prompt carries the context an E2E failure normally lacks:
+
+- the error message (ANSI stripped)
+- the scenario steps **up to and including the failing one**
+- the failing code snippet
+- an **ARIA snapshot of the page** — the accessibility tree, i.e. what was actually
+  on screen at failure
+
+That last one is the missing "why". **Action: enable `aiFix` and re-rate the E2E row
+in the classroom gate table**; the current rating was derived without it.
+
+### The default prompt template is itself teaching material
+
+Verbatim from `src/ai/promptTemplate.ts`:
+
+```
+You are an expert in Playwright BDD testing.
+Fix the error in the BDD scenario.
+
+- Provide response as a diff highlighted code snippet.
+- First try to fix test by adjusting Gherkin steps parameters.
+- If test is not fixable by Gherkin, try to modify the code snippet.
+- Strictly rely on the ARIA snapshot of the page.
+- Avoid adding any new code.
+- Avoid adding comments to the code.
+- Avoid changing the test logic.
+- Use only role-based locators: getByRole, getByLabel, etc.
+- Add a concise note about applied changes.
+- If the test may be correct and there is a bug in the page, note it.
+```
+
+Worth reading with students line by line. It contains an **escalation ladder**
+(try Gherkin parameters first, only then the code), **anti-overreach constraints**
+(no new code, no comments, don't change the test logic), **grounding** (rely
+strictly on the ARIA snapshot), and **house style** (role-based locators only).
+
+The last line is the important one: *"If the test may be correct and there is a bug
+in the page, note it."* That is an explicit escape hatch telling the agent the test
+might be right and the application wrong — **the false-confidence guard the SDD
+research said we needed**, shipped by default by a tool vendor. Independent support
+for that design principle.
+
+**And it is user-overridable** via `aiFix.promptTemplate`. So the course gets a
+real, running, vendor-authored prompt that students can critique and *modify as a
+process-improvement exercise* — a piece of process encoded as a tool, improvable in
+a retro. Exactly on theme, and free.
+
+### Small negative signal for experiment 2
+
+The example's own Gherkin is imperative rather than declarative — `I click link
+"Get started"`, `I see header "About"` are UI mechanics, not domain language. The
+vendor's example is not a model of declarative Gherkin. Weak evidence, not an
+answer, but it points the same way as the anti-pattern warning: expect to need
+guardrails in the `spec` command.
 
 ---
 
@@ -384,12 +461,13 @@ course.
    live demo.
 2. **Declarative vs imperative Gherkin pre-test** (~30 min). No evidence exists on
    whether agents *author* declarative or imperative Gherkin. The answer determines
-   what guardrails the `spec` command needs. **Start by reading
-   `vitalets/playwright-bdd/examples/ai/`** (§4b) — the tool vendor's own worked
-   opinion on exactly this, on a tool already chosen. ~15 minutes, and it may
-   shortcut the experiment entirely.
+   what guardrails the `spec` command needs. **Still open** — `examples/ai/` was
+   read (§4c) and turned out to be about fixing failing tests, not authoring
+   scenarios. Its own Gherkin is imperative, which is a weak signal that guardrails
+   will be needed.
 3. **Measure the three unmeasured runtimes** so the classroom gate table contains
-   real numbers rather than estimates.
+   real numbers rather than estimates. **Re-rate the E2E row with `aiFix` enabled**
+   (§4c) — the current rating was derived without it.
 4. ~~Frontend spike~~ — no longer needed; React chosen on asymmetric risk (item 29).
 
 ### Still to research

@@ -104,7 +104,7 @@ machine-readable test output** — see the parked language decision.
 
 | # | Question | What research must produce |
 |---|----------|---------------------------|
-| 4 | **Domain** | User has an existing course-registration app and wants "something more fun". Must be: instantly understandable, *deterministic* underneath the fun, and rich enough for several feature-shaped holes including one rule-amendment. Candidates floated: office game ladder (players/matches/rankings; feature = seasons + inactivity decay), pub quiz (feature = joker double-points + tie-break by speed), lunch roulette (feature = no repeat pairings within 3 rounds + odd numbers). An open-source backlog/Jira-alternative was floated as a possible domain — only viable as *the app itself*, never as infrastructure. |
+| 4 | **Domain** | User has an existing course-registration app and wants "something more fun". Must be: instantly understandable, *deterministic* underneath the fun, and rich enough for several feature-shaped holes including one rule-amendment. Candidates floated: office game ladder (players/matches/rankings; feature = seasons + inactivity decay), pub quiz (feature = joker double-points + tie-break by speed), lunch roulette (feature = no repeat pairings within 3 rounds + odd numbers). An open-source backlog/Jira-alternative was floated as a possible domain — only viable as *the app itself*, never as infrastructure. **New from §4b — the Gilded Rose test:** a domain that survives real training rooms has an invariant, at least one deliberate exception to the main rule, and a rule amendment held in reserve. Against that test the **office game ladder** scores best of the three: decay is the invariant, an inactive or provisional player is the natural exception, and "seasons reset rankings" is a clean withheld amendment. Still the user's call. |
 
 ---
 
@@ -194,12 +194,105 @@ from the other direction.
 
 ### Baseline app: build from scratch (item 3)
 
-No candidate survives, for a structural reason: every maintained starter is
-optimised for production-readiness (auth, CI, deploy, observability) — exactly
-what this course deleted. The decisive argument is pedagogical: production
-starters are dense with embedded process opinions (commit hooks, conventional
-commits, CI workflows), so **a third-party starter is an unexamined process
-smuggled into a course about examining your process.**
+No candidate survives. Every maintained starter is optimised for
+production-readiness (auth, CI, deploy, observability) — exactly what this course
+deleted.
+
+The original decisive argument was pedagogical: production starters are dense with
+embedded process opinions (commit hooks, conventional commits, CI workflows), so
+"a third-party starter is an unexamined process smuggled into a course about
+examining your process." **That argument is weakened — see §4b.** It was measured
+false on the one candidate where it was actually tested. The decision stands, but
+now rests on **licence availability and structural fit** instead.
+
+## 4b. Second pass: training-oriented templates (2026-08-27)
+
+`docs/research/tooling/training-oriented-app-templates-comprehensive-research.md`
+
+The first survey rejected *production* starters on pedagogical grounds. This pass
+searched the category it missed — workshop repos, course companions, katas,
+bootcamp projects, BDD/Playwright teaching material. **Verdict unchanged: build
+from scratch — but on entirely new grounds.**
+
+### The decisive finding is licensing, which we had not identified
+
+The training-repo category is **not thin. It is well-populated, high-quality,
+actively maintained, and almost entirely unavailable.**
+
+Of the top 18 TypeScript repos tagged `topic:workshop`, exactly one carries a
+permissive licence — and it is not a workshop repo. Everything else is
+`NOASSERTION` or has no licence file at all:
+
+- `epicweb-dev/*` (18 repos, the strongest full-stack TypeScript training material
+  in existence) resolves in its own `LICENSE.md` to **GPL-3.0, private
+  non-commercial use, "contact us at team@epicweb.dev" to run your own workshop.**
+  A double block: non-commercial *and* copyleft on derivatives.
+- `total-typescript` — 7,960 stars, **no licence**
+- `goldbergyoni/nodejs-testing-best-practices` — 4,390 stars, **no licence**
+- `ReactTraining/react-workshop` — 299 stars, **no licence**
+- Even the workshop *tooling* (`epicweb-dev/epicshop`) is `NOASSERTION`
+
+No licence means all rights reserved. **The cause is market structure, not search
+coverage:** a training repo is maintained precisely because someone is paid to
+teach from it, and that person has a direct commercial reason not to license it to
+competing training. More searching does not fix this.
+
+### The BDD-template branch was a category error
+
+BDD/Cucumber/Playwright "templates" contain no application — they are deliberately
+app-agnostic, because the pitch is that you point them at *your* app. Confirmed at
+both quality poles: Serenity/JS's Apache-2.0 template and `playwright-bdd`'s own
+`examples/` are harness-only. `topic:coding-dojo language:TypeScript` returns
+**six repos in total**, five unlicensed, newest meaningful one from 2018.
+
+### One near-match — and it inverts a prior argument
+
+`w3cj/hono-open-api-starter` — MIT, 1,011 stars, TypeScript + Hono + Drizzle +
+Vitest. Its embedded process opinion was **measured rather than assumed**:
+`.github/workflows` returns HTTP 404, `.github` holds only `funding.yml`, and
+`package.json` has no husky, lint-staged, commitlint, semantic-release or
+`prepare` script. Its checks are four unwired npm scripts — `typecheck`, `lint`,
+`test`, `build` — which is nearly a literal implementation of decision 12/13.
+
+It still fails: no frontend, no Playwright, no Gherkin, `@libsql/client` instead of
+the `better-sqlite3` verified in §4a, ~6 unwanted runtime dependencies against the
+zero-dependency-backend goal, ~10 months stale, and a bare `tasks` CRUD domain
+with no rule worth amending.
+
+**Conflict flagged rather than buried:** the earlier claim that *"third-party
+starters smuggle in an unexamined process"* was measured **false** on the one
+candidate where it was actually checked. Keep the build-from-scratch decision, but
+rest it on **licence and structural fit** — not on process-smuggling. Treat
+process-smuggling as a per-candidate hypothesis costing one API call to test.
+Same lesson as §4a, in a new location.
+
+### Two borrowable ideas worth acting on
+
+**Total TypeScript ships plural solutions.** Its `src/` holds 18 `*.problem.ts`
+files and **29** `*.solution*.ts` files, because several problems carry three
+sibling answers (`02-object-param.solution.1/.2/.3.ts`). That encodes "divergent
+processes are a feature" (decision 9) **at filesystem level** — far more convincing
+than a README paragraph asking students to diverge. Worth imitating directly for
+the rescue SDD kit and the backlog.
+
+**Gilded Rose gives the parked domain decision a concrete test.** MIT, 6,089 forks,
+maintained 13 years — strong evidence the exercise *shape* survives real rooms. Its
+design is: an invariant, at least one deliberate exception to the main rule
+(Sulfuras), and a rule amendment held in reserve. See item 4 in §3 for how the
+domain candidates score against it.
+
+**Licence split to decide before the first public push:** `serenity-bdd/bdd-trader`
+is Apache-2.0 while Serenity Dojo's course *material* is not. App permissive,
+teaching material reserved, is the conventional and correct split.
+
+### Highest-value follow-up
+
+`vitalets/playwright-bdd/examples/` contains an **`ai`** directory — the tool
+vendor's own worked opinion on agent-authored Gherkin, on a tool already chosen,
+bearing directly on pre-course experiment 2, where the earlier research established
+that *no* evidence exists. Verified to exist but not read (~15 minutes).
+
+---
 
 ### SDD kit: write from scratch (item 2)
 
@@ -291,7 +384,10 @@ course.
    live demo.
 2. **Declarative vs imperative Gherkin pre-test** (~30 min). No evidence exists on
    whether agents *author* declarative or imperative Gherkin. The answer determines
-   what guardrails the `spec` command needs.
+   what guardrails the `spec` command needs. **Start by reading
+   `vitalets/playwright-bdd/examples/ai/`** (§4b) — the tool vendor's own worked
+   opinion on exactly this, on a tool already chosen. ~15 minutes, and it may
+   shortcut the experiment entirely.
 3. **Measure the three unmeasured runtimes** so the classroom gate table contains
    real numbers rather than estimates.
 4. ~~Frontend spike~~ — no longer needed; React chosen on asymmetric risk (item 29).

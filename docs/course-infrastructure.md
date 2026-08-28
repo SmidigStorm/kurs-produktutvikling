@@ -140,7 +140,31 @@ pure-Node as intended.
 4. **Do not `pkill -f plane-mcp-server`** — the pattern matches the killing shell's
    own command line. Kill by PID.
 
-### Central MCP deployment — investigated, not yet done
+## Central MCP — deployed and verified 2026-08-28
+
+**`https://plane-mcp.smidigakademiet.no/http/api-key/mcp`** — live, Let's Encrypt,
+verified end to end: `initialize` returns `Plane MCP Server (header-http) 3.2.0`,
+`tools/list` returns **30 tools**, a wrong token gives **401**.
+
+| | |
+|---|---|
+| Coolify application uuid | `q82hfr4x7cjtt650tb51ibmr` |
+| Build | Dockerfile from `github.com/makeplane/plane-mcp-server`, branch `main` |
+| Port | 8211 |
+| Env | `PLANE_BASE_URL`, plus dummy `PLANE_OAUTH_PROVIDER_CLIENT_ID` / `_CLIENT_SECRET` / `_BASE_URL` |
+
+**Students need nothing installed.** Their MCP client config is the URL above plus
+two headers — `Authorization: Bearer <their token>` and `X-Workspace-slug: <slug>`.
+
+Two API notes that differ from the services API:
+
+- **The applications API *does* accept `domains` on create** — so no database edit
+  was needed here, unlike the Plane service itself.
+- `is_build_time` is rejected on the env endpoint (*"This field is not allowed"*);
+  a minimal `{key, value}` payload works. Coolify then auto-creates a preview-copy
+  of every variable, which is expected and harmless.
+
+### Deployment background
 
 **There is no published container image.** `ghcr.io/makeplane/plane-mcp-server`
 denies, and the GitHub packages API reports the package does not exist. The repo

@@ -1,0 +1,11 @@
+{
+  "name": "kurs-produktutvikling",
+  "private": true,
+  "type": "module",
+  "workspaces": ["contract", "backend", "frontend"],
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "typecheck": "npm run typecheck -w backend && npm run typecheck -w frontend",
+    "test": "vitest run"
+  }
+}

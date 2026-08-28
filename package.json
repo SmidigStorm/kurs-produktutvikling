@@ -16,6 +16,11 @@
     "reset": "node scripts/reset.mjs",
     "dev": "node scripts/dev.mjs",
     "lint": "npm run lint -w frontend",
-    "build": "npm run build -w frontend"
+    "build": "npm run build -w frontend",
+    "test:e2e": "bddgen && playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "playwright-bdd": "^9.2.0"
   }
 }

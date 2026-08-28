@@ -639,6 +639,21 @@ course.
   *domain* for the app itself.
 - **nWave as the course subject** → set aside; 151 skills is too much surface and
   it would make the course about nWave.
+- **Directus as the backlog/requirements server** (explored 2026-08-28, rejected).
+  Findings worth keeping: its MCP is **in core**, not the stale standalone
+  `directus/mcp` repo — `api/src/ai/mcp/*`, an OAuth guard, migrations through
+  2026-05 and a Settings → AI → MCP admin UI. Licence is Monospace Sustainable
+  Core 1.0; the operative test is *Competing Use*, which a course backlog is not,
+  though the enumerated list says "non-commercial education" and a licence-key
+  clause implies paid tiers (never verified whether MCP sits behind one).
+  **Rejected for two reasons.** First, its real advantage is modelling
+  `Requirement`/`Rule`/`Example`/`OpenQuestion` as collections — but decision 5
+  puts requirements in git as feature files, so a requirements *server* would
+  recreate the two-drifting-artifacts failure that decision exists to prevent.
+  Second, Plane's MCP is a worked example of good MCP design (177 tools → 30);
+  Directus's is generic CRUD over collections, which would teach that an MCP is a
+  database wrapper. Also noted at the time: modelling the requirement artifacts
+  properly amounts to rebuilding Skald.
 
 ---
 

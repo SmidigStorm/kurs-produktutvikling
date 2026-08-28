@@ -104,7 +104,45 @@ no invite emails and no password resets. Pair accounts must have their passwords
 directly and handed out on paper, and a student who locks themselves out cannot
 self-recover.
 
+## MCP — verified 2026-08-28
+
+Workspace `storm-testworkspace`, project `Legevakt App` (`LEGEVAKTAP`).
+Plane MCP server version **3.2.0**, 30 tools.
+
+### The per-student token question is ANSWERED: no local install needed
+
+`POST /http/api-key/mcp` with two headers works against the **self-hosted**
+instance — this was the plan's one real unknown, and it resolves the good way:
+
+| Header | Value |
+|---|---|
+| `Authorization` | `Bearer <the pair's Plane API token>` |
+| `X-Workspace-slug` | the workspace slug |
+
+Verified: `initialize` returns `Plane MCP Server (header-http) 3.2.0`, `tools/list`
+returns **30 tools**, and a wrong token is rejected with **401**. So students need
+**no `uv`, no Python, no local install** — a URL and a token, which keeps the setup
+pure-Node as intended.
+
+**stdio also works** as a guaranteed fallback: `PLANE_API_KEY`,
+`PLANE_WORKSPACE_SLUG`, `PLANE_BASE_URL` + `uvx plane-mcp-server stdio`.
+
+### Four gotchas, recorded because each cost time
+
+1. **HTTP mode refuses to start without OAuth config**, even when only the api-key
+   mount is wanted — it builds the OAuth provider unconditionally. Two dummy values
+   suffice: `PLANE_OAUTH_PROVIDER_CLIENT_ID` and `PLANE_OAUTH_PROVIDER_CLIENT_SECRET`.
+2. **The startup log is wrong.** It prints *"Starting HTTP server at URLs: /mcp and
+   /header/mcp"*. Both 404. The real mounts are `/http/api-key` (header/PAT) and
+   `/http` (OAuth) — confirmed in the source and by probing.
+3. **`FASTMCP_PORT` is ignored**; the server chose 8211. Set the port through
+   whatever the deployment honours, and verify rather than assume.
+4. **Do not `pkill -f plane-mcp-server`** — the pattern matches the killing shell's
+   own command line. Kill by PID.
+
 ### Next
 
-- Instructor admin account + course workspace (Plan D Task 2 step 4)
-- API token, then MCP verification — the per-student token question (Task 3)
+- Deploy the MCP centrally on Coolify so students get a URL (Plan D Task 4)
+- Per-pair projects, accounts and tokens (Task 5) — SMTP is unconfigured, so
+  passwords must be set directly
+- Decide whether `storm-testworkspace` is the course workspace or a throwaway

@@ -1,8 +1,14 @@
 # Kurs produktutvikling — design decisions (working document)
 
-Status: **all decisions made, research delivered — ready to build.** Session date
-2026-08-27. Records every decision, what the research found, and the experiments to
-run before the course.
+Status: **Plan A built and green; infrastructure live.** Sessions 2026-08-27/28.
+Records every decision, what the research found, and the experiments to run before
+the course.
+
+**Built so far:** the legevakt queue app runs (`npm run dev`) and all six checks
+pass — typecheck, lint, test (30), build, deps:check, and the BDD suite (3
+scenarios). Plane is deployed at `plane.smidigakademiet.no` with its MCP at
+`plane-mcp.smidigakademiet.no`, verified with per-student tokens. Plans B and C are
+written but not executed.
 
 ---
 

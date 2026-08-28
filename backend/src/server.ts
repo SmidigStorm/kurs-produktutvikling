@@ -4,9 +4,10 @@ import { serve } from '@hono/node-server';
 import { createApp } from './api/app.ts';
 import { fixedClock, systemClock, type Clock } from './clock.ts';
 import { createDb } from './db/client.ts';
+import { resolveDbFile } from './db/paths.ts';
 import { applyMigrations } from './db/migrate.ts';
 
-const file = process.env.DB_FILE ?? 'data/legevakt.sqlite';
+const file = resolveDbFile();
 const port = Number(process.env.PORT ?? 3001);
 const allowTestRoutes = process.env.ALLOW_TEST_ROUTES === 'true';
 

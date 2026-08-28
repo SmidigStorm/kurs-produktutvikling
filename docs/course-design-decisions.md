@@ -69,7 +69,7 @@ working in cross-functional pairs.
 | 3 | Language | **TypeScript everywhere** — backend, frontend and tests. One toolchain for a mixed room, `playwright-bdd` native rather than substituted, strict typing as high-quality agent feedback, and Node ≥22 ships SQLite in the standard library so there is no native compilation in the setup path. |
 | 27 | App topology | **Separate backend and frontend** — distinct directories and processes, started by a single `dev` script. Layer boundaries visible in the tree and in the running system, and they map onto the pair's division of labour. Bought with the simplicity budget freed by dropping Docker and CI. |
 | 29 | Frontend framework | **React** (with Vite). Chosen on asymmetric risk: if Claude Code is more reliable in React than in Svelte 5 runes, agent noise would contaminate the exact variable the course measures; if that turns out to be wrong, React is merely less pretty — a much smaller cost. Svelte's readability edge rested only on medium-trust commercial blogs. |
-| 30 | ORM & migrations | **Drizzle ORM + drizzle-kit on `better-sqlite3`.** Reverses the research recommendation after its central objection was empirically falsified — see §4a. Chosen on the course's own criterion: a typo'd column becomes a `tsc` error (name-error band, ~77% agent repair rate) instead of a runtime failure (assertion band, ~45%). |
+| 30 | ORM & migrations | **Drizzle ORM + drizzle-kit on `better-sqlite3`.** Reverses the research recommendation after its central objection was empirically falsified — see §4a. Chosen on the course's own criterion: a typo'd column becomes a `tsc` error (name-error band, ~77% agent repair rate) instead of a runtime failure (assertion band, ~45–63%). |
 | 26 | Database & packaging | **SQLite. No Docker.** Everything as simple as possible. Setup is install deps + run one command. Real migrations preserved. |
 | 2 | Onboarding | **Developers set the app up before class** (async, with time to get help). Needs a pre-class doc and a `verify-setup` command giving unambiguous pass/fail — the dangerous failure is "I thought it was working". |
 | 25 | Broken-setup fallback | **Pair up with another pair, and fix it live.** Requirement this imposes: the app must be *slightly failsafe* — minimal services, no native build steps, pinned lockfiles, few ways to fail. |
@@ -249,6 +249,101 @@ pure-Node setup.
 
 ---
 
+## 3c. "Agents write bad code" — the instructor's fear, and the evidence (2026-08-28)
+
+`docs/research/methodology/agent-code-quality-evidence-research.md`
+`docs/research/methodology/repo-affordances-for-agent-quality-research.md`
+
+**The risk.** A room of sceptical senior developers watches an agent produce
+something mediocre and leaves validated in a belief they arrived with. That is a
+worse outcome than a boring course.
+
+**The reframe.** The course already contains the antidote; it was simply not stated
+as the thesis. The gate catalogue, the spec-first flow, the reviewer sub-agent and
+the baseline's quality are all mechanisms for making agents write *good* code.
+Say so at the start of the day: **cycle 1 will produce mediocre code because the
+process is thin, and cycle 2 will produce good code because you fixed the process.**
+A room told to expect bad output in cycle 1 cannot use it as evidence against you.
+
+**Open with the disconfirming evidence, not the sales pitch.** Make the sceptic's
+argument first, with citations:
+
+- Largest real-world repository measurement: AI-vs-human code differences are
+  "rather small" (arXiv:2603.27130). Controlled lab comparison: **63.34% more code
+  smells** than professional reference solutions (arXiv:2510.03029). *The delta
+  between lab and production is roughly what a review process removes.*
+- METR: developers were **19% slower** with AI while believing they were 20% faster
+  (n=16 — say the n out loud).
+- DORA 2025: "AI doesn't fix a team; it amplifies what's already there" — throughput
+  up, stability down, moderated by testing and fast feedback. Disclose that it is
+  Google Cloud's programme.
+- Repository *overviews* in `CLAUDE.md`/`AGENTS.md` are measured **unhelpful** and
+  cost >20% more inference (ETH Zürich; arXiv:2602.11988 found context files reduce
+  success by 0.5–2% for LLM-written ones, +4% for human-written, at +20–23% cost and
+  2.45–3.92 extra steps) — yet **68.1% of 2,303 real context files** contain exactly
+  that. Synthesis both studies support: **instructions pay, descriptions don't.**
+  A "delete half your CLAUDE.md" exercise is grounded in measurement.
+
+### Four interventions large enough to be visible in one day
+
+| Intervention | Evidence |
+|---|---|
+| **Tests as executable clarification of intent, agreed before implementation** | **+45.97 pp absolute pass@1 within 5 interactions** — IEEE TSE 2024, peer-reviewed, 4 LLMs, 2 datasets, plus a user study finding people significantly better at *judging* AI code than writing the spec in prose. Strongest evidence in the set, and it is precisely the Gherkin-native bet plus the planted ambiguity. |
+| **Don't let the agent see or edit the tests it must pass** | GPT-5 exploits impossible tests **76%** of the time; hiding test files drops cheating to near zero; environmental hardening cut hacking 5.7 pp (87.7% relative) with no loss of task success. Three independent benchmarks agree. **The most demo-able moment available.** |
+| **Error class governs repairability** | name ~77%, syntax ~66%, assertion **~45% (HumanEval) / ~63% (MBPP)**. |
+| **Generate less per step** | ρ = **0.94** between generated LOC and architectural smells (ρ = 0.72 for file count). Strongest measured relationship found — but a correlation; no controlled decomposition experiment exists. |
+
+### The negative list — where the value is for this audience
+
+- **Self-review degrades accuracy**: GPT-4 95.5% → 91.5% without external feedback
+  (ICLR 2024, DeepMind). *"Please review your work"* is measured worthless-to-harmful;
+  *"here is the failing output"* works. This is the primitive-selection lesson with
+  evidence attached — and it answers the reviewer-sub-agent question: give it
+  **external signal**, not introspection.
+- **Detailed prompting does not improve structure**: requirement specificity
+  **p > 0.8 on every smell category**; few-shot structured prompting made Long Method
+  *worse*. **Course-design consequence: cycle 2 must not be "a better prompt."**
+  If the students' improvement is prompt wording, the day fails on the evidence.
+- Better models produce *more* bloated code. Reasoning mode *lowered* first-pass
+  accuracy. In-context examples degrade beyond two. Beyond ~3 repair rounds is
+  theatre (2 rounds = 76–95% of the achievable gain). Multi-agent setups shift bloat
+  into God Classes rather than removing it.
+
+### A hook's value is its stderr, not its block
+
+Anthropic states three separate times that **exit-2 stderr is fed back to the
+model**. A hook author is therefore *hand-writing the agent's repair prompt*, which
+puts the repair-band finding directly under their control: `Blocked: not allowed`
+and a three-line message naming file, reason and repair are the same enforcement in
+two different bands. Directly demonstrable, and it is the course's own thesis
+applied to the course's own tooling.
+
+**One economy explains most of it:** advisory artefacts cost context every session
+forever; mechanical ones cost nothing until they fire. Skill *descriptions* compete
+for ~1% of the context window and are **silently truncated** on overflow —
+independently confirming the tool-count-is-a-context-cost lesson already banked from
+Plane's 177→30 consolidation. Two vendors, two primitives, identical economics.
+
+### Honest gaps — no evidence at all
+
+- **TypeScript strictness vs agent code quality** (confirms the correction already
+  recorded in §4).
+- **Gherkin specifically.** All test-first evidence uses *unit tests* and pass@1.
+  The course's central bet is supported by analogy, not by direct measurement.
+- Diff-size caps as a gate; hooks versus simply asking.
+- **The imitation effect is the weakest link and is load-bearing** for the pre-built
+  baseline. Evidence supports "agents copy visible conventions"; it only weakly
+  supports "a good codebase makes agents write good code."
+- **Rejected and logged:** the widely-cited code-duplication claim rests on GitClear,
+  a vendor selling code analysis, and is contradicted by the academic measurement.
+
+### Verdict on the two-cycle arc
+
+**Supported — but assembled from studies that each measured one leg. No study
+measured the whole arc.** That is worth saying to this audience rather than hiding.
+
+---
+
 ## 4. Research outcomes (2026-08-27)
 
 Three research documents, all in `docs/research/`:
@@ -311,7 +406,7 @@ src/bad.ts(6,39): error TS2339: Property 'naem' does not exist on type ...
 File, line, column, precise reason, at typecheck speed. With raw SQL the same
 mistake is a *runtime* error surfacing as a failed test. Per the gate-catalogue
 research's own measured figures, that is the difference between the **~77%
-name-error repair band and the ~45% assertion band** — the ORM converts a
+name-error repair band and the ~45–63% assertion band** — the ORM converts a
 hard-to-repair error class into an easy one.
 
 **Honest residual costs, recorded so nobody rediscovers them in class:**
@@ -448,7 +543,7 @@ Pre-course experiment 2 is therefore **not** answered by it — that gap stands.
 ### But it corrects the gate catalogue's weakest row
 
 The gate research rated E2E the worst agent feedback: "the scenario failed" is a
-degenerate assertion error, the ~45% repair band. **`aiFix` is the vendor's own fix
+degenerate assertion error, the ~45–63% repair band. **`aiFix` is the vendor's own fix
 for exactly that**, and it materially changes the rating. Enabled with:
 
 ```ts
@@ -552,7 +647,7 @@ The two-masters insight is now evidenced rather than asserted:
   switching to minimal output. A first-tier vendor treating agent-consumed output
   as a distinct target from human output.
 - **Measured repair rates across seven models** (arXiv:2604.10508): name errors
-  ~77%, syntax ~66%, assertion errors — "ran fine, wrong answer" — only **~45%**.
+  ~77%, syntax ~66%, assertion errors — "ran fine, wrong answer" — only **~45% on HumanEval, ~63% on MBPP**.
   Typecheck and lint failures are location-and-reason shaped; a BDD "scenario
   failed" is the degenerate assertion error. Two repair rounds capture 76–95% of
   total achievable improvement, so gate output only needs optimising for rounds
@@ -578,7 +673,7 @@ design exercise in one view.
 
 **Honest correction:** there is *no* evidence on TypeScript strictness settings
 versus agent-generated code quality. Keep the decision, but rest its justification
-on the 45%→77% band-shift argument rather than on nothing.
+on the 45–63%→77% band-shift argument rather than on nothing.
 
 ### Provenance warning
 
@@ -610,6 +705,13 @@ course.
    real numbers rather than estimates. **Re-rate the E2E row with `aiFix` enabled**
    (§4c) — the current rating was derived without it.
 4. ~~Frontend spike~~ — no longer needed; React chosen on asymmetric risk (item 29).
+5. **Imitation A/B (~30 min, §3c's weakest link).** Build the same small feature
+   twice — once in the clean baseline, once in a deliberately degraded copy — and
+   compare what the agent produces. Would generate *original* evidence for the claim
+   the pre-built baseline rests on, and makes a superb live demo.
+6. **Note on experiment 1:** it is precisely the thin-vs-thick process study the
+   literature does not contain. The evidence predicts it will work, so the risk is
+   low and the payoff with a sceptical audience is higher than any citation.
 
 5. **Deploy Plane on Coolify** and seed a project per pair, then **test whether the
    self-hosted MCP in HTTP mode accepts per-student PATs via headers** (§3b). This

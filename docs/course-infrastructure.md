@@ -140,9 +140,35 @@ pure-Node as intended.
 4. **Do not `pkill -f plane-mcp-server`** — the pattern matches the killing shell's
    own command line. Kill by PID.
 
+### Central MCP deployment — investigated, not yet done
+
+**There is no published container image.** `ghcr.io/makeplane/plane-mcp-server`
+denies, and the GitHub packages API reports the package does not exist. The repo
+does ship a clean, purpose-built `Dockerfile` (python:3.11-slim, `EXPOSE 8211`,
+`ENTRYPOINT python -m plane_mcp`, `CMD ["http"]`), so Coolify would build from the
+public repository rather than pull an image.
+
+What a deployment needs:
+
+- a **second DNS A record** (e.g. `plane-mcp.smidigakademiet.no` → 204.168.231.70);
+  there is no wildcard, so this must be created by hand
+- env: `PLANE_BASE_URL`, plus dummy `PLANE_OAUTH_PROVIDER_CLIENT_ID` and
+  `PLANE_OAUTH_PROVIDER_CLIENT_SECRET` (see gotcha 1)
+- port 8211, and the Coolify FQDN set **in the UI**, not the API (see the Coolify
+  API gap above)
+
+Note the image hard-codes `ENV FASTMCP_PORT=8211` — which is also the port the app
+picks regardless, confirming gotcha 3 rather than contradicting it.
+
+### Decisions taken 2026-08-28
+
+- **`storm-testworkspace` is a throwaway** for experimentation. The real course
+  workspace will be created later.
+- **No per-pair projects, accounts or tokens yet** — deferred until the course
+  design settles. Cheap to create later, annoying to migrate.
+
 ### Next
 
-- Deploy the MCP centrally on Coolify so students get a URL (Plan D Task 4)
-- Per-pair projects, accounts and tokens (Task 5) — SMTP is unconfigured, so
-  passwords must be set directly
-- Decide whether `storm-testworkspace` is the course workspace or a throwaway
+- Deploy the MCP centrally (needs the DNS record above)
+- Course workspace, then per-pair projects and tokens — remember SMTP is
+  unconfigured, so passwords must be set directly and handed out on paper

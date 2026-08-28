@@ -11,13 +11,16 @@
     "node": ">=22"
   },
   "scripts": {
-    "typecheck": "npm run typecheck -w backend && npm run typecheck -w frontend",
-    "test": "vitest run",
-    "reset": "node scripts/reset.mjs",
     "dev": "node scripts/dev.mjs",
+    "reset": "node scripts/reset.mjs",
+    "verify-setup": "node scripts/verify-setup.mjs",
+    "typecheck": "npm run typecheck -w backend && npm run typecheck -w frontend",
     "lint": "npm run lint -w frontend",
+    "test": "vitest run",
+    "test:e2e": "bddgen && playwright test",
     "build": "npm run build -w frontend",
-    "test:e2e": "bddgen && playwright test"
+    "db:generate": "npm run db:generate -w backend",
+    "deps:check": "node scripts/check-native-deps.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",

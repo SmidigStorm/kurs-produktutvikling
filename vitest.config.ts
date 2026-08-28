@@ -2,6 +2,9 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    // Only the unit and integration tests. The BDD suite is Playwright's, and
+    // its generated specs under .features-gen/ must not be collected here.
+    include: ['backend/src/**/*.test.ts'],
     // Default truncation renders a queue comparison as
     // "expected [ …(5) ] to deeply equal [ …(5) ]" — contentless.
     // 0 disables truncation and restores a full diff with file:line.

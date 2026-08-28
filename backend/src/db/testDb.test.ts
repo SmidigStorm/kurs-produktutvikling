@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { visits } from './schema.js';
-import { createTestDb } from './testDb.js';
+import { visits } from './schema.ts';
+import { createTestDb } from './testDb.ts';
 
 describe('createTestDb', () => {
   it('returns an in-memory database with the schema applied', () => {

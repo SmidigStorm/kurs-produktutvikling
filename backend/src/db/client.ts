@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
-import * as schema from './schema.js';
+import * as schema from './schema.ts';
 
 /** Pass ':memory:' for a private, disposable database. */
 export function createDb(file: string) {

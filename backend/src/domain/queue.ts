@@ -1,5 +1,5 @@
 import type { TriageLevel } from 'contract';
-import { AVERAGE_CONSULTATION_MINUTES, TRIAGE_PRIORITY } from './triage.js';
+import { AVERAGE_CONSULTATION_MINUTES, TRIAGE_PRIORITY } from './triage.ts';
 
 export type WaitingVisit = {
   id: string;

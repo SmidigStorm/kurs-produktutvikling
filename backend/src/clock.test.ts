@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fixedClock } from './clock.js';
+import { fixedClock } from './clock.ts';
 
 describe('fixedClock', () => {
   it('always returns the time it was created with', () => {

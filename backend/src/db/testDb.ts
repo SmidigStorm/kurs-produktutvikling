@@ -1,5 +1,5 @@
-import { createDb, type Db } from './client.js';
-import { applyMigrations } from './migrate.js';
+import { createDb, type Db } from './client.ts';
+import { applyMigrations } from './migrate.ts';
 
 /**
  * A fresh, private, migrated database per call.

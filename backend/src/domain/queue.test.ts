@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { TriageLevel } from 'contract';
-import { estimatedWaitMinutes, orderQueue, positionOf, type WaitingVisit } from './queue.js';
+import { estimatedWaitMinutes, orderQueue, positionOf, type WaitingVisit } from './queue.ts';
 
 const at = (hhmm: string): Date => new Date(`2026-03-01T${hhmm}:00.000Z`);
 

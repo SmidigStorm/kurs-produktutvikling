@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { TRIAGE_LEVELS } from 'contract';
-import { AVERAGE_CONSULTATION_MINUTES, TRIAGE_PRIORITY } from './triage.js';
+import { AVERAGE_CONSULTATION_MINUTES, TRIAGE_PRIORITY } from './triage.ts';
 
 describe('triage levels', () => {
   it('orders RED as the most urgent and BLUE as the least', () => {

@@ -50,7 +50,9 @@ working in cross-functional pairs.
 | # | Decision | Choice |
 |---|----------|--------|
 | 5 | Spec ↔ BDD topology | **Gherkin-native** — feature files *are* the acceptance criteria, not a second document. Avoids the classic BDD failure of two drifting requirement artifacts. |
-| 7 | SDD suite | **Hand-rolled, repo-local, built with the students in class.** A ready-made simple kit ships in the repo (e.g. `course/sdd-kit/`) for anyone stuck — available, not pre-installed. |
+| 31 | **Learning objective** | **Teach students to think in skills, MCPs and sub-agents** — process decomposed into primitives, not a folder of prompts. Closing module shows **SpecKit, OpenSpec and nWave** so students recognise the same primitives inside industrial frameworks. See §3b. |
+| 7 | SDD suite | **Hand-rolled, repo-local, built with the students in class.** A ready-made simple kit ships in the repo (e.g. `course/sdd-kit/`) for anyone stuck — available, not pre-installed. **Amended by 31:** the kit is a composition of primitives, not only markdown prompts. The framework appendix rejected at question 7 is **reinstated** — but now motivated: having built their own process from primitives, students can recognise those primitives inside SpecKit/OpenSpec/nWave. |
+| 32 | Backlog tool & MCP | **Plane, self-hosted on Coolify**, with its **official MCP server** (`makeplane/plane-mcp-server`). The genuine reason to reach outside the repo, and the course's worked MCP example. See §3b. |
 | 9 | Contract between student processes and repo automation | **Minimal** — only what automation strictly needs. Divergence is deliberate. |
 | 14 | Agent | **Claude Code** as the primary tool (unlocks commands, skills, subagents, hooks — so "process enforced by the machine" is demonstrable). Artifacts stay plain markdown for portability. |
 | 24 | Claude Cowork | **Spec-authoring only.** Guarantee the product person can write specs and feature files in Cowork with no terminal. Running the app, tests and gate stays on the developer's machine. No full parity. |
@@ -174,6 +176,76 @@ protection instead of on process.
   minutes, escalate one level. Existing scenarios must be revised, not extended.
   Alternative amendment if a second is wanted: change what "position" means, which
   directly detonates the planted ambiguity.
+
+---
+
+## 3b. The primitives lesson (decision 31)
+
+The subject is **primitive selection**: given a step in your process, which
+primitive is it — and, most valuably, **when not to reach for one at all**. A course
+that teaches the primitives without teaching restraint produces people who build an
+MCP for something a bash command already does.
+
+The working decision tree to teach:
+
+| Reach for | When |
+|---|---|
+| **Just a prompt** | Most process steps. The default. |
+| **Skill** | The knowledge is reused across several steps |
+| **Sub-agent** | You need context isolation or an independent opinion |
+| **Hook** | It must be *enforced*, not requested |
+| **MCP** | You genuinely must reach outside the repo |
+
+### Each primitive has an honest home in this course
+
+Nothing below is contrived; each earns its place, which is what makes the
+selection lesson credible.
+
+- **Skills** — the legevakt triage rules, the Gherkin house style, the migration
+  procedure. Genuinely reused across `spec`, `plan` and `implement`, which is
+  exactly the "when is it a skill" criterion.
+- **Sub-agents** — a **spec-ambiguity hunter** that reads the feature file and
+  hunts for rules with two readings. Aimed squarely at the planted "position in the
+  queue" trap (§3a): a pair that runs it catches the trap, a pair that does not
+  ships the wrong thing. The sub-agent's value becomes *visible in the retro*
+  rather than asserted.
+- **MCP** — the backlog lives in **Plane**, outside the repo (decision 32). An
+  honest reason to reach out, and it closes the earlier thread about the product
+  person working without git: the agent is their interface to the backlog.
+- **Hooks** — available as the "make the machine enforce it" step, reached for in a
+  retro once a pair notices they keep skipping something.
+
+### Plane MCP — verified facts (2026-08-28)
+
+`makeplane/plane-mcp-server` — Plane's **official** server, last pushed 2026-08-26.
+The only first-party MCP among the self-hostable backlog tools surveyed (Vikunja,
+Directus, Baserow, Teable, Huly, Kanboard, Taiga, OpenProject and Wekan all have
+community-only servers).
+
+- **Self-hosted is explicitly supported** — add `PLANE_BASE_URL`
+- **30 tools covering 204 operations**, self-documenting at call time, plus **PQL**,
+  a query language with a `get_pql_reference` tool
+- Transports: **stdio** (`uvx plane-mcp-server stdio`, needs Python 3.10+),
+  **streamable HTTP**, SSE (deprecated)
+- Auth: API key (`Workspace Settings → API tokens`) or OAuth
+- Workspaces and projects — so **a project per pair** solves the
+  twelve-pairs-one-instance problem
+
+**Bonus teaching artifact:** Plane consolidated **177 per-operation tools into 30
+action-based tools**, and its README explains why. That is a first-party, citable
+lesson that **tool count is a context cost** — worth a segment of its own in a
+course about thinking in MCPs.
+
+**Trade-off accepted:** Plane is the heaviest self-host of the candidates (Django,
+Postgres, Redis, MinIO, workers). That weight lands on the instructor's server
+before class, with time to fix it; MCP quality would land on the students, live, in
+the room. Not symmetric — both point to Plane.
+
+**Unverified, test on deployment:** whether a *self-hosted* Plane MCP in HTTP mode
+accepts per-student personal access tokens via headers the way the hosted service
+does. If yes, students add a URL and a token — zero local install. If no, each
+student runs stdio via `uvx`, which drags a Python/uv dependency into an otherwise
+pure-Node setup.
 
 ---
 
@@ -538,6 +610,11 @@ course.
    real numbers rather than estimates. **Re-rate the E2E row with `aiFix` enabled**
    (§4c) — the current rating was derived without it.
 4. ~~Frontend spike~~ — no longer needed; React chosen on asymmetric risk (item 29).
+
+5. **Deploy Plane on Coolify** and seed a project per pair, then **test whether the
+   self-hosted MCP in HTTP mode accepts per-student PATs via headers** (§3b). This
+   determines whether students need `uv`/Python locally or just a URL and a token —
+   a direct hit on the failsafe-setup constraint, so settle it early.
 
 ### Still to research
 

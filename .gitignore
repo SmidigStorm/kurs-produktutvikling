@@ -4,3 +4,6 @@ dist/
 test-results/
 playwright-report/
 .features-gen/
+
+# Ralph loop session state (local only)
+.claude/ralph-loop.local.md

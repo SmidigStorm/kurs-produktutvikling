@@ -1,6 +1,6 @@
 # Research: Idiomatic React data-fetching and client/server type sharing for a small polled dashboard
 
-**Date**: 2026-08-28 | **Researcher**: nw-researcher (Nova) | **Confidence**: TBD | **Sources**: TBD
+**Date**: 2026-08-28 | **Researcher**: nw-researcher (Nova) | **Confidence**: Medium-High | **Sources**: 25
 
 > Independent research. Author was deliberately kept blind to
 > `docs/superpowers/plans/2026-08-28-app-baseline.md` (not read, not grepped).
@@ -872,25 +872,231 @@ reporting.
 
 ## Empirical Probe Results
 
-_TBD_
+**None. The probe was not run.**
+
+The brief asked for the `hc` cross-workspace type-inference question to be settled by
+experiment in `/tmp/.../scratchpad/frontend-probe`. **No shell/Bash tool was exposed to this
+session**, so no workspace could be created and no `tsc` could be invoked. Rather than
+silently substitute reading for measurement — which is the exact failure mode
+`docs/course-design-decisions.md` §4a and §4b were written to warn about — this is reported
+as a failure. The Q3 recommendation is therefore **documentary, not measured**, and is rated
+Medium-High rather than High.
+
+The experiment is specified in full in Knowledge Gap 1 so it can be run in ten minutes by
+anyone with a terminal.
 
 ## Source Analysis
 
 | Source | Domain | Reputation | Type | Access Date | Cross-verified |
 |--------|--------|------------|------|-------------|----------------|
+| react.dev — `useEffect` | react.dev | High (1.0) | Official vendor | 2026-08-28 | Y (Q1, Q2, Q5a) |
+| react.dev — `use` | react.dev | High (1.0) | Official vendor | 2026-08-28 | Y |
+| react.dev — Rendering Lists | react.dev | High (1.0) | Official vendor | 2026-08-28 | Y |
+| react.dev — Removing Effect Dependencies | react.dev | High (1.0) | Official vendor | 2026-08-28 | Y |
+| react.dev — `Component` (error boundaries) | react.dev | High (1.0) | Official vendor | 2026-08-28 | N (single authoritative) |
+| react.dev — `eslint-plugin-react-hooks` | react.dev | High (1.0) | Official vendor | 2026-08-28 | N (single authoritative; version `rc`) |
+| Hono — RPC guide (rendered) | hono.dev | High (1.0) | Official vendor | 2026-08-28 | Y (against raw source) |
+| Hono — `docs/guides/rpc.md` (raw source) | raw.githubusercontent.com / honojs | High (1.0) | Official vendor source | 2026-08-28 | Y |
+| TanStack Query — Important Defaults | tanstack.com | High (1.0) | Official vendor | 2026-08-28 | Y (against useQuery ref) |
+| TanStack Query — `useQuery` reference | tanstack.com | High (1.0) | Official vendor | 2026-08-28 | Y |
+| Vite — Features / TypeScript | vite.dev | High (1.0) | Official vendor | 2026-08-28 | N (single authoritative) |
+| MDN — `setTimeout` (inactive-tab throttling) | developer.mozilla.org | High (1.0) | Technical docs | 2026-08-28 | N (single authoritative) |
+| MDN — `fetch()` | developer.mozilla.org | High (1.0) | Technical docs | 2026-08-28 | N (single authoritative) |
+| MDN — `<label>` | developer.mozilla.org | High (1.0) | Technical docs | 2026-08-28 | Y (with W3C WAI) |
+| W3C WAI — Labeling Controls | w3.org | High (1.0) | Standards body | 2026-08-28 | Y (with MDN) |
+| Playwright — Best Practices | playwright.dev | High (1.0) | Official vendor | 2026-08-28 | Y (with aiFix prompt, §4c) |
+| Testing Library — Guiding Principles | testing-library.com | High (1.0) | Official vendor | 2026-08-28 | Y (with Vocke) |
+| Vocke, "The Practical Test Pyramid" | martinfowler.com | Medium-High (0.8) | Industry leader | 2026-08-28 | Y (with Testing Library) |
+| TkDodo, "You Might Not Need React Query" | tkdodo.eu | Medium-High (0.8) | Maintainer/primary-adjacent | 2026-08-28 | Y (author is the TanStack Query maintainer; used only for a statement about his own library) |
+| honojs/hono issue #4003 | github.com | Medium-High (0.8) | Field report | 2026-08-28 | Y (with #4643, #3450, Hono docs) |
+| honojs discussion #4643 | github.com | Medium-High (0.8) | Field report | 2026-08-28 | Y |
+| honojs/hono issue #3450 | github.com | Medium-High (0.8) | Field report | 2026-08-28 | Y |
+| microsoft/TypeScript issue #51750 | github.com | Medium-High (0.8) | Vendor issue tracker | 2026-08-28 | Y (with colinhacks repo) |
+| colinhacks/live-typescript-monorepo | github.com | Medium-High (0.8) | Industry leader (Zod author) | 2026-08-28 | Y |
+| stevedylandev/bhvr (Hono+Vite+React template) | github.com | Medium-High (0.8) | Reference implementation | 2026-08-28 | N (context only) |
+
+**Reputation summary**: High: 17 of 25 (68%) | Medium-High: 8 of 25 (32%) | Medium: 0 |
+Excluded-tier sources used: 0. **Weighted average reputation: 0.94.**
+
+**Bias notes.** (i) TanStack Query's own documentation is the source for the case *against*
+adopting it — this is a favourable bias direction (the vendor is not incentivised to
+document defaults as drawbacks), so the citation is safe. (ii) TkDodo has a clear interest
+in his own library; he is cited *only* for the passage where he argues **against** needing
+it, plus the counter-signal listing interval fetching — both directions recorded.
+(iii) Hono's "Known issues" section is self-critical vendor documentation, the most reliable
+kind. (iv) The GitHub threads are self-selected complaints and systematically over-represent
+failure; they are used only to establish that a failure mode *exists*, never its frequency.
 
 ## Knowledge Gaps
 
-_TBD_
+### Gap 1: The `hc` cross-workspace probe was not run — **highest priority**
+**Issue**: Whether Hono `hc` type inference survives an *npm workspace* (not Bun, not
+Turborepo, not pnpm) boundary **with no build step** is documented as fragile but was not
+measured here. Every field report found used Bun or Turborepo.
+**Attempted**: Hono official RPC docs (incl. raw markdown source), three GitHub issues/
+discussions, two monorepo templates, TypeScript issue #51750, colinhacks/live-typescript-monorepo.
+**Why insufficient**: All secondary. No shell tool available in this session.
+**Recommendation — the exact ten-minute experiment**:
+```bash
+mkdir -p probe/packages/{api,web} && cd probe
+# root package.json: { "private": true, "workspaces": ["packages/*"] }
+# packages/api/package.json:
+#   { "name":"@p/api","type":"module","exports":{"./contract":"./src/contract.ts",".":"./src/index.ts"} }
+# packages/api/src/index.ts: chained Hono routes + `export type AppType = typeof routes`
+# packages/web/package.json: { "name":"@p/web","dependencies":{"@p/api":"*"} }
+# packages/web/tsconfig.json: { "compilerOptions": { "strict": true, "moduleResolution": "bundler", "noEmit": true } }
+npm install                      # creates the symlink; NO build
+# packages/web/src/probe.ts:
+#   import { hc } from 'hono/client'
+#   import type { AppType } from '@p/api'
+#   const c = hc<AppType>('/'); const r = await c.queue.$get(); const d = await r.json()
+npx tsc -p packages/web --noEmit
+```
+Then answer four questions: (a) does `d` have the real shape or `unknown`/`any`?
+(b) does it still work with `moduleResolution: "node16"`? (c) does `tsc` in `web` now report
+**backend** type errors, and does it demand `@types/node`? (d) how long does `tsc --noEmit`
+take vs the Option B (`contract.ts` only) variant? **If (a) passes cleanly and (c) is
+benign, the Q3 recommendation should be revisited** — `hc` becomes considerably more
+attractive, though the `InferResponseType` readability objection and the #3450 bundle-leak
+foot-gun both stand regardless.
+
+### Gap 2: `eslint-plugin-react-hooks` at `rc` — behaviour on the polling hook unverified
+**Issue**: The current `recommended` preset documented on react.dev includes compiler-driven
+rules (`set-state-in-effect`, `purity`, `immutability`) and is versioned `rc`. Whether
+`set-state-in-effect` fires on the recommended `usePolled` hook (Q1f) is **unknown**.
+**Attempted**: react.dev's plugin reference page; it lists rules but no install/config
+snippet and no per-rule semantics.
+**Recommendation**: install the pinned version, run lint against the hook, and if
+`set-state-in-effect` fires, decide *before* class whether to narrow the config or restructure
+the hook. Do not discover this in the room.
+
+### Gap 3: No measured cost figures anywhere in this document
+**Issue**: No numbers for bundle size delta (TanStack Query vs none), `tsc --noEmit` time
+under `hc` vs shared-schema, or IDE responsiveness at 5 routes. All arguments are
+qualitative. This mirrors the provenance warning already recorded in
+`docs/course-design-decisions.md` §4.
+**Recommendation**: if the TanStack Query decision is contested, `npx vite build` twice and
+compare — a five-minute check that would convert a judgement into a measurement.
+
+### Gap 4: React 19 Actions for the staff-view forms not researched in depth
+**Issue**: `use`/Suspense was ruled out for *polling* on primary evidence, but React 19's
+`useActionState` / `<form action>` for the staff view's arrival form and re-triage control
+was only ruled out by argument, not by reading the Actions documentation closely.
+**Recommendation**: 15 minutes on react.dev's `useActionState` and `useOptimistic` pages
+before writing the staff view. Prior expectation: still overkill for three throwaway
+controls, but it is the one place in this app where a React 19 feature is plausibly the
+idiomatic answer rather than a stretch.
+
+### Gap 5: Nothing found on teaching-specific React pattern guidance
+**Issue**: Searched for evidence on how *pre-built teaching codebases* should differ from
+production codebases in pattern selection. Nothing authoritative found. The
+"students imitate what they see" premise is taken from the brief and is untested here.
+**Attempted**: general web search; no trusted-domain result.
+**Recommendation**: treat that premise as an assumption, not a finding.
 
 ## Conflicting Information
 
-_TBD_
+### Conflict 1: Is TanStack Query right for interval polling? (the central disagreement)
+**Position A — it is the right tool.** Dominik Dorfmeister (TkDodo), **maintainer of TanStack
+Query**, in "You Might Not Need React Query": having listed the cases where you *don't* need
+it, he names the cases where it stays valuable — *"infinite scrolling lists, offline
+functionality, **interval fetching**, and smart auto-refetches."* Source:
+[tkdodo.eu](https://tkdodo.eu/blog/you-might-not-need-react-query), reputation 0.8 (author is
+the primary authority on the library). react.dev itself points the same way, verbatim:
+*"Consider using or building a client-side cache. Popular open source solutions include
+TanStack Query, useSWR, and React Router 6.4+."*
+
+**Position B — not at this size.** TanStack Query's own docs establish that its defaults
+(`staleTime: 0`, `refetchOnWindowFocus: true`, refetch on mount and reconnect, silent 3×
+retry with backoff) would have to be *disabled* for this app to behave as specified, and
+five of the eight bug classes it uniquely solves (dedupe, cache, cross-component sharing,
+retry, background-tab suspension) do not arise with one endpoint on one screen.
+
+**Assessment.** Both positions are well-sourced and neither is wrong. They are answering
+different questions: TkDodo is answering *"is interval fetching in scope for this library?"*
+(yes, clearly), not *"is this library worth its cost in a 250-line single-endpoint app?"*.
+Note also react.dev's phrasing — *"using **or building**"* a client-side cache — explicitly
+sanctions the hand-rolled route. **I recommend Position B, at Medium-High confidence, and
+flag that a competent senior reviewer could take Position A without being wrong.** If this
+app were to grow a second screen sharing the same data, Position A becomes correct.
+
+### Conflict 2: Is component testing redundant when E2E exists?
+**Position A — push tests down.** Vocke, martinfowler.com: *"Push your tests as far down the
+test pyramid as you can"*; *"every single test in your test suite is additional baggage and
+doesn't come for free."* Combined with the repo's own measured finding that an E2E failure
+is a degenerate assertion error (~45% agent repair band vs ~77% for named errors), this
+argues for *more* component tests, not fewer.
+**Position B — resemble real usage.** Testing Library: *"The more your tests resemble the way
+your software is used, the more confidence they can give you."* Playwright: *"Test
+user-visible behavior."* For a table-and-form app, Playwright resembles usage more closely
+than jsdom, so component tests trade confidence for speed.
+**Assessment.** These conflict only on *default quantity*, and both are satisfied by the same
+answer: write component tests exclusively where E2E is expensive or flaky (the polling race,
+the failed-poll transition) and nowhere else. Confidence Medium-High. Note that Vocke's rule
+is explicitly *reactive* — "if a higher-level test spots an error and there's no lower-level
+test failing" — which does not license a pre-emptive suite.
+
+### Non-conflict worth noting
+react.dev documents real downsides of fetching in Effects (waterfalls, no cache, *"It's not
+very ergonomic"*) while simultaneously teaching the `ignore` pattern as the correct way to do
+it. That is not a contradiction: the *shape* is endorsed, the *hand-rolling at scale* is
+discouraged. This app is below that scale.
+
+## Recommendations for Further Research
+
+1. **Run the Gap 1 probe before writing any frontend code.** It is the only recommendation in
+   this document that could be reversed by ten minutes of measurement, and this repo has
+   already had two conclusions overturned that way (§4a, §4b of the decisions doc).
+2. **Lint the recommended `usePolled` hook against the pinned `eslint-plugin-react-hooks`**
+   (Gap 2) before the hook is committed.
+3. **Read react.dev's `useActionState` / `useOptimistic` pages** before writing the staff view
+   (Gap 4) — the one place a React 19 feature might genuinely be idiomatic here.
+4. **Add `exhaustive-deps` to the gate catalogue as its own row.** On this document's
+   evidence it is the highest signal-per-millisecond frontend gate available, and it fits
+   decision 12/13's "what it catches / how long it takes / what signal it gives the agent"
+   format cleanly.
+5. **Consider making the per-row `aria-label` an explicit teaching beat.** It connects three
+   things the course already cares about: invalid-but-rendering HTML (the false-confidence
+   trap), role-based Playwright locators, and the `aiFix` prompt's house style.
 
 ## Full Citations
 
-_TBD_
+[1] React Team. "useEffect — Fetching data with Effects". react.dev. https://react.dev/reference/react/useEffect. Accessed 2026-08-28.
+[2] React Team. "use". react.dev. https://react.dev/reference/react/use. Accessed 2026-08-28.
+[3] React Team. "Rendering Lists — Rules of keys". react.dev. https://react.dev/learn/rendering-lists. Accessed 2026-08-28.
+[4] React Team. "Removing Effect Dependencies". react.dev. https://react.dev/learn/removing-effect-dependencies. Accessed 2026-08-28.
+[5] React Team. "Component — static getDerivedStateFromError / componentDidCatch". react.dev. https://react.dev/reference/react/Component. Accessed 2026-08-28.
+[6] React Team. "eslint-plugin-react-hooks". react.dev. https://react.dev/reference/eslint-plugin-react-hooks. Accessed 2026-08-28. [Version listed as `rc` — flagged.]
+[7] Hono. "RPC". hono.dev. https://hono.dev/docs/guides/rpc. Accessed 2026-08-28.
+[8] Hono. "docs/guides/rpc.md" (source markdown). honojs/website. https://raw.githubusercontent.com/honojs/website/main/docs/guides/rpc.md. Accessed 2026-08-28.
+[9] TanStack. "Important Defaults". TanStack Query v5 docs. https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults. Accessed 2026-08-28.
+[10] TanStack. "useQuery". TanStack Query v5 docs. https://tanstack.com/query/latest/docs/framework/react/reference/useQuery. Accessed 2026-08-28.
+[11] Dorfmeister, Dominik (TkDodo). "You Might Not Need React Query". tkdodo.eu. https://tkdodo.eu/blog/you-might-not-need-react-query. Accessed 2026-08-28. [Author maintains TanStack Query.]
+[12] Vite Team. "Features — TypeScript". vite.dev. https://vite.dev/guide/features.html. Accessed 2026-08-28.
+[13] MDN Contributors. "Window: setTimeout() — Timeouts in inactive tabs". developer.mozilla.org. https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout. Accessed 2026-08-28.
+[14] MDN Contributors. "Window: fetch()". developer.mozilla.org. https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch. Accessed 2026-08-28.
+[15] MDN Contributors. "`<label>`: The Label element". developer.mozilla.org. https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label. Accessed 2026-08-28.
+[16] W3C Web Accessibility Initiative. "Labeling Controls — Forms Tutorial". w3.org. https://www.w3.org/WAI/tutorials/forms/labels/. Accessed 2026-08-28.
+[17] Microsoft / Playwright. "Best Practices". playwright.dev. https://playwright.dev/docs/best-practices. Accessed 2026-08-28.
+[18] Testing Library. "Guiding Principles". testing-library.com. https://testing-library.com/docs/guiding-principles/. Accessed 2026-08-28.
+[19] Vocke, Ham. "The Practical Test Pyramid". martinfowler.com. Published 2018-02-15, revised 2018-02-26. https://martinfowler.com/articles/practical-test-pyramid.html. Accessed 2026-08-28. [Evergreen methodology reference per source-freshness rules.]
+[20] honojs/hono. "Cannot get type for a hono/client in a different package" (issue #4003). github.com. Opened 2025-03-16, closed. https://github.com/honojs/hono/issues/4003. Accessed 2026-08-28.
+[21] honojs. "Struggling to reuse Hono RPC types in client-side components" (discussion #4643). github.com. 2026-01-22 → 2026-08-06. https://github.com/orgs/honojs/discussions/4643. Accessed 2026-08-28.
+[22] honojs/hono. "RPC tries to import server-side database code into the client and make svelte crash" (issue #3450). github.com. Opened 2024-09-25, closed, labelled "not bug". https://github.com/honojs/hono/issues/3450. Accessed 2026-08-28.
+[23] microsoft/TypeScript. "Establish a package.json convention for TypeScript source in monorepos and npm packages" (issue #51750). github.com. https://github.com/microsoft/TypeScript/issues/51750. Accessed 2026-08-28.
+[24] Hacks, Colin. "live-typescript-monorepo — Strategies for live-updating TypeScript types in monorepos". github.com. https://github.com/colinhacks/live-typescript-monorepo. Accessed 2026-08-28.
+[25] Dylan Steck, Steve. "bhvr — A monorepo template using Bun, Hono, Vite, and React". github.com. https://github.com/stevedylandev/bhvr. Accessed 2026-08-28.
 
 ## Research Metadata
 
-_TBD_
+**Sources examined**: ~25 | **Cited**: 25 | **Cross-referenced claims**: 9 of 10 recommendation rows
+**Confidence distribution**: High 5 (50%), Medium-High 4 (40%), Medium 1 (10%), Low 0
+**Weighted average source reputation**: 0.94 | **Excluded-tier sources used**: 0
+**Tool failures / limitations**: **No shell tool available** — the requested `hc` empirical
+probe could not be executed (Gap 1, Empirical Probe Results). `stackoverflow.com` was
+unreachable to the search agent (HTTP 400, blocked user-agent) and was excluded from all
+searches; no finding depends on it.
+**Blindness compliance**: `docs/superpowers/plans/2026-08-28-app-baseline.md` not read, not
+opened, not grepped. Sibling research documents in `docs/research/tooling/` also left unread
+to preserve independence.
+**Output**: `docs/research/tooling/frontend-and-contract-patterns-independent-research.md`

@@ -1,8 +1,17 @@
 # Research: Idiomatic Backend Structure for a Small Hono + Zod + Drizzle/SQLite Application
 
-**Date**: 2026-08-28 | **Researcher**: nw-researcher (Nova) | **Confidence**: TBD | **Sources**: TBD
+**Date**: 2026-08-28 | **Researcher**: nw-researcher (Nova) | **Confidence**: High | **Sources**: 29 external (15 High-reputation, 13 Medium-High, 0 Medium) + 1 local project-of-record
 
-> Status: IN PROGRESS — findings appended as gathered.
+> **Blind study.** `docs/superpowers/plans/2026-08-28-app-baseline.md` was not read, opened,
+> globbed or grepped at any point. `docs/course-design-decisions.md` was read, as permitted.
+>
+> **Capability caveat, disclosed up front.** No shell tool was available in this session, so the
+> brief's requested scratch-directory experiments could not be run. All *existence* and
+> *API-shape* questions were instead resolved against primary artifacts — npm registry
+> manifests, package TypeScript source, official documentation, real repository source files —
+> which is equivalent or stronger evidence. Three *runtime-behaviour* questions genuinely need
+> execution; they are flagged inline and listed as Knowledge Gaps 1–3 with the exact experiment
+> to run (total cost: under five minutes). They are not presented as settled.
 
 ## Executive Summary
 
@@ -1173,16 +1182,277 @@ database in this session (no shell available). It is a documented path but worth
 check.
 
 ## Source Analysis
-_TBD._
+
+| Source | Domain | Reputation | Type | Access Date | Cross-verified |
+|--------|--------|------------|------|-------------|----------------|
+| Hono Docs — Context (`c.set`/`c.get`, `Variables`, `ContextVariableMap`) | hono.dev | High (1.0) | Official framework docs | 2026-08-28 | Y (api/hono) |
+| Hono Docs — Best Practices | hono.dev | High (1.0) | Official framework docs | 2026-08-28 | Y (helpers/factory) |
+| Hono Docs — Testing guide | hono.dev | High (1.0) | Official framework docs | 2026-08-28 | Y (helpers/testing) |
+| Hono Docs — Testing helper (`testClient`) | hono.dev | High (1.0) | Official framework docs | 2026-08-28 | Y (guides/testing) |
+| Hono Docs — Validation guide | hono.dev | High (1.0) | Official framework docs | 2026-08-28 | Y (npm manifest, pkg source) |
+| Hono Docs — Exception / `HTTPException` | hono.dev | High (1.0) | Official framework docs | 2026-08-28 | Y (api/hono `onError`) |
+| Hono Docs — Factory helper (`createFactory`, `initApp`) | hono.dev | High (1.0) | Official framework docs | 2026-08-28 | Y (api/hono `Bindings`) |
+| Hono Docs — App API (`Bindings`, `Variables`, `onError`, `request`) | hono.dev | High (1.0) | Official framework docs | 2026-08-28 | Y (helpers/factory) |
+| Hono Docs — Getting started, Node.js (`serve`) | hono.dev | High (1.0) | Official framework docs | 2026-08-28 | N (single source; low-risk claim) |
+| Drizzle Docs — Goodies (`$inferSelect`/`$inferInsert`) | orm.drizzle.team | High (1.0) | Official ORM docs | 2026-08-28 | N (single authoritative source) |
+| Drizzle Docs — SQLite column types (`text({enum})`, integer modes) | orm.drizzle.team | High (1.0) | Official ORM docs | 2026-08-28 | N (single authoritative source) |
+| Drizzle Docs — Transactions | orm.drizzle.team | High (1.0) | Official ORM docs | 2026-08-28 | Partial (gap: no better-sqlite3 guidance) |
+| Drizzle Docs — Get started with SQLite | orm.drizzle.team | High (1.0) | Official ORM docs | 2026-08-28 | Partial (conflicts w/ transactions page — see Conflicts) |
+| npm registry manifest — `@hono/zod-validator@0.9.0` | registry.npmjs.org | High (1.0) | Primary artifact (package manifest) | 2026-08-28 | Y (pkg source, Hono docs) |
+| `honojs/middleware` — `packages/zod-validator/src/index.ts` | raw.githubusercontent.com | High (1.0) | Primary artifact (source code) | 2026-08-28 | Y (npm manifest, Hono docs) |
+| `w3cj/hono-open-api-starter` — repo tree (GitHub API) | api.github.com | Medium-High (0.8) | Primary artifact (repo structure) | 2026-08-28 | Y (raw source files below) |
+| `w3cj/hono-open-api-starter` — `src/routes/tasks/tasks.handlers.ts` | raw.githubusercontent.com | Medium-High (0.8) | Primary artifact (source code) | 2026-08-28 | Y (repo tree, Fowler) |
+| `w3cj/hono-open-api-starter` — `src/db/index.ts` | raw.githubusercontent.com | Medium-High (0.8) | Primary artifact (source code) | 2026-08-28 | Y (repo tree) |
+| `w3cj/hono-open-api-starter` — `src/lib/create-app.ts` | raw.githubusercontent.com | Medium-High (0.8) | Primary artifact (source code) | 2026-08-28 | Y (repo tree) |
+| Martin Fowler — Repository (PoEAA catalog) | martinfowler.com | Medium-High (0.8) | Industry leader / canonical pattern catalogue | 2026-08-28 | Y (repo evidence, MS/InfoQ) |
+| Martin Fowler — Yagni | martinfowler.com | Medium-High (0.8) | Industry leader | 2026-08-28 | N (canonical for the principle) |
+| Martin Fowler — AnemicDomainModel | martinfowler.com | Medium-High (0.8) | Industry leader | 2026-08-28 | Y (DDD bliki) |
+| Martin Fowler — DomainDrivenDesign (bliki) | martinfowler.com | Medium-High (0.8) | Industry leader | 2026-08-28 | Y (AnemicDomainModel) |
+| Martin Fowler — TransactionScript (PoEAA catalog) | martinfowler.com | Medium-High (0.8) | Industry leader | 2026-08-28 | Partial (page is a stub — see Gaps) |
+| Microsoft Developer Blogs archive — "Repository nightmares" | learn.microsoft.com | High (1.0) | Technical documentation (archive) | 2026-08-28 | Y (InfoQ, Fowler) |
+| InfoQ — Using ORM the Wrong Way | infoq.com | Medium-High (0.8) | Industry reporting | 2026-08-28 | Y (MS archive) |
+| Destroy All Software — Boundaries (SCNA 2012) | destroyallsoftware.com | Medium-High (0.8) | Primary author source (video, not fetched) | 2026-08-28 | Partial — see Gaps |
+| Destroy All Software — Functional Core, Imperative Shell | destroyallsoftware.com | Medium-High (0.8) | Primary author source (paywalled screencast) | 2026-08-28 | Partial — see Gaps |
+| `kbilsted/Functional-core-imperative-shell` | github.com | Medium-High (0.8) | Community restatement | 2026-08-28 | Y (DAS primary) |
+| `docs/course-design-decisions.md` (local) | local repo | n/a — project of record | Requirements/constraints | 2026-08-28 | n/a |
+
+**Reputation distribution**: High (1.0): 15 of 29 (52%) — all official framework/ORM
+documentation plus two primary package artifacts. Medium-High (0.8): 13 (45%).
+Project-of-record (local): 1 (3%). **Average reputation of cited external sources: 0.91.**
+**Medium-trust (0.6) sources cited: zero.** **Excluded-domain sources cited: zero** — one search
+surfaced `dev.to` and `medium.com` results on Hono DI; these were read for lead generation only
+and every claim they made was independently re-verified against Hono's own documentation before
+appearing here. No `*.blogspot.com`, `wordpress.com`, `quora.com` or `pastebin.com` content was
+used.
+
+**Bias check.** The clearest bias risk is that `hono.dev` and `orm.drizzle.team` are vendor
+documentation with an interest in their own tools looking good. This is mitigated in two ways:
+these are *fixed* stack decisions, so no vendor is competing for a choice here; and the two
+places where vendor docs would have led me astray are called out rather than accepted — the
+Workers-shaped `c.set('db')` pattern (Q1) and the OpenAPI-driven four-file route split in the
+reference starter (Q6). The second risk is that the community evidence for Q2/Q6 rests
+substantially on **one** repository; that is labelled Medium-High and framed as evidence of
+convention, not correctness. Third, `martinfowler.com` sources are 10–20 years old, but the
+freshness rules classify architecture patterns as evergreen and the specific quotes used are
+definitional rather than time-sensitive.
 
 ## Knowledge Gaps
-_TBD._
+
+### Gap 1 (HIGHEST PRIORITY): Drizzle better-sqlite3 transaction callback — sync or async, and does rollback actually work?
+**Issue**: Drizzle's transactions page is dialect-generic (`async (tx) => { await ... }`, plus a
+PostgreSQL-only isolation-level section) and gives **no better-sqlite3 guidance**, while the
+SQLite getting-started page shows `await db.all('select 1')` over a driver that is natively
+synchronous. Whether `await` inside a better-sqlite3 transaction preserves atomicity is
+therefore unresolved from documentation, and this app has exactly one place it matters
+(re-triage: two writes, one fact).
+**Attempted**: `orm.drizzle.team/docs/transactions`, `orm.drizzle.team/docs/get-started-sqlite`.
+Neither addresses it.
+**Recommendation**: Run the rollback assertion given inline in Q7c — insert a row inside a
+transaction, throw, assert the row is absent. ~60 seconds. Keep it as a committed test.
+**Why this is the top gap**: it is the only recommendation in this document where being wrong
+produces a *silent data-integrity bug* rather than a style disagreement.
+
+### Gap 2: Does omitting `as const` on `TRIAGE_LEVELS` silently degrade the column type?
+**Issue**: I recommend `TRIAGE_LEVELS = [...] as const` feeding `text('triage_level', { enum:
+TRIAGE_LEVELS })`. Drizzle documents that an **inline** array literal infers as the union. I
+could not confirm that a separately-declared array *without* `as const` degrades to `string`
+rather than erroring — i.e. whether the failure is loud or silent.
+**Attempted**: Drizzle SQLite column-types page (documents the inline-literal case only).
+**Recommendation**: One `tsc` run comparing both forms. ~60 seconds. If the degradation is
+silent, add a one-line comment on the `as const` explaining why it is there — this audience will
+otherwise "tidy it away".
+
+### Gap 3: In-memory SQLite + drizzle migrator in tests
+**Issue**: I recommend a fresh database per test, but did not verify the exact
+`drizzle-orm/better-sqlite3/migrator` invocation against `':memory:'`, nor whether generated
+migrations apply cleanly to an empty in-memory database.
+**Attempted**: Drizzle SQLite getting-started (covers file-based connection only).
+**Recommendation**: Write the `createTestDb()` helper first and run one trivial test through it
+before writing any other test. If migrations are awkward in-memory, `pushSchema`/a temp file are
+the fallbacks. Note design decision 21 already anticipates an ephemeral test database.
+
+### Gap 4: `@hono/zod-validator` README not retrievable
+**Issue**: The raw README fetch was refused by the fetching tool on content-reproduction
+grounds. Mitigated by going to two better sources — the npm registry manifest (version, peer
+deps, licence) and the TypeScript source (exact signature) — so the substantive questions are
+answered from *stronger* evidence than the README would have been. Residual risk: any
+usage caveat documented only in prose in the README.
+**Recommendation**: Read `node_modules/@hono/zod-validator/README.md` after install. Zero cost.
+
+### Gap 5: `main`-branch source vs. published 0.9.0
+**Issue**: The `zValidator` signature was read from the `main` branch, which may be ahead of the
+published version the project will install.
+**Recommendation**: If the hook or `options.validationFunction` misbehaves, check the installed
+package's `.d.ts` before debugging further.
+
+### Gap 6: Functional-core/imperative-shell primary sources not directly verified
+**Issue**: Bernhardt's "Boundaries" talk is video and the "Functional Core, Imperative Shell"
+screencast is paywalled. The quotes used reach me via search-result summarisation and a
+community restatement, not from the primary artifact.
+**Attempted**: `destroyallsoftware.com` (both URLs identified; content not machine-readable /
+[Paywalled]).
+**Recommendation**: Low impact — the Q3 recommendation rests primarily on *this app's own stated
+constraints* (the estimate is specified as a pure function; no test may depend on the wall
+clock), not on the pattern's authority. Treat the Bernhardt citations as attribution for the
+name, not as load-bearing evidence.
+
+### Gap 7: No shell — three claims rest on documentation rather than execution
+**Issue**: The brief explicitly asked for empirical verification in a scratch directory. No
+shell tool was available in this session. Existence/API-shape questions were fully resolved from
+primary artifacts (registry manifest, package source, official docs) and are **not** affected.
+Runtime-behaviour questions (Gaps 1–3) are.
+**Recommendation**: The three experiments in Gaps 1–3 total under five minutes. Given this
+project's own record — two confident, well-cited conclusions already overturned by 60-second
+experiments (`docs/course-design-decisions.md` §4a, §4b) — run them before writing the code, not
+after.
+
+### Gap 8: `martinfowler.com/eaaCatalog/transactionScript.html` is a stub
+**Issue**: I hoped to cite Fowler's own Transaction Script vs. Domain Model complexity
+threshold, since "handlers call the database directly" is essentially Transaction Script. The
+catalog page is a one-paragraph teaser referring to PoEAA chapter 9.
+**Attempted**: The catalog page; the DDD bliki (which says DDD *"is particularly suited to
+complex domains"* but does not state the inverse threshold).
+**Recommendation**: The Q2 "when does the threshold arrive" triggers are therefore **my
+synthesis and are labelled Low-Medium confidence in place**. If a cited threshold is wanted,
+PoEAA ch. 9 (print) is the source. Not worth blocking on.
 
 ## Conflicting Information
-_TBD._
+
+### Conflict 1: How the community delivers a database to Hono handlers
+**Position A — per-request via context.** Hono's factory-helper documentation demonstrates
+`c.set('db', drizzle(c.env.MY_DB))` inside `initApp` middleware, with `Variables: { db:
+DrizzleD1Database }`.
+Source: [Hono Docs — Factory Helper](https://hono.dev/docs/helpers/factory), reputation 1.0.
+**Position B — module singleton.** The leading Hono+Drizzle starter creates
+`const db = drizzle({ connection: {...}, schema }); export default db` and imports it directly
+into handlers.
+Source: [w3cj/hono-open-api-starter `src/db/index.ts`](https://raw.githubusercontent.com/w3cj/hono-open-api-starter/main/src/db/index.ts), reputation 0.8.
+**Assessment**: These are not really rival opinions — they are **rival deployment targets**.
+Position A is the Cloudflare Workers answer, and is *forced*: Hono's API reference defines
+`Bindings` as *"Cloudflare Workers Bindings"* available via `c.env`, which on Workers means
+per-request. Position B is the Node answer, and is *chosen*. Neither source is wrong; both are
+wrong to copy here. A third option — the factory — dominates for **this** app because it
+satisfies the injectable-clock and ephemeral-test-database constraints without mocking, which
+neither A nor B does. Note the tell in Position B's own repo: it needed a separate
+`createTestApp()` precisely because its singleton could not accept a test database. That is
+the cost of B, visible in B's own source.
+
+### Conflict 2: Is `await` correct inside a Drizzle better-sqlite3 transaction?
+**Position A**: Drizzle's transactions page shows `db.transaction(async (tx) => { await ... })`
+throughout.
+Source: [Drizzle — Transactions](https://orm.drizzle.team/docs/transactions), reputation 1.0.
+**Position B (implicit)**: better-sqlite3 is a synchronous driver; the Drizzle SQLite
+getting-started page nonetheless shows `await db.all('select 1')`, i.e. an awaitable wrapper
+over synchronous execution.
+Source: [Drizzle — Get started with SQLite](https://orm.drizzle.team/docs/get-started-sqlite), reputation 1.0.
+**Assessment**: Not a contradiction so much as an **unresolved silence** — the transactions page
+is dialect-generic and never mentions better-sqlite3. Two equally authoritative pages from the
+same vendor leave the atomicity question open. **Refusing to resolve this by reasoning is the
+correct call**; it is resolvable by a one-minute experiment (Gap 1) and unresolvable by more
+reading.
+
+### Conflict 3: Repository pattern — worthwhile abstraction or double abstraction?
+**Position A — pro**: Fowler catalogues Repository as isolating domain objects from data-access
+details, valuable where there are *"a large number of domain classes or heavy querying"*.
+Source: [Fowler — Repository](https://martinfowler.com/eaaCatalog/repository.html), reputation 0.8.
+**Position B — con**: it abstracts over an abstraction, hides ORM capabilities so they leak out
+anyway, and delivers little testing value because the logic lives in the queries a mocked
+repository never runs.
+Sources: [MS Developer Blogs archive — Repository nightmares](https://learn.microsoft.com/en-us/archive/blogs/cdndevs/repository-nightmares) (1.0), [InfoQ — Using ORM the Wrong Way](https://www.infoq.com/news/2014/09/using-orm-wrong-way) (0.8).
+**Assessment**: **The conflict dissolves at this app's size, and both sides agree there.**
+Position A is conditional on a precondition that 2 tables and 5 endpoints plainly do not meet;
+Position B is strongest exactly in the small-app case. Fowler is the more authoritative source
+and his own stated condition rules the pattern out here — which is why this document's Q2
+answer is "no repository" with **high** confidence rather than as a contested judgement call.
+Temporal caveat noted: the Position B sources date from ~2014 and an archived blog; the
+arguments are evergreen but neither is recent, and the confidence rests on Fowler's condition,
+not on them.
+
+### Conflict 4: The reference starter's four-file-per-feature split
+Not a conflict between sources, but between a source and its own rationale, and worth recording
+because it is the most likely thing to be copied without its reason. `w3cj/hono-open-api-starter`
+splits every feature into `.routes.ts` / `.handlers.ts` / `.index.ts` / `.test.ts`. That split is
+required by `@hono/zod-openapi`, which needs route *definitions* declared separately from
+implementations so an OpenAPI spec can be generated. **This app generates no OpenAPI spec.**
+Adopting the split without the constraint that produces it would be textbook cargo-culting — and
+would sit oddly beside Hono's own Best Practices advice to write handlers inline for type
+inference.
+
+## Recommendations for Further Research
+
+1. **Run the three experiments (Gaps 1–3) before writing the backend.** Total cost under five
+   minutes; one of them (transaction rollback) guards against a silent data-integrity bug. This
+   project has now had *three* confident research conclusions redirected by cheap experiments —
+   treat "check it" as the default rather than the exception.
+2. **Add a gate that enforces the one architectural rule.** A three-line check that `domain/`
+   contains no non-type imports turns the structure from a convention into an enforced
+   invariant, and makes the app itself an example of the course's own thesis (process encoded as
+   a tool). It also fails in the ~77% name-error repair band rather than the ~45% assertion band.
+3. **Write the README's "what we deliberately did not build" section.** For an audience that
+   imitates what it reads, the *rejected* list (repository, service layer, DI container, Result
+   types, `testClient`-driven chaining) is at least as instructive as the code — and it
+   pre-empts the "is this app just sloppy?" reading of an intentionally thin design.
+4. **SQLite `ALTER TABLE` limits and Drizzle migrations** (already flagged as open in
+   `docs/course-design-decisions.md` §5). This directly shapes the cycle-3 rule-amendment
+   exercise, which is the one place students will change the schema.
+5. **Re-verify Hono/Drizzle API details at build time.** Framework sources carry a 1-year
+   freshness window. `@hono/zod-validator` is at 0.9.0 (pre-1.0), so its API is not yet under a
+   stability guarantee — pin it exactly, per the failsafe-setup constraint.
 
 ## Full Citations
-_TBD._
+
+[1] Hono. "Context". Hono Documentation. https://hono.dev/docs/api/context. Accessed 2026-08-28.
+[2] Hono. "Best Practices". Hono Documentation. https://hono.dev/docs/guides/best-practices. Accessed 2026-08-28.
+[3] Hono. "Testing". Hono Documentation. https://hono.dev/docs/guides/testing. Accessed 2026-08-28.
+[4] Hono. "Testing Helper". Hono Documentation. https://hono.dev/docs/helpers/testing. Accessed 2026-08-28.
+[5] Hono. "Validation". Hono Documentation. https://hono.dev/docs/guides/validation. Accessed 2026-08-28.
+[6] Hono. "Exception". Hono Documentation. https://hono.dev/docs/api/exception. Accessed 2026-08-28.
+[7] Hono. "Factory Helper". Hono Documentation. https://hono.dev/docs/helpers/factory. Accessed 2026-08-28.
+[8] Hono. "App - Hono". Hono Documentation. https://hono.dev/docs/api/hono. Accessed 2026-08-28.
+[9] Hono. "Node.js". Hono Documentation. https://hono.dev/docs/getting-started/nodejs. Accessed 2026-08-28.
+[10] Drizzle Team. "Goodies". Drizzle ORM Documentation. https://orm.drizzle.team/docs/goodies. Accessed 2026-08-28.
+[11] Drizzle Team. "SQLite column types". Drizzle ORM Documentation. https://orm.drizzle.team/docs/column-types/sqlite. Accessed 2026-08-28.
+[12] Drizzle Team. "Transactions". Drizzle ORM Documentation. https://orm.drizzle.team/docs/transactions. Accessed 2026-08-28.
+[13] Drizzle Team. "Get Started with SQLite". Drizzle ORM Documentation. https://orm.drizzle.team/docs/get-started-sqlite. Accessed 2026-08-28.
+[14] npm. "@hono/zod-validator — package manifest, version 0.9.0". npm registry. https://registry.npmjs.org/@hono/zod-validator/latest. Accessed 2026-08-28.
+[15] Hono contributors. "zod-validator/src/index.ts". honojs/middleware, branch `main`. https://raw.githubusercontent.com/honojs/middleware/main/packages/zod-validator/src/index.ts. Accessed 2026-08-28.
+[16] CJ Reynolds (w3cj). "hono-open-api-starter — repository tree". GitHub API. https://api.github.com/repos/w3cj/hono-open-api-starter/git/trees/main?recursive=1. Accessed 2026-08-28.
+[17] CJ Reynolds (w3cj). "src/routes/tasks/tasks.handlers.ts". hono-open-api-starter. https://raw.githubusercontent.com/w3cj/hono-open-api-starter/main/src/routes/tasks/tasks.handlers.ts. Accessed 2026-08-28.
+[18] CJ Reynolds (w3cj). "src/db/index.ts". hono-open-api-starter. https://raw.githubusercontent.com/w3cj/hono-open-api-starter/main/src/db/index.ts. Accessed 2026-08-28.
+[19] CJ Reynolds (w3cj). "src/lib/create-app.ts". hono-open-api-starter. https://raw.githubusercontent.com/w3cj/hono-open-api-starter/main/src/lib/create-app.ts. Accessed 2026-08-28.
+[20] Fowler, Martin. "Repository". Catalog of Patterns of Enterprise Application Architecture. https://martinfowler.com/eaaCatalog/repository.html. Accessed 2026-08-28. [Concept evergreen per freshness rules]
+[21] Fowler, Martin. "Yagni". martinfowler.com. 2015-05-26. https://martinfowler.com/bliki/Yagni.html. Accessed 2026-08-28. [Concept evergreen]
+[22] Fowler, Martin. "AnemicDomainModel". martinfowler.com. 2003-11-25. https://martinfowler.com/bliki/AnemicDomainModel.html. Accessed 2026-08-28. [Concept evergreen]
+[23] Fowler, Martin. "DomainDrivenDesign". martinfowler.com. https://martinfowler.com/bliki/DomainDrivenDesign.html. Accessed 2026-08-28. [Concept evergreen]
+[24] Fowler, Martin. "Transaction Script". Catalog of PoEAA. https://martinfowler.com/eaaCatalog/transactionScript.html. Accessed 2026-08-28. [Stub page — see Knowledge Gap 8]
+[25] Microsoft Developer Blogs (archive). "Repository nightmares". https://learn.microsoft.com/en-us/archive/blogs/cdndevs/repository-nightmares. Accessed 2026-08-28. [Archived; arguments evergreen, recency not confirmable]
+[26] InfoQ. "Using ORM the Wrong Way". 2014-09. https://www.infoq.com/news/2014/09/using-orm-wrong-way. Accessed 2026-08-28. [Published 2014; arguments evergreen]
+[27] Bernhardt, Gary. "Boundaries" (SCNA 2012). Destroy All Software. https://www.destroyallsoftware.com/talks/boundaries. Accessed 2026-08-28. [Video; not directly verified — Knowledge Gap 6]
+[28] Bernhardt, Gary. "Functional Core, Imperative Shell". Destroy All Software screencasts. https://www.destroyallsoftware.com/screencasts/catalog/functional-core-imperative-shell. Accessed 2026-08-28. [Paywalled — Knowledge Gap 6]
+[29] Bilsted, Kasper B. "Functional-core-imperative-shell". GitHub. https://github.com/kbilsted/Functional-core-imperative-shell. Accessed 2026-08-28.
+[30] Storm, Arne Henrik. "Kurs produktutvikling — design decisions". Local repository, `docs/course-design-decisions.md`. 2026-08-27. [Project of record]
 
 ## Research Metadata
-_TBD._
+
+**Duration**: ~1 session (approx. 25 tool calls) | **Sources examined**: 30 |
+**Sources cited**: 29 external + 1 local project-of-record |
+**Cross-references performed**: 14 |
+**Confidence distribution**: High 70% (Q1 mechanism, Q4, Q5, Q7a, Q7b, Q8 — all resting on
+official documentation or primary package artifacts), Medium 22% (Q2 and Q6 community-convention
+evidence from a single repository; Q3 pattern attribution), Low 8% (the Q2 "threshold triggers",
+explicitly labelled as synthesis).
+**Rejected sources**: 3 (`dev.to`, `medium.com` and a personal-blog result surfaced by one
+search on Hono DI — used for lead generation only; every claim re-verified against Hono's own
+documentation before use, and none cited).
+**Tool failures**: 2 — (a) `raw.githubusercontent.com` README for `@hono/zod-validator` refused
+by the fetching tool on content-reproduction grounds, worked around via the npm registry
+manifest and the package's TypeScript source, which are stronger evidence; (b)
+`npmjs.com/package/@hono/zod-validator` returned HTTP 403, worked around via
+`registry.npmjs.org`. Neither degraded a conclusion.
+**Capability limitation**: No shell tool available; the brief's requested scratch-directory
+experiments could not be run. Compensated with primary-artifact retrieval for all
+existence/API-shape questions; the three runtime-behaviour questions are isolated in Knowledge
+Gaps 1–3 with the exact experiments to run, and are not presented as settled.
+**Blind-study compliance**: `docs/superpowers/plans/2026-08-28-app-baseline.md` was never read,
+opened, globbed or grepped. Confirmed.
+**Output**: `docs/research/tooling/backend-patterns-independent-research.md`

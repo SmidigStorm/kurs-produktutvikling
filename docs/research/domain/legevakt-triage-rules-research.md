@@ -13,10 +13,53 @@ _To be completed._
 ## Findings
 
 ### 1. Which triage systems are actually used in Norwegian legevakt
-_pending_
+
+**1.1 — There is no single national triage system. Several coexist.**
+**Evidence**: Helsedirektoratet's national quality indicator "Triagering ved legevakt" names as standardised tools: RETTS, METTS, MTS (Manchester Triage System), SATS (South African Triage Scale), NEWS2, PEVS.
+**Source**: [Helsedirektoratet, Nasjonale kvalitetsindikatorer for legevakt — Triagering ved legevakt](https://www.helsedirektoratet.no/rapporter/nasjonale-kvalitetsindikatorer-for-legevakt/triagering-ved-legevakt) — Accessed 2026-08-29. Reputation High (official).
+**Confidence**: High.
+
+**1.2 — Coverage is far from universal: ~73% of relevant legevakter use a standardised tool.**
+**Evidence**: "Among clinics where triage is relevant, 73% report having a standardized triage tool (down from 77% in 2022). 19% of all legevakter reported triage as not applicable due to infrequent simultaneous patient conflicts."
+**Source**: Helsedirektoratet kvalitetsindikator (as above) — Accessed 2026-08-29.
+**Analysis (interpretation)**: Many small legevakter have so little simultaneity that formal triage is moot — one patient, one doctor. This matters for the app: the *queue* is itself a big-legevakt phenomenon.
+**Confidence**: High (single authoritative official source).
+
+**1.3 — Definition of triage used officially.**
+**Evidence (Norwegian original)**: "Med triage menes å bestemme prioriteringsrekkefølgen av pasienter basert på grad av alvorlighet og hastegraden av deres medisinske tilstand."
+**Translation**: "By triage is meant determining the order of priority of patients based on the degree of severity and the urgency (hastegrad) of their medical condition."
+**Source**: Helsedirektoratet kvalitetsindikator (as above) — Accessed 2026-08-29.
+**Confidence**: High.
+**Analysis**: Note the official definition is about **ordering**, not about time targets. Time targets come from the individual systems, not from national policy.
+
+**1.4 — National guideline requires *a* system, without prescribing which.**
+**Evidence**: Recommendation title: "Legevakt og legevaktsentral bør ha et system for prioritering og triagering av pasienter" ("Legevakt and legevaktsentral *should* have a system for prioritisation and triage of patients") — note "bør" (should), not "skal" (shall).
+**Source**: [Helsedirektoratet, Nasjonal veileder: Legevakt og legevaktsentral](https://www.helsedirektoratet.no/veiledere/legevakt-og-legevaktsentral) (first published 2025-04-23) — Accessed 2026-08-29. Reputation High (official).
+**Confidence**: High.
 
 ### 2. Level vocabulary and time targets
-_pending_
+
+**2.1 — RETTS five levels and maximum time to physician assessment.**
+**Evidence**: Red — physician assessment immediately; Orange — maximum 20 minutes; Yellow — up to 120 minutes; Green — up to 240 minutes; Blue — no urgency.
+**Source**: [Helsebiblioteket / Norsk barnelegeforening, Akuttveileder i pediatri 1.13 "Pediatrisk tidlig varslingsskår, triage og kommunikasjon"](https://www.helsebiblioteket.no/innhold/retningslinjer/pediatri/akuttveileder-i-pediatri/1.akutte-prosedyrer-og-tilstander-inkludert-ulykker/1.14-pediatrisk-tidlig-varslingsskar-triage-og-kommunikasjon) — Accessed 2026-08-29. Reputation High (official/professional guideline).
+**Evidence (Norwegian verbatim)**: "rød, umiddelbar legevurdering; oransje, inntil 20 minutters ventetid; gul, inntil 120 min; grønn, inntil 240 min; og blå, ikke hast."
+**Translation**: "red, immediate physician assessment; orange, up to 20 minutes' waiting time; yellow, up to 120 min; green, up to 240 min; and blue, not urgent."
+**Verification**: Same figures returned independently via search summary of RETTS materials (NAKOS ambulance RETTS documentation).
+**Confidence**: Medium-High (one authoritative professional guideline, verbatim; RETTS is a licensed vendor system so the vendor definition governs).
+
+**2.2 — SATS Norge five levels, with times stated explicitly for legevakt.**
+**Evidence**: SATS Norge uses RØD, ORANSJE, GUL, GRØNN, BLÅ with times to doctor consultation of 0, 10, 60, 120 and 120 minutes respectively; these times are described as time to doctor for patients "at a legevakt or emergency department".
+**Source**: [Helse Bergen, SATS Norge 4.0 — praktisk guide for legevakt, ambulanse og akuttmottak](https://www.helse-bergen.no/4a461e/siteassets/seksjon/mottaksklinikken/documents/2020.09.01-praktisk-guide-til-sats-norge-4.0_-a5-format.pdf) — Accessed 2026-08-29. Reputation High (health trust, official).
+**Analysis**: SATS Norge is the one system whose published guide is explicitly titled "for legevakt". Developed in Helse Vest.
+**Confidence**: Medium — figures from search summary of the PDF; PDF text extraction failed on direct fetch. _[verbatim quote not obtained — see Knowledge Gaps]_
+
+**2.3 — The three systems disagree on times. This is the single most important finding for the app.**
+| System | Rød | Oransje | Gul | Grønn | Blå |
+|---|---|---|---|---|---|
+| RETTS | immediately | 20 min | 120 min | 240 min | not urgent |
+| SATS Norge | 0 min | 10 min | 60 min | 120 min | 120 min |
+| MTS (Manchester) | 0 min | 10 min | 60 min | 120 min | 240 min |
+**Analysis (interpretation)**: There is no national Norwegian time standard. A patient with the same colour has a different promised maximum wait depending on which legevakt they walk into.
 
 ### 3. Who triages, and when
 _pending_

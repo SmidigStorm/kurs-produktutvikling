@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #2F5488; } a:hover { color: #1F3A63; }
+  </style>
+</helmet>
+<div style="width: 1440px; min-height: 900px; box-sizing: border-box; background: #FAF9F6; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: #1C1A17; display: flex; flex-direction: column;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 20px 32px; background: #FFFFFF; border-bottom: 1px solid #E7E3DC;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1A17" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+      <span style="font-size: 16px; font-weight: 700;">Bergen legevakt</span>
+      <span style="font-size: 16px; color: #C9C3BA;">/</span>
+      <span style="font-size: 16px; color: #4A443E;">Queue</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 22px;">
+      <span style="font-size: 14px; color: #6E6862;">5 waiting &middot; longest 55 min</span>
+      <span style="display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: #8A837B;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/>
+        </svg>
+        Live
+      </span>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 28px; padding: 28px 32px; align-items: start;">
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E3DC; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 18px;">
+      <span style="font-size: 15px; font-weight: 700;">Register arrival</span>
+
+      <div style="display: flex; flex-direction: column; gap: 7px;">
+        <span style="font-size: 13px; color: #4A443E;">Patient name</span>
+        <div style="height: 44px; border: 1px solid #D8D2C8; border-radius: 10px; background: #FCFBF8; display: flex; align-items: center; padding: 0 13px; font-size: 15px; color: #A8A199;">Full name</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 7px;">
+        <span style="font-size: 13px; color: #4A443E;">Triage level</span>
+        <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px;">
+          <div style="height: 44px; border-radius: 9px; background: #B3261E; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">R</div>
+          <div style="height: 44px; border-radius: 9px; background: #FDF0E3; color: #9A4C06; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">O</div>
+          <div style="height: 44px; border-radius: 9px; background: #FBF3D9; color: #7A5C00; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">Y</div>
+          <div style="height: 44px; border-radius: 9px; background: #E8F3EC; color: #256B45; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; outline: 2px solid #256B45; outline-offset: -2px;">G</div>
+          <div style="height: 44px; border-radius: 9px; background: #E9EFF8; color: #2F5488; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">B</div>
+        </div>
+      </div>
+
+      <div style="height: 44px; border-radius: 10px; background: #1C1A17; color: #FAF9F6; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center;">Register arrival</div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E3DC; border-radius: 16px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 132px 108px 120px 188px; gap: 16px; padding: 13px 22px; border-bottom: 1px solid #EFEBE4; font-size: 12px; letter-spacing: 0.07em; color: #8A837B;">
+        <span>#</span><span>PATIENT</span><span>LEVEL</span><span>WAITED</span><span>ESTIMATE</span><span></span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 132px 108px 120px 188px; gap: 16px; padding: 15px 22px; border-bottom: 1px solid #F4F1EB; align-items: center;">
+        <span style="font-size: 19px; font-weight: 700;">1</span>
+        <span style="font-size: 15px;">Maja Solum</span>
+        <span style="justify-self: start; background: #FDF0E3; color: #9A4C06; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; padding: 5px 11px; border-radius: 999px;">ORANGE</span>
+        <span style="font-size: 15px; color: #4A443E;">5 min</span>
+        <span style="font-size: 15px; font-weight: 700;">0 min</span>
+        <div style="display: flex; gap: 8px; justify-self: end;">
+          <div style="height: 36px; padding: 0 12px; border: 1px solid #D8D2C8; border-radius: 9px; background: #FCFBF8; font-size: 13px; color: #4A443E; display: flex; align-items: center; gap: 6px;">Re-triage
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div style="height: 36px; padding: 0 14px; border-radius: 9px; background: #1C1A17; color: #FAF9F6; font-size: 13px; font-weight: 700; display: flex; align-items: center;">Done</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 132px 108px 120px 188px; gap: 16px; padding: 15px 22px; border-bottom: 1px solid #F4F1EB; align-items: center;">
+        <span style="font-size: 19px; font-weight: 700;">2</span>
+        <span style="font-size: 15px;">Ola Hansen</span>
+        <span style="justify-self: start; background: #FBF3D9; color: #7A5C00; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; padding: 5px 11px; border-radius: 999px;">YELLOW</span>
+        <span style="font-size: 15px; color: #4A443E;">40 min</span>
+        <span style="font-size: 15px; font-weight: 700;">25 min</span>
+        <div style="display: flex; gap: 8px; justify-self: end;">
+          <div style="height: 36px; padding: 0 12px; border: 1px solid #D8D2C8; border-radius: 9px; background: #FCFBF8; font-size: 13px; color: #4A443E; display: flex; align-items: center; gap: 6px;">Re-triage
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div style="height: 36px; padding: 0 14px; border-radius: 9px; background: #1C1A17; color: #FAF9F6; font-size: 13px; font-weight: 700; display: flex; align-items: center;">Done</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 132px 108px 120px 188px; gap: 16px; padding: 15px 22px; border-bottom: 1px solid #F4F1EB; align-items: center;">
+        <span style="font-size: 19px; font-weight: 700;">3</span>
+        <span style="font-size: 15px;">Kari Nordmann</span>
+        <span style="justify-self: start; background: #E8F3EC; color: #256B45; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; padding: 5px 11px; border-radius: 999px;">GREEN</span>
+        <span style="font-size: 15px; color: #4A443E;">55 min</span>
+        <span style="font-size: 15px; font-weight: 700;">45 min</span>
+        <div style="display: flex; gap: 8px; justify-self: end;">
+          <div style="height: 36px; padding: 0 12px; border: 1px solid #D8D2C8; border-radius: 9px; background: #FCFBF8; font-size: 13px; color: #4A443E; display: flex; align-items: center; gap: 6px;">Re-triage
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div style="height: 36px; padding: 0 14px; border-radius: 9px; background: #1C1A17; color: #FAF9F6; font-size: 13px; font-weight: 700; display: flex; align-items: center;">Done</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 132px 108px 120px 188px; gap: 16px; padding: 15px 22px; border-bottom: 1px solid #F4F1EB; align-items: center;">
+        <span style="font-size: 19px; font-weight: 700;">4</span>
+        <span style="font-size: 15px;">Ingrid Berg</span>
+        <span style="justify-self: start; background: #E8F3EC; color: #256B45; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; padding: 5px 11px; border-radius: 999px;">GREEN</span>
+        <span style="font-size: 15px; color: #4A443E;">35 min</span>
+        <span style="font-size: 15px; font-weight: 700;">60 min</span>
+        <div style="display: flex; gap: 8px; justify-self: end;">
+          <div style="height: 36px; padding: 0 12px; border: 1px solid #D8D2C8; border-radius: 9px; background: #FCFBF8; font-size: 13px; color: #4A443E; display: flex; align-items: center; gap: 6px;">Re-triage
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div style="height: 36px; padding: 0 14px; border-radius: 9px; background: #1C1A17; color: #FAF9F6; font-size: 13px; font-weight: 700; display: flex; align-items: center;">Done</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 132px 108px 120px 188px; gap: 16px; padding: 15px 22px; align-items: center;">
+        <span style="font-size: 19px; font-weight: 700;">5</span>
+        <span style="font-size: 15px;">Jonas Lie</span>
+        <span style="justify-self: start; background: #E9EFF8; color: #2F5488; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; padding: 5px 11px; border-radius: 999px;">BLUE</span>
+        <span style="font-size: 15px; color: #4A443E;">20 min</span>
+        <span style="font-size: 15px; font-weight: 700;">75 min</span>
+        <div style="display: flex; gap: 8px; justify-self: end;">
+          <div style="height: 36px; padding: 0 12px; border: 1px solid #D8D2C8; border-radius: 9px; background: #FCFBF8; font-size: 13px; color: #4A443E; display: flex; align-items: center; gap: 6px;">Re-triage
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div style="height: 36px; padding: 0 14px; border-radius: 9px; background: #1C1A17; color: #FAF9F6; font-size: 13px; font-weight: 700; display: flex; align-items: center;">Done</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

@@ -4,6 +4,43 @@
  * This pulls in Preflight (Tailwind's CSS reset) as well as the utilities.
  * That is deliberate: generated designs assume a reset, and half-resetting
  * produces subtle layout differences that are miserable to debug live.
- * The cost is that unstyled markup looks plainer than browser defaults.
  */
 @import 'tailwindcss';
+
+/*
+ * The design tokens. Everything visual comes from here — there are no other
+ * colours or fonts in the app.
+ *
+ * The palette is near-neutral on purpose: the five triage colours are the only
+ * saturation on screen, so colour always means urgency and never decoration.
+ */
+@theme {
+  --font-sans: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --font-display: 'Instrument Serif', Georgia, serif;
+
+  --color-canvas: #faf9f6;
+  --color-surface: #ffffff;
+  --color-sunk: #f6f4ef;
+  --color-line: #e7e3dc;
+  --color-line-soft: #f4f1eb;
+  --color-ink: #1c1a17;
+  --color-ink-muted: #4a443e;
+  --color-ink-faint: #6e6862;
+  --color-ink-ghost: #8a837b;
+
+  --color-triage-red: #b3261e;
+  --color-triage-orange-soft: #fdf0e3;
+  --color-triage-orange-ink: #9a4c06;
+  --color-triage-yellow-soft: #fbf3d9;
+  --color-triage-yellow-ink: #7a5c00;
+  --color-triage-green-soft: #e8f3ec;
+  --color-triage-green-ink: #256b45;
+  --color-triage-blue-soft: #e9eff8;
+  --color-triage-blue-ink: #2f5488;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}

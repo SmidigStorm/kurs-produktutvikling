@@ -1,0 +1,18 @@
+{
+  "pages": [
+    { "id": "page-1", "name": "Design" },
+    { "id": "page-2", "name": "Explorations" }
+  ],
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 390, "h": 844, "title": "Patient — phone", "page": "page-1" },
+    { "file": "Staff.dc.html", "x": 560, "y": 0, "w": 1440, "h": 900, "title": "Staff — queue", "page": "page-1" },
+    { "file": "DirectionB.dc.html", "x": 0, "y": 0, "w": 390, "h": 700, "title": "Direction B — progress", "page": "page-2" },
+    { "file": "DirectionC.dc.html", "x": 560, "y": 0, "w": 800, "h": 460, "title": "Direction C — room board", "page": "page-2" }
+  ],
+  "annotations": [
+    { "id": "brief", "x": 0, "y": -190, "w": 560, "page": "page-1", "text": "Legevakt queue — basic design.\nThe app has no design system, so this commits to one: near-neutral warm canvas, and the five triage colours are the only saturation on screen.\nStatic mockups, not a clickable prototype." },
+    { "id": "a11y", "x": 2080, "y": 0, "w": 300, "page": "page-1", "text": "The three patient values keep role=\"status\" and their aria-labels — the BDD suite finds them by accessible name, and aiFix hands that ARIA snapshot to the agent. Any build of this design must keep them." },
+    { "id": "alts", "x": 0, "y": -150, "w": 560, "page": "page-2", "text": "Considered and not taken. Kept as a record of what the direction was chosen against, not as live options." }
+  ],
+  "launch": { "view": "canvas", "page": "page-1" }
+}

@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #555; } a:hover { color: #222; }
+  </style>
+</helmet>
+<div style="width: 390px; min-height: 700px; box-sizing: border-box; background: #FFFFFF; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: #333; display: flex; flex-direction: column; gap: 22px; padding: 26px 22px;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <span style="font-size: 12px; letter-spacing: 0.1em; color: #999;">SKETCH &middot; DIRECTION B</span>
+    <span style="font-size: 12px; color: #999;">Progress, not position</span>
+  </div>
+
+  <span style="font-size: 20px; font-weight: 700; color: #222;">Where you are</span>
+
+  <div style="display: flex; flex-direction: column; gap: 0;">
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+      <div style="display: flex; flex-direction: column; align-items: center; width: 22px;">
+        <div style="width: 14px; height: 14px; border-radius: 999px; background: #333;"></div>
+        <div style="width: 2px; flex-grow: 1; min-height: 54px; background: #DDD;"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 3px; padding-bottom: 26px;">
+        <span style="font-size: 15px; font-weight: 700; color: #222;">Checked in</span>
+        <span style="font-size: 13px; color: #888;">18:05 &middot; assessed as GREEN</span>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+      <div style="display: flex; flex-direction: column; align-items: center; width: 22px;">
+        <div style="width: 14px; height: 14px; border-radius: 999px; border: 3px solid #333; background: #FFF;"></div>
+        <div style="width: 2px; flex-grow: 1; min-height: 54px; background: #DDD;"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px; padding-bottom: 26px;">
+        <span style="font-size: 15px; font-weight: 700; color: #222;">Waiting &mdash; 2 people ahead</span>
+        <div style="display: flex; gap: 5px;">
+          <div style="width: 34px; height: 9px; border-radius: 3px; background: #BBB;"></div>
+          <div style="width: 34px; height: 9px; border-radius: 3px; background: #BBB;"></div>
+          <div style="width: 34px; height: 9px; border-radius: 3px; background: #333;"></div>
+          <div style="width: 34px; height: 9px; border-radius: 3px; border: 1px dashed #CCC;"></div>
+        </div>
+        <span style="font-size: 13px; color: #888;">about 45 minutes</span>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+      <div style="width: 22px; display: flex; justify-content: center;">
+        <div style="width: 14px; height: 14px; border-radius: 999px; border: 2px dashed #CCC;"></div>
+      </div>
+      <span style="font-size: 15px; color: #AAA;">Called in to see a doctor</span>
+    </div>
+  </div>
+
+  <div style="border: 1px dashed #CCC; border-radius: 10px; padding: 14px; font-size: 13px; line-height: 1.5; color: #777;">
+    Trade-off: the timeline explains <em>why</em> the wait moves, but it buries the one number people actually want.
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

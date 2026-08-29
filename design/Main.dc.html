@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Instrument+Serif&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #2F5488; } a:hover { color: #1F3A63; }
+  </style>
+</helmet>
+<div style="width: 390px; min-height: 844px; box-sizing: border-box; background: #FAF9F6; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: #1C1A17; display: flex; flex-direction: column; gap: 18px; padding: 30px 20px 28px;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 9px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1A17" stroke-width="1.8" stroke-linecap="round">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+      <span style="font-size: 15px; font-weight: 700; letter-spacing: 0.01em;">Bergen legevakt</span>
+    </div>
+    <span style="font-size: 13px; color: #6E6862;">Solheimsgaten 9</span>
+  </div>
+
+  <div style="background: #FFFFFF; border: 1px solid #E7E3DC; border-radius: 20px; padding: 26px 24px 24px; display: flex; flex-direction: column; gap: 22px;">
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; line-height: 1.1;">Hello, Kari Nordmann</span>
+      <div role="status" aria-label="Triage level" style="display: flex; align-items: center; gap: 9px;">
+        <span style="display: inline-flex; align-items: center; gap: 7px; background: {{chipBg}}; color: {{chipFg}}; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; padding: 7px 13px; border-radius: 999px;">
+          <svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="5" r="4" fill="currentColor"/></svg>
+          {{level}}
+        </span>
+        <span style="font-size: 13px; color: #6E6862;">assessed on arrival</span>
+      </div>
+    </div>
+
+    <div style="height: 1px; background: #EFEBE4;"></div>
+
+    <div role="status" aria-label="Queue position" style="display: flex; align-items: baseline; gap: 14px;">
+      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 104px; line-height: 0.82; letter-spacing: -0.03em;">{{position}}</span>
+      <span style="font-size: 17px; line-height: 1.35; color: #4A443E;">in the queue<br>right now</span>
+    </div>
+
+    <div role="status" aria-label="Estimated wait" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #F6F4EF; border-radius: 14px; padding: 15px 17px;">
+      <span style="font-size: 15px; color: #4A443E;">Estimated wait</span>
+      <span style="font-size: 22px; font-weight: 700;">{{wait}} min</span>
+    </div>
+
+  </div>
+
+  <div style="display: flex; gap: 12px; background: #FFFFFF; border: 1px solid #E7E3DC; border-radius: 16px; padding: 16px 17px;">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6E6862" stroke-width="1.7" stroke-linecap="round" style="flex-shrink: 0; margin-top: 1px;" aria-hidden="true">
+      <circle cx="12" cy="12" r="9"/><path d="M12 8v5l3 2"/>
+    </svg>
+    <span style="font-size: 14px; line-height: 1.5; color: #4A443E;">{{note}} Your place can change if someone arrives who needs care more urgently.</span>
+  </div>
+
+  <div style="flex-grow: 1;"></div>
+
+  <div style="display: flex; align-items: center; justify-content: center; gap: 8px; color: #8A837B; font-size: 13px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/>
+    </svg>
+    <span>Updates by itself every few seconds</span>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"level":{"editor":"enum","options":["RED","ORANGE","YELLOW","GREEN","BLUE"],"default":"GREEN"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const level = this.props.level ?? 'GREEN';
+    const map = {
+      RED:    { bg: '#B3261E', fg: '#FFFFFF', pos: 1, wait: 0,  note: 'You are being seen now.' },
+      ORANGE: { bg: '#FDF0E3', fg: '#9A4C06', pos: 1, wait: 0,  note: 'You are next — please stay close by.' },
+      YELLOW: { bg: '#FBF3D9', fg: '#7A5C00', pos: 2, wait: 25, note: 'Please stay in the waiting room.' },
+      GREEN:  { bg: '#E8F3EC', fg: '#256B45', pos: 3, wait: 45, note: 'Please stay in the waiting room.' },
+      BLUE:   { bg: '#E9EFF8', fg: '#2F5488', pos: 5, wait: 75, note: 'Please stay in the waiting room.' }
+    };
+    const t = map[level] || map.GREEN;
+    return { level: level, chipBg: t.bg, chipFg: t.fg, position: t.pos, wait: t.wait, note: t.note };
+  }
+}
+</script>
+</body>
+</html>

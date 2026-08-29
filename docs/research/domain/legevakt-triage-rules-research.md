@@ -85,13 +85,96 @@ Codes: **A (Akutt)** red criteria, **H (Haster)** yellow, **V (Vanlig)** green r
 The two scales share the words red/yellow/green, which is exactly why they get confused. NIMN's red/yellow/green are three *response* colours; RETTS's five are *waiting* colours.
 
 ### 3. Who triages, and when
-_pending_
+
+> All quotes in 3.x and 5.x are from the same primary document: Helsedirektoratet, **"Legevakt og legevaktsentral — Nasjonal veileder"**, first published 2025-04-23, chapter 1 "Organisering av legevaktordningen". The PDF copy read carries an "Ekstern høring" banner with a consultation deadline of 16 July 2025 — see Knowledge Gap G1 on version status.
+> [Helsedirektoratet veileder (PDF via Legeforeningen)](https://www.legeforeningen.no/contentassets/88f5bd06123648a8b06dc572103d8679/legevakt-og-legevaktsentral.pdf) — Accessed 2026-08-29. Reputation High (official).
+
+**3.1 — Triage happens at least twice: once on the telephone, again on arrival.**
+**Evidence (Norwegian verbatim, p.10)**: "Pasienter som får avtale om å møte på legevakten, bør alltid gis en hastegrad uavhengig av hvor stor pasientpågangen til legevakten er. Dersom første vurdering er gjort over telefon og pasienten ikke mottar hjelp umiddelbart, bør pasienten triageres på nytt etter ankomst til legevaktlokalet."
+**Translation**: "Patients who are given an appointment to attend the legevakt should **always** be given a hastegrad (urgency grade), regardless of how large the patient load at the legevakt is. If the first assessment has been made over the telephone and the patient does not receive help immediately, the patient **should be triaged again after arrival** at the legevakt premises."
+**Confidence**: High (authoritative national guideline, verbatim).
+**Analysis**: The canonical Norwegian legevakt journey is: **phone call to legevaktsentral (triage 1, by an operator with bachelor-level health education) → travel → arrival (triage 2) → wait → doctor.** Walk-ins exist but the telephone is the designed front door — the national number is 116 117.
+
+**3.2 — Re-triage of *waiting* patients is explicitly required, not an edge case.**
+**Evidence (Norwegian verbatim, p.10)**: "Det er viktig å ha et system for å revurdere hastegrad hos ventende pasienter."
+**Translation**: "It is important to have a system for **reassessing the urgency grade of waiting patients**."
+**Confidence**: High.
+**Analysis**: Our app's `TriageEvent` re-triage history is therefore *more* faithful than we realised. Re-triage is national guidance, not a contrived teaching device.
+
+**3.3 — Who triages: legevaktsentral operators are bachelor-level health personnel; the physical triage is by health personnel generally, not specified as "nurse".**
+**Evidence**: akuttmedisinforskriften § 13 requires the legevaktsentral be "bemannes med personell med relevant helsefaglig utdanning på bachelornivå, nødvendig klinisk praksis og gjennomført tilleggsopplæring for arbeid som operatør". The veileder adds (p.6): "Ansatte i legevaktsentralen skal ha nødvendig opplæring, erfaring og kompetanse til kartlegge og vurdere pasientens helsetilstand, fastsette hastegrad, gi veiledning og medisinske råd og iverksette andre nødvendige tiltak."
+For hospital emergency departments the parallel guidance says only "Det er helsepersonell som er ansvarlig for å innhente nødvendig informasjon for å kunne gjøre vurderingen."
+**Sources**: [Lovdata, akuttmedisinforskriften § 13](https://lovdata.no/dokument/SF/forskrift/2015-03-20-231); Helsedirektoratet veileder p.6; [Helsedirektoratet, Somatiske akuttmottak — prioritering av pasienter](https://www.helsedirektoratet.no/retningslinjer/somatiske-akuttmottak/prioritering-av-pasienter/akuttmottakene-skal-ha-prosedyrer-for-prioritering-av-pasienter). All accessed 2026-08-29.
+**Confidence**: High for the phone role; **Medium** for who does the in-person triage — in practice a nurse, but no national document I found *mandates* "sykepleier".
+
+**3.4 — The tools differ by channel, and the guideline names them.**
+**Evidence (Norwegian verbatim, p.9–10)**: "Det bør være tilgang på beslutningsstøtte og rådgivningsverktøy for triagering og vurdering, både via telefon og ved oppmøte på legevakten. Det finnes ulike systemer for triagering og vurdering av pasienter. Noen er utviklet spesielt for telefonvurdering, mens andre er utviklet for å brukes når pasienten er fysisk til stede."
+"Det finnes to norskutviklede verktøy til bruk ved prioritering og hastegradsvurdering for vurdering av telefonhenvendelser: Norsk indeks for medisinsk nødhjelp (NIMN) og Legevaktindeks. NIMN brukes til å fastsette hastegrad og beslutte tiltak ved de mest tidskritiske henvendelsene og er i bruk ved alle AMK-sentralene i Norge."
+"Et annet triagesystem er Manchester Triage System (MTS). MTS finnes både for oppmøte- og telefontriage (Telephone Triage and Advice, TTA), som kan gi en fordel ved at sammen system brukes både i legevaktsentralen og ved oppmøte i legevaktlokalet."
+**Translation of the decisive sentence**: "NIMN is used to set the urgency grade and decide measures for the **most time-critical** enquiries and is in use at **all AMK centres** in Norway."
+**Confidence**: High.
+**This settles question 1 of the brief**: NIMN = AMK (the 113 emergency dispatch). Legevaktindeks = legevaktsentral (116 117 phone). MTS/RETTS/SATS = physical arrival triage. **RETTS is not named at all in the national legevakt guideline** — it is named in the quality indicator and is described elsewhere as used mostly in ambulance services and hospital paediatric emergency departments.
 
 ### 4. Is the two-stage nurse-then-doctor flow standard?
-_pending_
+
+**4.1 — The clinicians are right that it is multi-stage, but the first stage is more often a *telephone* than a nurse in the building.**
+**Evidence**: See 3.1 and 3.4. The designed flow is phone triage → arrival → re-triage → doctor. The veileder (p.11) also says: "Dersom førstevurdering er gjort over telefon, bør pasientmottaket eller resepsjonen være tilrettelagt slik at pasienten kan vurderes på nytt etter ankomst til legevaktlokalet. På den måten kan det fanges opp om pasientens tilstand har endret seg på en måte som får betydning for videre tiltak."
+**Translation**: "If the first assessment has been made by telephone, the patient reception or the **reception desk** should be arranged so that the patient can be assessed again after arrival. In this way it can be captured whether the patient's condition has changed in a way that has significance for further measures."
+**Analysis (interpretation)**: The second triage is located at **reception**, not necessarily in a consultation room. So "wait for a nurse, then wait for a doctor" is a real pattern, but the national guidance frames the arrival assessment as a short desk-side reassessment rather than a full consultation slot. Both patterns exist; large legevakter with a triage nurse in a room match the clinicians' description.
+**Confidence**: Medium — the guideline describes arrangement and intent, not a mandated two-queue process model.
+
+**4.2 — Not every patient goes through the doctor: some are advised and sent home, some are referred to the fastlege.**
+**Evidence (Norwegian verbatim, p.10)**: Legevaktindeks "støtter håndtering av den første kontakten med pasientene ved å strukturere samtalen via forslag til viktige spørsmål, råd om når pasienten bør tilses av lege, når det kan henvises til fastlege, og konkrete medisinske råd i tilfeller der pasienten ikke trenger legetilsyn."
+**Translation**: "...advice on when the patient should be seen by a doctor, when they can be referred to the GP, and concrete medical advice in cases where the patient **does not need to be seen by a doctor**."
+**Confidence**: High.
+**Analysis**: There is a real "exit before the doctor" path. This validates the app's cycle-2 feature (patient leaves without being seen) as domain-plausible, though the domain reason is usually *dispositional*, not abandonment.
+
+**4.3 — There is a documented bypass for the most urgent: "fast track" past the legevakt entirely.**
+**Evidence (Norwegian verbatim, p.14)**: among factors in deciding whether to turn out: "Sannsynlig tilstand der pasienten skal eller kan fraktes til sykehus uten nærmere involvering av legevakten («fast track»)."
+**Translation**: "Probable condition where the patient shall or can be transported to hospital **without further involvement of the legevakt** ('fast track')."
+**Confidence**: High.
+**Analysis**: Answers the practitioners' open question "can a patient skip the nurse entirely?" — the true red-patient path frequently skips the *legevakt* entirely and goes to hospital by ambulance. A red patient sitting in a legevakt waiting room with a queue position is close to a category error.
+
+**4.4 — Further stages: laboratory yes, imaging generally no.**
+**Evidence (Norwegian verbatim, p.17)**: "På legevakt er den akutte diagnostikken i sentrum. Legevakt bør tilby analyser som relativt enkelt kan etableres og som understøtter den kliniske beslutningen i en legevaktkonsultasjon." Guidance on equipment (p.16) explicitly lists as a planning factor "Avstand og reisetid til nærmeste sykehus/poliklinikk med røntgen for diagnose og behandling av bruddskader".
+**Translation**: "At the legevakt, acute diagnostics is central. The legevakt should offer analyses that can be relatively simply established and that support the clinical decision in a legevakt consultation." / "Distance and travel time to the nearest hospital/outpatient clinic **with X-ray**..."
+**Confidence**: High.
+**Analysis**: Point-of-care lab is in-house and is a real intra-visit stage. Imaging is often *not* on site — it is a referral out, not a queue stage. So "lab, X-ray, observation" is not a uniform set of extra stages.
 
 ### 5. Regulatory basis (akuttmedisinforskriften, Helsedirektoratet)
-_pending_
+
+**5.1 — The municipality's duty, verbatim.**
+**Evidence (Norwegian verbatim, akuttmedisinforskriften § 6)**: "Kommunen skal tilby legevaktordning som sikrer befolkningens behov for øyeblikkelig hjelp, og må sørge for at minst en lege er tilgjengelig for legevakt hele døgnet."
+**Translation**: "The municipality shall offer a legevakt arrangement that secures the population's need for immediate help, and must ensure that **at least one doctor** is available for legevakt around the clock."
+**Source**: [Lovdata, Forskrift om krav til og organisering av kommunal legevaktordning ... (akuttmedisinforskriften), FOR-2015-03-20-231](https://lovdata.no/dokument/SF/forskrift/2015-03-20-231) — Accessed 2026-08-29. Reputation High (authoritative legal text).
+**Confidence**: High.
+**Analysis**: The regulatory floor is literally *one* doctor. Note this cuts **against** the clinicians' critique in one narrow respect — see the "how wrong are we" section.
+
+**5.2 — THE ONLY TIME LIMIT IN THE REGULATION IS A TELEPHONE ANSWER TIME. It is two minutes, not thirty.**
+**Evidence (Norwegian verbatim, akuttmedisinforskriften § 13 bokstav d, restated in the veileder p.5 and p.6)**: "innrette systemet for mottak av telefonhenvendelser slik at 80 prosent av alle henvendelser normalt kan besvares innen to minutter"
+**Translation**: "arrange the system for receiving telephone enquiries such that **80 percent of all enquiries can normally be answered within two minutes**."
+And the veileder's gloss (p.6): "Akuttmedisinforskriften § 13 bokstav d setter krav til at legevaktsentralen skal innrette systemet for mottak av telefonhenvendelser slik at 80 prosent av alle henvendelser kan besvares normalt innen to minutter. Dette er en nasjonal kvalitetsindikator, som Helsedirektoratet presenterer."
+**Sources**: Lovdata § 13 d; Helsedirektoratet veileder p.5–6; [Helsedirektoratet kvalitetsindikator "Svartid legevakt 116 117"](https://www.helsedirektoratet.no/statistikk/kvalitetsindikatorer/akuttmedisinske-tjenester-utenfor-sykehus/svartid-legevakt-116-117). All accessed 2026-08-29.
+**Confidence**: High (three independent official sources: the regulation, the guideline, the indicator).
+**Analysis**: This is a **percentile service-level target on a telephone queue**, not a per-patient deadline in the waiting room. It is the only legally binding number about waiting anywhere in Norwegian legevakt regulation that I could find.
+
+**5.3 — There is NO regulated maximum waiting time at a legevakt.**
+**Evidence**: Searched akuttmedisinforskriften in full; the national veileder chapter 1; the national quality indicator set for legevakt; and the Helsedirektoratet guideline for somatic emergency departments. None states a maximum time to assessment or treatment. The akuttmottak guidance explicitly "does not specify any maximum time for doctor assessment" and requires only that procedures "sikre at pasienter får nødvendig helsehjelp i tide" ("ensure patients receive necessary healthcare in time").
+**Confidence**: High (negative finding, established across four official sources).
+**This is a load-bearing negative finding.** Time targets in Norwegian legevakt come from the *chosen triage system* (a vendor/clinical instrument), never from the state.
+
+**5.4 — Legal basis cited for the triage recommendation.**
+**Evidence (Norwegian verbatim, p.10 "Rettslig grunnlag")**: akuttmedisinforskriften § 13 c; helse- og omsorgstjenesteloven § 4-1 første ledd; helsepersonelloven §§ 4 og 16; forskrift om ledelse og kvalitetsforbedring i helse- og omsorgstjenesten.
+And § 13 c itself requires the legevaktsentral to "veilede og gi råd samt prioritere og registrere henvendelser om øyeblikkelig hjelp".
+**Translation**: "...guide and give advice as well as **prioritise and register** enquiries about immediate help."
+**Confidence**: High.
+**Analysis**: "Prioritere og registrere" is the statutory hook for triage. Note it applies to the *legevaktsentral* (the phone), not the waiting room.
+
+**5.5 — The 45-minute figure that does exist, and what it is actually about.**
+**Evidence**: A national requirement discussed in the NKLM/Helsedirektoratet work on national legevakt requirements: 95% of the population and all urban centres in a legevakt district should be reachable by a legevakt doctor within 45 minutes of dispatch.
+**Source**: [NKLM/Helsedirektoratet, "Nasjonale krav til legevakt og fremtidens øyeblikkelig hjelp-tilbud" (regjeringen.no)](https://www.regjeringen.no/contentassets/477c27aa89d645e09ece350eaf93fedf/no/sved/02.pdf) — Accessed 2026-08-29. Reputation High (ministry-hosted, NKLM-authored).
+**Confidence**: Medium — obtained via search summary; direct PDF text extraction failed. See Knowledge Gap G2.
+**Analysis**: This is an **outreach/travel** requirement (the doctor going to the patient), not a waiting-room requirement. It is about geography and coverage, not queues.
 
 ### 6. Waiting-time communication to patients
 _pending_

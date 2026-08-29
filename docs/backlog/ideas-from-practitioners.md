@@ -2,11 +2,27 @@
 
 Source: a nurse and a doctor, in the room, 2026-08-29.
 
-Requirements input for the legevakt queue app. Recorded as given. Nothing here
-is specified yet — these are requests, not acceptance criteria.
+Requirements input for the legevakt queue app, gathered from a nurse and a
+doctor. Recorded as given.
 
-Open questions are the ones that change **how a feature must behave**. They were
-asked because the people who can answer them were present.
+## How this document is used in the course
+
+**These are requests, not acceptance criteria — and that is deliberate.**
+
+Each feature below is written the way a real stakeholder describes one: what they
+want, and not enough to build from. The questions under each are the ones a pair
+will hit the moment they try to write a specification.
+
+**Pairs are expected to bring those questions to the product owner** and get them
+answered in the room, then write the answers into their feature file. Working out
+*which* questions have to be asked before you can specify anything is the point;
+the answers are cheap once you know what to ask.
+
+So: do not pre-answer these. A question left open here is course material.
+
+The one resolved item below — what a patient sees across two stages — is left in
+as a worked example of what a clarification produces, and of how much a single
+answer settles.
 
 ---
 
@@ -28,7 +44,7 @@ different times — position among people waiting for a nurse, then position amo
 people waiting for a doctor. The progress bar is what makes that legible; without
 it, a number that resets would read as the queue going backwards.
 
-**Open questions:**
+**To clarify with the product owner:**
 
 - Does the estimate cover the **current stage only**, or the total remaining time
   to being finished?
@@ -57,7 +73,7 @@ could ship first.
 A patient presenting with a particular diagnosis should be pointed to
 Helsedirektoratet's page for that condition.
 
-**Open questions:**
+**To clarify with the product owner:**
 
 - Which conditions? A fixed list, or clinical judgement per patient?
 - Who sets it and when — the nurse at assessment, or automatically from
@@ -81,7 +97,7 @@ The app currently assumes **one consultation room** — it sums the consultation
 time of everyone ahead of you, sequentially. With three doctors working, every
 number shown is roughly three times too high.
 
-**Open questions:**
+**To clarify with the product owner:**
 
 - Do nurses and doctors work fully in parallel, or does one gate the other?
 - Does staffing change during a shift? Would the app need a roster, or just a
@@ -101,7 +117,7 @@ Everything the app does today is *ordering*: who goes before whom. A deadline is
 a **target that can be breached**, which introduces a breach state and something
 that must be visible before it happens rather than after.
 
-**Open questions:**
+**To clarify with the product owner:**
 
 - Is the deadline attached to the triage level, or to the specific presentation?
 - Time to *being seen*, or time to *treatment*?
@@ -121,7 +137,7 @@ published national target or local practice.
 The patient should see a **legend explaining why** they have been given their
 triage colour, not just the colour.
 
-**Open questions:**
+**To clarify with the product owner:**
 
 - The *general meaning* of the level ("green means stable, safe to wait"), or the
   *specific reason yours was assigned*?
@@ -138,7 +154,19 @@ per patient.
 ## Status
 
 None are scheduled. The prepared course backlog (Plan C) is three features of a
-deliberate shape; these are separate.
+deliberate shape; these five are separate and came from practitioners.
 
 **Corrections (the model is wrong):** 1, 3
 **Additions (the model is incomplete):** 2, 4, 5
+
+### Why these work as course material
+
+The ambiguity in them is **genuine**. Nobody planted it: five features described
+by domain experts in their own words, each under-specified in the ordinary way
+that real requests are under-specified. A pair that starts building any of them
+without asking will build something defensible and wrong.
+
+Note that item 1 produces the same trap as the prepared backlog does, arriving
+independently: once there are two stages, "your position in the queue" is
+ambiguous in a way that has nothing to do with triage levels. Two unrelated
+routes to the same class of mistake.

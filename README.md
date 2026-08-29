@@ -53,6 +53,10 @@ downloads an Ubuntu build. That warning is expected and the browser works.
 None of these run automatically. There are no git hooks and no CI — **which checks
 run, and when, is something you decide during the course.**
 
+The end-to-end suite runs with a single worker on purpose: every scenario shares
+one backend and one SQLite file, and each Background resets the queue, so parallel
+workers would delete each other's data mid-test.
+
 **Stop `npm run dev` before `npm run test:e2e`.** The end-to-end suite starts its
 own servers on the same ports and will refuse to run if the dev server holds them.
 That refusal is deliberate: reusing your dev server would point the tests at your
@@ -86,6 +90,24 @@ clock rather than waiting out the refresh.
 Open pages re-fetch every **5 seconds** (`frontend/src/config.ts`, declared once
 for both views). That is a teaching choice: the app is demonstrated live, and a
 longer interval reads as "nothing is happening".
+
+## Styling
+
+Tailwind v4, wired through `@tailwindcss/vite` — no config file, no PostCSS. One
+import in `src/index.css` pulls in both the utilities and Preflight, Tailwind's CSS
+reset.
+
+**The markup is deliberately semantic and carries `role`/`aria-label` on anything a
+test looks for.** That is not decoration:
+
+- the end-to-end suite finds elements by role and accessible name;
+- `playwright-bdd`'s `aiFix` attaches an ARIA snapshot to failures and instructs the
+  agent to rely on it;
+- and it is, separately, correct accessibility.
+
+So a redesign that wraps values in styled `div`s breaks the tests *and* the agent's
+ability to repair them. `features/staff-queue.feature` exists to catch exactly that:
+drop a per-row `aria-label` and one scenario goes red.
 
 ## Two conventions worth knowing
 

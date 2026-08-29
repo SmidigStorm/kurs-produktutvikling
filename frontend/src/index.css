@@ -1,0 +1,9 @@
+/*
+ * Tailwind v4: one import, no config file, no PostCSS setup.
+ *
+ * This pulls in Preflight (Tailwind's CSS reset) as well as the utilities.
+ * That is deliberate: generated designs assume a reset, and half-resetting
+ * produces subtle layout differences that are miserable to debug live.
+ * The cost is that unstyled markup looks plainer than browser defaults.
+ */
+@import 'tailwindcss';

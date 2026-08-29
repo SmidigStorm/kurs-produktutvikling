@@ -38,6 +38,10 @@ export function StaffView() {
       {error && <p role="alert">{error}</p>}
 
       <form onSubmit={(event) => void onRegister(event)}>
+        {/* htmlFor/id rather than nesting: wrapping a <select> in its <label>
+            folds the option text into the label's text content, so the
+            accessible name becomes "Triage level RED ORANGE YELLOW ..." and
+            getByLabel('Triage level') no longer matches. */}
         <label htmlFor="patient-name">Patient name</label>
         <input id="patient-name" value={name} onChange={(e) => setName(e.target.value)} />
 

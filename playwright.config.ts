@@ -14,6 +14,12 @@ const testDir = defineBddConfig({
 export default defineConfig({
   testDir,
   reporter: [['list']],
+  // One worker, deliberately. Every scenario talks to the same backend and the
+  // same SQLite file, and each Background resets the queue — so two scenarios
+  // in parallel delete each other's data mid-test. Sharding would need a
+  // database per worker, which is more machinery than this suite is worth.
+  workers: 1,
+  fullyParallel: false,
   use: {
     baseURL: 'http://localhost:5173',
     screenshot: 'only-on-failure',

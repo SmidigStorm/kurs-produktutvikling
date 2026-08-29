@@ -5,8 +5,8 @@ Records every decision, what the research found, and the experiments to run befo
 the course.
 
 **Built so far:** the legevakt queue app runs (`npm run dev`) and all six checks
-pass — typecheck, lint, test (30), build, deps:check, and the BDD suite (3
-scenarios). Plane is deployed at `plane.smidigakademiet.no` with its MCP at
+pass — typecheck, lint, test (30), build, deps:check, and the BDD suite (6
+scenarios). Tailwind v4 is wired with no classes yet, awaiting a generated design. Plane is deployed at `plane.smidigakademiet.no` with its MCP at
 `plane-mcp.smidigakademiet.no`, verified with per-student tokens. Plans B and C are
 written but not executed.
 
@@ -48,7 +48,7 @@ working in cross-functional pairs.
 | 10/20 | Cycle structure | **Cycles 1 and 2 use similarly-shaped features** so process improvement is the only variable and is directly felt. A **third, differently-shaped item — amending an existing rule** — waits for fast pairs and take-home. |
 | 23 | Improvement evidence | **Retro discussion, nothing formally recorded.** Note: the process Mermaid file is committed, so `git log` on it is a free record of every process change. |
 | 18 | Language of artifacts | **Everything English** — specs, features, code, docs |
-| 4 | Domain | **Live queue app for a `legevakt`** (out-of-hours emergency clinic) — patient sees position, triage level and estimated wait. Patient view plus a minimal staff view. Full specification in §3a. |
+| 4 | Domain | **Live queue app for a `legevakt`** (out-of-hours emergency clinic) — patient sees position, triage level and estimated wait. Patient view plus a staff view. Full specification in §3a. |
 | 19 | Process model | **Map on a whiteboard, encode as Mermaid, commit it.** Diffs readably between cycles, renders in GitHub, agent can edit it. BPMN concepts without BPMN's file format. |
 
 ### Method & tooling
@@ -76,6 +76,8 @@ working in cross-functional pairs.
 | 27 | App topology | **Separate backend and frontend** — distinct directories and processes, started by a single `dev` script. Layer boundaries visible in the tree and in the running system, and they map onto the pair's division of labour. Bought with the simplicity budget freed by dropping Docker and CI. |
 | 29 | Frontend framework | **React** (with Vite). Chosen on asymmetric risk: if Claude Code is more reliable in React than in Svelte 5 runes, agent noise would contaminate the exact variable the course measures; if that turns out to be wrong, React is merely less pretty — a much smaller cost. Svelte's readability edge rested only on medium-trust commercial blogs. |
 | 30 | ORM & migrations | **Drizzle ORM + drizzle-kit on `better-sqlite3`.** Reverses the research recommendation after its central objection was empirically falsified — see §4a. Chosen on the course's own criterion: a typo'd column becomes a `tsc` error (name-error band, ~77% agent repair rate) instead of a runtime failure (assertion band, ~45–63%). |
+| 33 | Styling | **Tailwind v4, no component library**, Preflight included. Chosen because Claude's design tooling emits Tailwind-flavoured markup: a generated design must drop straight in, or it lands on the projector unstyled. v4 needs no config file and no PostCSS — two packages and one line in `vite.config.ts`. See §3d. |
+| 34 | Design in the curriculum | **Design is a taught step.** Students learn process improvement, and design is one of the techniques. Consequence: pairs regenerate UI live, under time pressure — which raises the stakes on the accessibility guards in §3d. |
 | 26 | Database & packaging | **SQLite. No Docker.** Everything as simple as possible. Setup is install deps + run one command. Real migrations preserved. |
 | 2 | Onboarding | **Developers set the app up before class** (async, with time to get help). Needs a pre-class doc and a `verify-setup` command giving unambiguous pass/fail — the dangerous failure is "I thought it was working". |
 | 25 | Broken-setup fallback | **Pair up with another pair, and fix it live.** Requirement this imposes: the app must be *slightly failsafe* — minimal services, no native build steps, pinned lockfiles, few ways to fail. |
@@ -139,10 +141,14 @@ real requirements instead of learning the process.
 
 ### Scope (decided)
 
-**Patient view plus a deliberately minimal staff view.** The patient sees position,
-triage level and estimate. A bare staff screen registers arrivals and performs
-re-triage — needed to demonstrate the rules live in the room, but kept ugly and
-thin on purpose. Not a real triage interface.
+**Patient view plus a staff view.** The patient sees position, triage level and
+estimate. The staff screen registers arrivals, re-triages and marks patients done.
+
+**Amended 2026-08-29:** originally "deliberately ugly and thin". That stopped being
+defensible once the app is styled at all — a polished patient page beside a raw HTML
+table reads as unfinished rather than deliberate, to an audience that notices. The
+staff view is now **fully designed**, but its *functional* scope is unchanged: three
+actions, no more. Designed does not mean it grows features.
 
 ### Three design constraints — non-negotiable, locked at build time
 
@@ -352,6 +358,63 @@ Plane's 177→30 consolidation. Two vendors, two primitives, identical economics
 
 **Supported — but assembled from studies that each measured one leg. No study
 measured the whole arc.** That is worth saying to this audience rather than hiding.
+
+---
+
+## 3d. Styling, and the accessibility guard (decisions 33–34)
+
+**Tailwind v4, no component library, Preflight included.** The deciding constraint
+was not taste: Claude's design tooling emits Tailwind-flavoured markup, so anything
+else means a generated design renders as unstyled soup in front of the room.
+shadcn/ui was rejected because wrapping semantic elements in components is exactly
+where the accessibility contract dies.
+
+### What the accessibility contract is, and why it is load-bearing
+
+Three elements in the patient view carry `role="status"` and an `aria-label`, and
+the staff table's per-row controls carry unique `aria-label`s. Three things depend
+on them:
+
+1. **The BDD suite** finds elements by role and accessible name, not by CSS or test id.
+2. **The agent.** `aiFix` attaches an ARIA snapshot to every failure and its prompt
+   says *"strictly rely on the ARIA snapshot"* — elements without a role or name
+   barely appear in it.
+3. **Actual accessibility.** `role="status"` genuinely means "this value updates on
+   its own, announce it".
+
+A generated redesign that wraps values in styled divs breaks all three at once. Since
+design is now a taught step (decision 34), that will happen live, repeatedly.
+
+### The guards, and an honest negative result
+
+**`eslint-plugin-jsx-a11y` was adopted for this and does not do it.** Tested
+directly: removing a per-row `aria-label` produced **no lint error**.
+`control-has-associated-label` asks whether a control has *any* accessible name — a
+`<button>Done</button>` has one — not whether it is *distinguishing*. It also
+false-positives on correctly labelled inputs, including the nested-label form. That
+rule is **deliberately not enabled**, with the reason written in the config.
+
+What is kept from jsx-a11y is precise and verified to fire: `aria-props`,
+`aria-role`, `role-supports-aria-props`, `label-has-associated-control`,
+`anchor-has-content`. These catch the silent-typo class — `aria-lable`, an invalid
+role — in about a second, with file, line and a "did you mean".
+
+**The guard that actually works is `features/staff-queue.feature`**, whose steps
+drive the table through its per-row accessible names. Verified: dropping either
+per-row label turns exactly one scenario red. It costs **~30 seconds** to fail (a
+locator timeout) where lint would cost one — a clean, real illustration of the
+gate-catalogue trade-off, using this repo's own code.
+
+### Two incidental findings worth keeping
+
+- **Do not nest a `<select>` inside its `<label>`.** The option text folds into the
+  label's text content, so the accessible name becomes
+  `"Triage level RED ORANGE YELLOW ..."` and `getByLabel('Triage level')` stops
+  matching. `htmlFor`/`id` is correct for selects.
+- **The E2E suite must run with `workers: 1`.** Every scenario shares one backend
+  and one SQLite file, and each Background resets the queue, so parallel workers
+  delete each other's data mid-test. This only surfaced when a second feature file
+  gave Playwright enough tests to parallelise.
 
 ---
 

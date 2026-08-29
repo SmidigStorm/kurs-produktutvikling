@@ -62,6 +62,23 @@ it, a number that resets would read as the queue going backwards.
 - Can a patient move backwards — doctor to nurse?
 - Are there further stages: lab, imaging, observation?
 
+### What the research found (2026-08-29)
+
+**The first stage is often the phone call, not a nurse in the building.** Most
+patients reach a legevakt through **116 117**, triaged over the phone on a
+different scale entirely — *akutt / haster / vanlig* (Norsk indeks) or
+Legevaktindeks A/H/V/R — which carry **no minutes at all**. Guidance then
+requires re-triage **on arrival at reception**. There is also a documented *fast
+track* that bypasses the legevakt entirely for the sickest patients.
+
+So the real process has more stages than two, and the phone stage uses a
+different vocabulary from the in-person one. Whether the app models any of that
+is a scoping decision, not a factual one.
+
+**Not answerable from published sources:** whether the nurse consultation *is*
+the triage assessment or a separate step. Guidance supports both readings. This
+one has to come from the practitioners.
+
 **Shape:** structural. This changes the data model, not just a rule. Too large
 for one cycle; would need splitting. The progress bar is the smallest piece that
 could ship first.
@@ -106,6 +123,24 @@ number shown is roughly three times too high.
 
 **Shape:** correction, not addition. The current formula is wrong.
 
+### What the research found (2026-08-29)
+
+**There is no published national staffing ratio.** The regulatory floor is one
+doctor on duty (akuttmedisinforskriften § 6); beyond that, staffing is set
+locally under a general requirement of *forsvarlighet*. So the app cannot derive
+a number from guidance — a count has to come from the people running the shift.
+
+Guidance does say *"Det bør være minst to undersøkelsesrom ved større
+legevakter"*, chosen for *"best mulig pasientflyt"*. So one room is defensible
+for a small legevakt and wrong as a general model.
+
+**Also wrong in kind:** real triage systems attach a *maximum time until seen* to
+a level, not a *consultation duration*. Our invented per-level minutes are not a
+worse version of a real number — they measure a different thing, and run in the
+opposite direction (we have RED taking longest; RØD has the shortest deadline).
+No published per-level consultation durations exist anywhere, so these can only
+be re-labelled, never corrected.
+
 ---
 
 ## 4. Some presentations carry a deadline
@@ -127,8 +162,32 @@ that must be visible before it happens rather than after.
 
 **Shape:** a new kind of rule. Well sized for one cycle.
 
-**Note:** research dispatched 2026-08-29 should establish whether this is a
-published national target or local practice.
+### What the research found (2026-08-29)
+
+See `docs/research/domain/legevakt-triage-rules-research.md`.
+
+**Real time targets exist.** SATS Norge 4.0 publishes maximum time to doctor
+assessment per level — *"Tidene angir tid til legetilsyn for pasienter på
+legevakt eller akuttmottak"*:
+
+| RØD | ORANSJE | GUL | GRØNN | BLÅ |
+|---|---|---|---|---|
+| 0 min | 10 min | 60 min | 120 min | 120 min |
+
+**No level has a 30-minute target.** Published orange values are 10 minutes
+(SATS Norge, Manchester) or 20 minutes (RETTS). A Helsetilsynet audit of
+Legevakten i Arendal recorded the same recollection we heard —
+*"Flere oppgir at oransje hastegrad er 20-30 minutter"* — as a finding, so the
+belief is widespread and documented, but the number is not in any guideline.
+
+**A deadline is a re-assessment trigger, not a service promise.** From the same
+audit: *"Pasienter skal retriageres dersom de ikke får tilsyn av lege etter maks
+ventetid."* Exceeding the target does not breach a promise to the patient; it
+obliges staff to triage the patient again. The same audit found this is not
+done in practice.
+
+This changes the requirement. It is not "warn staff before the deadline" — it is
+"when the deadline passes, this patient must be re-assessed".
 
 ---
 

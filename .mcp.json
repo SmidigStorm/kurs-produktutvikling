@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "plane": {
+      "type": "http",
+      "url": "https://plane-mcp.smidigakademiet.no/http/api-key/mcp",
+      "headers": {
+        "Authorization": "Bearer ${PLANE_API_KEY}",
+        "X-Workspace-slug": "${PLANE_WORKSPACE}"
+      }
+    }
+  }
+}

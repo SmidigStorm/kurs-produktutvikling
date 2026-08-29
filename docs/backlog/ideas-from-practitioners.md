@@ -15,21 +15,40 @@ asked because the people who can answer them were present.
 The real process has multiple stages. A patient first waits to see a **nurse**,
 then waits again to see a **doctor**. The app models a single queue.
 
+### Decided 2026-08-29 — what the patient sees
+
+**One number at a time, inside a progress bar.**
+
+The number is the patient's position in their **current** stage. The progress bar
+shows the stages, so the patient understands the first wait is for the nurse and
+that a second wait for the doctor follows.
+
+Consequence for the spec: the same displayed number means different things at
+different times — position among people waiting for a nurse, then position among
+people waiting for a doctor. The progress bar is what makes that legible; without
+it, a number that resets would read as the queue going backwards.
+
 **Open questions:**
 
-- Is the nurse appointment the triage assessment, or does triage happen before
-  it (at the desk, on arrival)?
+- Does the estimate cover the **current stage only**, or the total remaining time
+  to being finished?
+- What does the bar show while the patient is *with* the nurse — a third state,
+  or the nurse stage held at complete?
+- Is the doctor stage shown from the start as a known future step, or only once
+  the nurse stage finishes?
+- If the nurse sends the patient home, what does the bar do?
+- Is the nurse appointment the triage assessment, or does triage happen before it
+  (at the desk, on arrival)?
 - Can a patient skip the nurse stage? Does a RED arrival go straight to a doctor?
 - What orders the doctor queue — triage level again, or the order people finished
   with the nurse?
 - Can the nurse change the triage level?
-- Can a patient move backwards — doctor to nurse, or be sent home?
+- Can a patient move backwards — doctor to nurse?
 - Are there further stages: lab, imaging, observation?
-- **What does the patient see** — one number, two numbers, or a stage plus a
-  number?
 
 **Shape:** structural. This changes the data model, not just a rule. Too large
-for one cycle; would need splitting.
+for one cycle; would need splitting. The progress bar is the smallest piece that
+could ship first.
 
 ---
 

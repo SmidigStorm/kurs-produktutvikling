@@ -61,6 +61,29 @@ _To be completed._
 | MTS (Manchester) | 0 min | 10 min | 60 min | 120 min | 240 min |
 **Analysis (interpretation)**: There is no national Norwegian time standard. A patient with the same colour has a different promised maximum wait depending on which legevakt they walk into.
 
+**2.4 — Norsk indeks for medisinsk nødhjelp (NIMN) is a *different kind of thing*: phone triage, three haste grades, no colour-with-minutes scale.**
+**Evidence**: NIMN was developed by anaesthetists and GPs on the initiative of Den norske legeforening in 1994. Operators categorise enquiries into one of three hastegrader: **akutt, haster, vanlig** — also referred to as **rød, gul, grønn respons**.
+- **Rød respons (akutt)**: life-threatening or potentially life-threatening; an acute time-critical condition.
+- **Gul respons (haster)**: possibly serious condition where vital organs may be threatened and there is need for rapid situational assessment by a doctor.
+- **Grønn respons (vanlig)**: conditions that are not more urgent than that they can wait until the first suitable opportunity ("første passende anledning").
+**Source**: [Den norske legeforening, Norsk indeks for medisinsk nødhjelp (hosted by Sykehuset Telemark)](https://www.sthf.no/4a8185/siteassets/dokumenter-felles/rapporter-og-planverk/ambulanseplan/03-den-norske-legeforeningen-norsk-indeks-for-medisinsk-nodhjelp.pdf) — Accessed 2026-08-29. Reputation High (professional body + health trust).
+**Analysis (interpretation)**: NIMN is a **dispatch** tool (AMK / legevaktsentral, over the telephone), deciding *what resource to send and how fast*. It is **not** a waiting-room triage scale and carries **no minutes-to-assessment**. Its "grønn" is defined by "first suitable opportunity", which is deliberately not a number.
+
+**2.5 — Legevaktindeks: the legevakt-specific decision support, four codes, no minutes.**
+**Evidence (Norwegian verbatim)**: "Legevaktindeks er en videreutvikling av beslutningsstøtteverktøyet Telefonråd, og er laget spesielt for håndtering av pasienthenvendelser ved legevakter og allmennlegekontor."
+**Translation**: "Legevaktindeks is a further development of the decision-support tool Telefonråd, and is made specifically for handling patient enquiries at legevakter and general practice offices."
+Codes: **A (Akutt)** red criteria, **H (Haster)** yellow, **V (Vanlig)** green requiring physician evaluation, **R (Råd)** green, self-care advice. "Legevaktindeks er tett integrert med Norsk indeks for medisinsk nødhjelp (NIMN) versjon 5.1."
+**Publisher**: Nasjonalt kompetansesenter for legevaktmedisin (NKLM) holds editorial and clinical responsibility.
+**Source**: [Legevaktindeks — Om Legevaktindeks](https://legevaktindeks.no/om-legevaktindeks/) — Accessed 2026-08-29. Reputation High (NKLM, the national centre for emergency primary care medicine).
+**Confidence**: High.
+**Note**: "The document contains no defined response times in minutes."
+
+**2.6 — Answer to the question "how do haste grades relate to the colour scale?"**
+**Analysis (interpretation, clearly labelled)**: They are parallel but **not** the same axis, and conflating them is a real error:
+- **Akutt / Haster / Vanlig (+ Råd)** = *telephone* prioritisation, 3–4 categories, decides response and resource. Owned by NIMN / Legevaktindeks.
+- **Rød / Oransje / Gul / Grønn / Blå** = *in-person* triage on arrival, 5 categories, each with a maximum minutes-to-doctor. Owned by RETTS / MTS / SATS Norge.
+The two scales share the words red/yellow/green, which is exactly why they get confused. NIMN's red/yellow/green are three *response* colours; RETTS's five are *waiting* colours.
+
 ### 3. Who triages, and when
 _pending_
 

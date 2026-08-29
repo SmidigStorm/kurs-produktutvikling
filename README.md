@@ -53,6 +53,11 @@ downloads an Ubuntu build. That warning is expected and the browser works.
 None of these run automatically. There are no git hooks and no CI — **which checks
 run, and when, is something you decide during the course.**
 
+**Stop `npm run dev` before `npm run test:e2e`.** The end-to-end suite starts its
+own servers on the same ports and will refuse to run if the dev server holds them.
+That refusal is deliberate: reusing your dev server would point the tests at your
+*development* database, and tests must never touch it.
+
 ## Layout
 
 | Path | Owner |
@@ -76,7 +81,11 @@ the same number.
 
 Time enters through a single injectable clock (`backend/src/clock.ts`). No test
 depends on the real wall clock, and the end-to-end suite advances the browser
-clock rather than waiting out the 15-second poll.
+clock rather than waiting out the refresh.
+
+Open pages re-fetch every **5 seconds** (`frontend/src/config.ts`, declared once
+for both views). That is a teaching choice: the app is demonstrated live, and a
+longer interval reads as "nothing is happening".
 
 ## Two conventions worth knowing
 

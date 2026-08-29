@@ -1,8 +1,7 @@
 import type { VisitView } from 'contract';
 import { useEffect, useState } from 'react';
 import { fetchVisit } from './api';
-
-const REFRESH_MS = 15_000;
+import { REFRESH_MS } from './config';
 
 export function PatientView({ visitId }: { visitId: string }) {
   const [visit, setVisit] = useState<VisitView | null>(null);

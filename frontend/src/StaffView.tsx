@@ -1,6 +1,7 @@
 import { TRIAGE_LEVELS, type QueueEntry, type TriageLevel } from 'contract';
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { changeStatus, fetchQueue, registerArrival, retriage } from './api';
+import { REFRESH_MS } from './config';
 
 export function StaffView() {
   const [entries, setEntries] = useState<QueueEntry[]>([]);
@@ -19,7 +20,7 @@ export function StaffView() {
 
   useEffect(() => {
     void reload();
-    const timer = setInterval(() => void reload(), 15_000);
+    const timer = setInterval(() => void reload(), REFRESH_MS);
     return () => clearInterval(timer);
   }, [reload]);
 

@@ -158,9 +158,14 @@ discredit the BDD layer in front of the room.
    tests are the classic flake source. A controllable clock from day one or every
    scenario is a coin flip. Also a good artifact in its own right — "how do you test
    time?" is worth a slide.
-3. **"Live" means polling, not websockets.** A 15–30 second refresh reads as live,
-   keeps the stack at two processes, and stays inside the failsafe-setup constraint.
-   Websockets would buy nothing visible and cost real complexity.
+3. **"Live" means polling, not websockets.** Keeps the stack at two processes and
+   stays inside the failsafe-setup constraint. Websockets would buy nothing visible
+   and cost real complexity.
+   **Amended 2026-08-29 to 5 seconds** (was 15–30). The original figure was chosen
+   as what "reads as live" to a user; in practice the app is *demonstrated live to a
+   room*, and 15 seconds reads as nothing happening while an instructor waits at the
+   front. The interval is declared once in `frontend/src/config.ts` and shared by
+   both views.
 
 ### Data model (indicative)
 

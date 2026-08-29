@@ -37,8 +37,8 @@ When(
 );
 
 When('the page refreshes itself', async ({ page }) => {
-  // Advance past the 15s poll rather than sleeping.
-  await page.clock.fastForward('00:16');
+  // Advance just past the refresh interval rather than sleeping.
+  await page.clock.fastForward('00:06');
 });
 
 When('{string} opens their queue view', async ({ page, visitIds }, name: string) => {

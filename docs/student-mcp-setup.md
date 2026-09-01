@@ -65,8 +65,39 @@ project"*.
 |---|---|
 | `Missing environment variables` | The exports are not set in the terminal you launched from |
 | `Pending approval` | Start `claude` and approve the server |
-| `401` from the server | The token is wrong, or belongs to another workspace |
+| `401` / `invalid_token` | **Almost always an unset variable — see below** |
 | Nothing at all | The config only loads at startup — restart Claude Code |
+
+### The 401 that lies to you
+
+If the variables are not set, Claude Code does **not** refuse to connect. It sends
+the placeholder text `${PLANE_API_KEY}` as if it were your token, and the server
+replies:
+
+```
+AUTH_HEADER_REJECTED (HTTP 401)
+{"error": "invalid_token",
+ "error_description": "Authentication failed. The provided bearer token is
+  invalid, expired, or no longer recognized by the server. To resolve: clear
+  authentication tokens in your MCP client and reconnect."}
+```
+
+**Ignore that advice.** There is no stale token to clear. Your variables are not
+set in the shell you launched Claude Code from.
+
+Confirmed by testing: the same request with a real token returns 200, and with
+the literal placeholder returns exactly the 401 above.
+
+**Check before you launch:**
+
+```bash
+echo "${PLANE_API_KEY:-NOT SET}"
+claude mcp list
+```
+
+`claude mcp list` reports the *helpful* version of this — `Missing environment
+variables: PLANE_API_KEY` — naming exactly what is absent. The runtime does not.
+So when the MCP misbehaves, run `claude mcp list` first.
 
 ## Why it is set up this way
 

@@ -33,23 +33,25 @@ Written by `sdd-spec` the first time it runs in a repo, read by every skill afte
 
 **Creating it** (`sdd-spec` only). Ask, in one message:
 
-1. "Are you using Plane? If so, paste the URL of your project — open it in Plane and copy the
-   address bar."
+1. "Are you using Plane? If so, what is your project called?"
 2. Markdown mode only: "What short name should your branches use?" (suggest one from the repo's
    git user, e.g. `kari-ola`)
 
-**Never look a project up by name.** This Plane (Community Edition) answers `project list` with
-404 — the connector calls an endpoint the edition does not have. The URL is the way in:
+In Plane mode, call `project` `list` and match what the pair said against both `name` and
+`identifier`, case-insensitively. No match: show the projects you can see and ask which. Save
+both the `identifier` (as `planeProject`) and the `id` (as `planeProjectId`) — every later call
+passes the UUID.
+
+**If `project list` returns 404**, the instance is older than Plane v1.4.0, where those list
+endpoints arrived. Fall back to the project URL, which carries the UUID, and confirm it with
+`project` `retrieve`:
 
 ```
 https://plane.example.com/<workspace>/projects/<uuid>/issues/
                                                ^^^^^^ planeProjectId
 ```
 
-Confirm it with `project` `retrieve` (`project_id`), which does work, and read `identifier` from
-the answer into `planeProject`. If retrieve fails, the pair pasted the wrong URL or the account
-is not a member of that project — say which and ask again. Never create a project: the pair
-creates it in Plane.
+Never create a project: the pair creates it in Plane.
 
 ## The work item
 
@@ -64,13 +66,14 @@ One item = one feature request = one ID.
 | **Feature file** | `features/<id-lowercase>-<slug>.feature` | same |
 | **Branch** | `<pair>/<ID>`, e.g. `lege/LEGE-3` | `team-blue/ITEM-2` |
 
-Plane MCP tools used: `project` (`retrieve`), `workitem` (`retrieve_by_identifier`, `list` with a
+Plane MCP tools used: `project` (`list`, `retrieve`), `workitem` (`retrieve_by_identifier`, `list` with a
 `project_id`, `create`, `update`), `state` (`list` with a `project_id` — look the state id up by
 name before moving an item), `workitem_comment` (`create`). A Plane description is **HTML**, not
 markdown: write it with `description_html`.
 
-**Anything workspace-wide fails on Community Edition** — `project list`, `workitem list` without a
-`project_id`, and `workitem search` all answer 404. Always pass `project_id` from the config.
+**`workitem list` without a `project_id` answers 404** on a self-hosted Community Edition — there
+is no workspace-wide item list. Always pass the config's `planeProjectId`. (`workitem search` does
+work workspace-wide.)
 
 ## The template
 

@@ -14,36 +14,36 @@ sdd-spec  →  sdd-plan  →  sdd-tasks  →  sdd-implement
 | Skill | Asks you | Writes |
 |---|---|---|
 | `sdd-spec` | one question at a time, each with a suggested answer | the work item (Plane or `.sdd/<ID>/item.md`) **and** `features/<id>-<slug>.feature` |
-| `sdd-plan` | once — which of two approaches | `.sdd/<ID>/plan.md` |
+| `sdd-plan` | once: which of two approaches | `.sdd/<ID>/plan.md` |
 | `sdd-tasks` | nothing | `.sdd/<ID>/tasks.md` |
 | `sdd-implement` | nothing, unless it gets stuck | code, unit tests, e2e steps; pushes `<pair>/<ID>` |
 
-After `sdd-spec`, a **spec-reviewer** sub-agent reads the spec cold — without the conversation —
+After `sdd-spec`, a **spec-reviewer** sub-agent reads the spec cold, without the conversation,
 and reports what a developer would still have to guess.
 
 ## The building blocks
 
 The kit is made of the three things the course teaches:
 
-- **Skills** — the four steps above, plain markdown in `skills/`
-- **An MCP server** — the Plane connector, for the work item
-- **A sub-agent** — `spec-reviewer`, fresh eyes on the spec
+- Skills: the four steps above, plain markdown in `skills/`
+- An MCP server: the Plane connector, for the work item
+- A sub-agent: `spec-reviewer`, fresh eyes on the spec
 
 ## Where things live
 
 | | |
 |---|---|
 | **The work item** | Plane, or `.sdd/<ID>/item.md` if you are not using Plane. Story, rules, examples, open questions |
-| **The acceptance criteria** | `features/*.feature` — the same rules and examples, as Gherkin. The tests run these |
+| **The acceptance criteria** | `features/*.feature`, the same rules and examples, as Gherkin. The tests run these |
 | **Plan and tasks** | `.sdd/<ID>/` |
-| **Your settings** | `.sdd/config.json` — written the first time you run `sdd-spec` |
+| **Your settings** | `.sdd/config.json`, written the first time you run `sdd-spec` |
 
 The work item and the feature file hold the same rules and examples. Whoever changes one changes
 both, and every step after `sdd-spec` checks they still agree before it starts.
 
 ## Install
 
-In the course repo it is **already installed** — the skills sit in `.claude/skills/` and the
+In the course repo it is **already installed**: the skills sit in `.claude/skills/` and the
 agent in `.claude/agents/`, so a `git clone` is the whole setup. Run `/sdd-spec` with a feature
 request.
 

@@ -11,8 +11,8 @@ Two values, handed out in class:
 
 | Variable | What it is |
 |---|---|
-| `PLANE_API_KEY` | Your pair's Plane token (`plane_api_…`) |
-| `PLANE_WORKSPACE` | The workspace slug |
+| `PLANE_API_KEY` | The course account's Plane token (`plane_api_…`) — one token for the whole class |
+| `PLANE_WORKSPACE` | `sdd-kurs` |
 
 ## Setting them
 
@@ -106,7 +106,9 @@ So when the MCP misbehaves, run `claude mcp list` first.
   your setup stays pure Node.
 - **Project scope.** `.mcp.json` is committed, so cloning the repo gets you the
   config. The token stays in your environment.
-- **The backlog is outside the repo on purpose.** Requirements live in
-  `features/` as feature files; Plane holds *what to build next*, not the
-  acceptance criteria. Keeping them apart is what stops two descriptions of the
+- **The backlog is outside the repo on purpose.** Plane is where a product person
+  reads and orders the work; `features/` is what the tests run. The work item
+  carries the same rules and examples as the feature file, written in the same
+  step, and every step after the spec compares them and stops if they differ (see
+  decision 5). The check is what stops two descriptions of the
   same rule drifting.

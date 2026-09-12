@@ -191,8 +191,27 @@ picks regardless, confirming gotcha 3 rather than contradicting it.
 - **No per-pair projects, accounts or tokens yet** — deferred until the course
   design settles. Cheap to create later, annoying to migrate.
 
+### Settled 2026-09-11 — accounts, workspace, transport
+
+- **One shared course account**, `kurs@smidigakademiet.no`, for the whole class.
+  Per-pair accounts are dropped: SMTP is unconfigured, so every account is a
+  password handed out by hand, and the class has no time for it. The cost is
+  attribution — every Plane change reads as the same user, and the git branches
+  are what say who did what. The account is **Admin** of the workspace, so a
+  student logged in as it can also delete projects.
+- **Course workspace is `sdd-kurs`.** Deliberately neutral: a workspace slug
+  cannot be renamed, and the client's name must not appear in a URL or on the
+  public course pages. `carasent-kurs` was created first and is to be deleted.
+- **Pairs create their own project** in that workspace and tell the kit its
+  identifier. The kit never creates projects.
+- **Transport: HTTP with a token**, verified end to end against
+  `plane-mcp.smidigakademiet.no` with both the personal and the course token.
+  `uvx plane-mcp-server stdio` also works and stays documented as the fallback.
+- **OAuth is impossible here** — Plane documents OAuth app registration as Cloud
+  and Commercial Edition only, and this instance is Community Edition v1.3.0.
+  That is also what killed Cowork support (decision 24).
+
 ### Next
 
-- Deploy the MCP centrally (needs the DNS record above)
-- Course workspace, then per-pair projects and tokens — remember SMTP is
-  unconfigured, so passwords must be set directly and handed out on paper
+- Delete `carasent-kurs` (web interface only — the API cannot delete a workspace)
+- Hand out the course account's password and token in the room on the day

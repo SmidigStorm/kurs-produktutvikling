@@ -211,6 +211,20 @@ picks regardless, confirming gotcha 3 rather than contradicting it.
   and Commercial Edition only, and this instance is Community Edition v1.3.0.
   That is also what killed Cowork support (decision 24).
 
+### Upgraded to v1.4.2 — 2026-09-12
+
+The MCP's `project list` answered 404 on v1.3.0: the connector calls the **lite list endpoints**
+(`/projects-lite/`, and the same for members, cycles and modules), which Plane added in
+**v1.4.0**. Nothing was wrong with the connector or the token.
+
+The fix was one variable: Coolify pins every Plane image through `APP_RELEASE`, so `v1.3.0` →
+`v1.4.2` plus a redeploy. The `migrator` container ran the migrations and exited 0, every
+container came back healthy, and both projects kept their data. A `pg_dump` was taken first to
+`/root/plane-pre-1.4.2.sql` on the server.
+
+Still 404 after the upgrade: **workspace-wide `workitem list`** (no `project_id`). Item calls must
+name a project. `workitem search` does work across the workspace.
+
 ### Next
 
 - Delete `carasent-kurs` (web interface only — the API cannot delete a workspace)

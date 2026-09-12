@@ -1,6 +1,6 @@
 <!-- Copied from skald-sdd/plugins/sdd-lite by scripts/sync-sdd-lite.sh — edit there, not here. -->
 
-# The backlog — config, the work item, and the drift check
+# The backlog: config, the work item, and the drift check
 
 Every skill in this kit reads this file. It is the only place the two backlog modes differ.
 
@@ -26,10 +26,10 @@ Written by `sdd-spec` the first time it runs in a repo, read by every skill afte
 | `pair` | Short lowercase name for the pair. Prefixes every branch, so two pairs never collide. With Plane it is the project identifier, lowercased |
 | `backlog` | `plane` or `markdown` |
 | `planeProject` | The Plane project's identifier (the prefix in `LEGE-3`). Plane mode only |
-| `planeProjectId` | The project's UUID. Plane mode only — see below, it cannot be looked up |
+| `planeProjectId` | The project's UUID. Plane mode only. See below: on an old instance it cannot be looked up |
 
-**No config file** — only `sdd-spec` creates one. Every other skill stops and says: "No
-`.sdd/config.json` — run `sdd-spec` first."
+**Only `sdd-spec` creates the config file.** Every other skill stops when it is missing and
+says: "No `.sdd/config.json`. Run `sdd-spec` first."
 
 **Creating it** (`sdd-spec` only). Ask, in one message:
 
@@ -39,8 +39,8 @@ Written by `sdd-spec` the first time it runs in a repo, read by every skill afte
 
 In Plane mode, call `project` `list` and match what the pair said against both `name` and
 `identifier`, case-insensitively. No match: show the projects you can see and ask which. Save
-both the `identifier` (as `planeProject`) and the `id` (as `planeProjectId`) — every later call
-passes the UUID.
+both the `identifier` as `planeProject` and the `id` as `planeProjectId`, because every later
+call passes the UUID.
 
 **If `project list` returns 404**, the instance is older than Plane v1.4.0, where those list
 endpoints arrived. Fall back to the project URL, which carries the UUID, and confirm it with
@@ -59,20 +59,20 @@ One item = one feature request = one ID.
 
 | | Plane mode | Markdown mode |
 |---|---|---|
-| **ID** | Plane's, e.g. `LEGE-3` | `ITEM-<n>`, next free number under `.sdd/` |
-| **The item** | The Plane work item; its description holds the template below | `.sdd/<ID>/item.md`, same template in markdown |
-| **Status** | Plane state: Backlog → Todo → In Progress → Done | a `Status:` line at the top of `item.md`, same four values |
+| **ID** | Plane's, such as `LEGE-3` | `ITEM-<n>`, the next free number under `.sdd/` |
+| **The item** | The Plane work item, whose description holds the template below | `.sdd/<ID>/item.md`, the same template in markdown |
+| **Status** | Plane state: Backlog, Todo, In Progress, Done | a `Status:` line at the top of `item.md`, the same four values |
 | **Plan and tasks** | `.sdd/<ID>/plan.md`, `.sdd/<ID>/tasks.md` | same |
 | **Feature file** | `features/<id-lowercase>-<slug>.feature` | same |
-| **Branch** | `<pair>/<ID>`, e.g. `lege/LEGE-3` | `team-blue/ITEM-2` |
+| **Branch** | `<pair>/<ID>`, such as `lege/LEGE-3` | `team-blue/ITEM-2` |
 
 Plane MCP tools used: `project` (`list`, `retrieve`), `workitem` (`retrieve_by_identifier`, `list` with a
-`project_id`, `create`, `update`), `state` (`list` with a `project_id` — look the state id up by
+`project_id`, `create`, `update`), `state` (`list` with a `project_id`, to look the state id up by
 name before moving an item), `workitem_comment` (`create`). A Plane description is **HTML**, not
 markdown: write it with `description_html`.
 
-**`workitem list` without a `project_id` answers 404** on a self-hosted Community Edition — there
-is no workspace-wide item list. Always pass the config's `planeProjectId`. (`workitem search` does
+**`workitem list` without a `project_id` answers 404** on a self-hosted Community Edition, which
+has no workspace-wide item list. Always pass the config's `planeProjectId`. (`workitem search` does
 work workspace-wide.)
 
 ## The template
@@ -82,7 +82,7 @@ Same sections in both modes, in this order. Every section that has nothing in it
 **Markdown (`item.md`):**
 
 ````markdown
-# <ID> — <title>
+# <ID>: <title>
 
 Status: Todo
 
@@ -108,7 +108,7 @@ Then …
 
 ## Assumptions
 
-- <a guess the pair told the kit to make — see sdd-spec § "Make up the rest">
+- <a guess the pair told the kit to make, per sdd-spec's "Make up the rest">
 
 ## Files
 
@@ -116,7 +116,7 @@ Then …
 - Plan: `.sdd/<ID>/plan.md`
 ````
 
-**Plane (`description_html`)** — the same structure:
+**Plane (`description_html`)**, the same structure:
 
 ```html
 <h2>Story</h2><p>As a …, I want …, so that ….</p>
@@ -133,7 +133,7 @@ Then …</code></pre>
 
 Plane wraps the whole description in a `<div>` when it saves. Ignore it when reading back.
 
-## Two copies, one agreement
+## The rules live in two places
 
 The item and the feature file carry **the same rules and the same examples**. Neither is generated
 from the other. Three rules keep them honest:
@@ -153,6 +153,6 @@ Read the item (Plane: `retrieve_by_identifier` with `fields: description_html`; 
 - each example's Given/When/Then lines against the scenario's steps, ignoring whitespace
 
 Everything matches: say nothing and continue. Anything differs: **stop**. Show the difference as
-two short columns — item says / feature file says — and ask which one is right. Then write the
-answer into the other copy and continue. Never pick a side yourself: a difference means a human
-changed one of them, and only a human knows which change they meant.
+two short columns, what the item says and what the feature file says, and ask which one is right. Then write the
+answer into the other copy and continue. Never pick a side yourself. A difference means a human changed one of them, and only that human
+knows which change they meant.

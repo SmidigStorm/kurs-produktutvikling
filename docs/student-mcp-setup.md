@@ -2,40 +2,9 @@
 
 The backlog lives in Plane, outside this repo. Your agent reaches it through an
 **MCP server** — a small service that exposes a tool catalogue over a protocol
-Claude Code speaks. You install nothing: it runs on the course server and you
-connect over HTTPS with a token.
-
-## What you need
-
-Two values, handed out in class:
-
-| Variable | What it is |
-|---|---|
-| `PLANE_API_KEY` | The course account's Plane token (`plane_api_…`) — one token for the whole class |
-| `PLANE_WORKSPACE` | `sdd-kurs` |
-
-## Setting them
-
-The repo already contains `.mcp.json`, which references those two names rather
-than the values — so the config is shared and your token never is.
-
-**For one session**, in the terminal you launch Claude Code from:
-
-```bash
-export PLANE_API_KEY="plane_api_..."
-export PLANE_WORKSPACE="..."
-claude
-```
-
-**To keep them**, add the same two `export` lines to `~/.bashrc` (or
-`~/.zshrc`), then open a new terminal.
-
-Claude Code expands `${PLANE_API_KEY}` when it connects. If a variable is
-missing you get a clear warning naming it:
-
-```
-[Warning] [plane] mcpServers.plane: Missing environment variables: PLANE_API_KEY
-```
+Claude Code speaks. You install nothing and you configure nothing: it runs on the
+course server, and this repo's `.mcp.json` carries the address, the course
+token and the workspace.
 
 ## First run: approve it
 
@@ -63,49 +32,36 @@ project"*.
 
 | What you see | What it means |
 |---|---|
-| `Missing environment variables` | The exports are not set in the terminal you launched from |
 | `Pending approval` | Start `claude` and approve the server |
-| `401` / `invalid_token` | **Almost always an unset variable — see below** |
 | Nothing at all | The config only loads at startup — restart Claude Code |
+| `401` / `invalid_token` | The course token has been rotated, or `.mcp.json` was edited locally. Ask in the room |
 
-### The 401 that lies to you
+## The course credentials
 
-If the variables are not set, Claude Code does **not** refuse to connect. It sends
-the placeholder text `${PLANE_API_KEY}` as if it were your token, and the server
-replies:
+One shared account for the whole class — `kurs@smidigakademiet.no`, workspace
+`sdd-kurs`. The password and the token are on the course page at
+[smidigakademiet.no/docs/sdd-kurs](https://smidigakademiet.no/docs/sdd-kurs),
+which is how you get into Plane in the browser to create your pair's project.
 
-```
-AUTH_HEADER_REJECTED (HTTP 401)
-{"error": "invalid_token",
- "error_description": "Authentication failed. The provided bearer token is
-  invalid, expired, or no longer recognized by the server. To resolve: clear
-  authentication tokens in your MCP client and reconnect."}
-```
+Everything in the course environment is deleted after the course, and the token
+is rotated. **Nothing in here is a secret worth protecting** — which is exactly
+why it can sit in a committed file.
 
-**Ignore that advice.** There is no stale token to clear. Your variables are not
-set in the shell you launched Claude Code from.
+### Using your own token instead
 
-Confirmed by testing: the same request with a real token returns 200, and with
-the literal placeholder returns exactly the 401 above.
-
-**Check before you launch:**
-
-```bash
-echo "${PLANE_API_KEY:-NOT SET}"
-claude mcp list
-```
-
-`claude mcp list` reports the *helpful* version of this — `Missing environment
-variables: PLANE_API_KEY` — naming exactly what is absent. The runtime does not.
-So when the MCP misbehaves, run `claude mcp list` first.
+Point the two headers at your own account if you want to work in a different
+workspace: edit `.mcp.json` locally, or override them with environment
+variables in a copy. Claude Code expands `${PLANE_API_KEY}` in that file if you
+prefer the variable form.
 
 ## Why it is set up this way
 
 - **HTTP transport, not stdio.** The alternative runs the MCP server as a local
   subprocess, which would need Python and `uv` on your machine. Hosting it means
   your setup stays pure Node.
-- **Project scope.** `.mcp.json` is committed, so cloning the repo gets you the
-  config. The token stays in your environment.
+- **Project scope, credentials included.** `.mcp.json` is committed, so cloning
+  the repo is the whole setup. That is only acceptable because the account is a
+  throwaway shared by the class — never do this with a real workspace.
 - **The backlog is outside the repo on purpose.** Plane is where a product person
   reads and orders the work; `features/` is what the tests run. The work item
   carries the same rules and examples as the feature file, written in the same

@@ -56,8 +56,11 @@ file.
 
 ## Tips
 
-- **"Make up the rest."** Tired of questions? Say so. `sdd-spec` guesses the remaining answers,
-  marks every guess as an assumption, and tags the scenarios `@assumption` so you can find them:
-  `grep -rn @assumption features/`
-- **Stop `npm run dev` before `sdd-implement`.** The e2e tests start their own servers.
-- **Branches, not `main`.** Every item is built on `<pair>/<ID>` and pushed there.
+Tired of questions? Say **"make up the rest."** `sdd-spec` then answers what is left itself,
+records each answer as an assumption, and tags the scenarios resting on one `@assumption`, so
+`grep -rn @assumption features/` tells you afterwards how much of the spec was a guess.
+
+Stop `npm run dev` before running `sdd-implement`: the end-to-end tests start their own servers
+and the ports will already be taken.
+
+Every item is built on the branch `<pair>/<ID>` and pushed there. Nothing writes to `main`.

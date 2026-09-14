@@ -19,7 +19,9 @@ sdd-spec  →  sdd-plan  →  sdd-tasks  →  sdd-implement
 | `sdd-implement` | nothing, unless it gets stuck | code, unit tests, e2e steps; pushes the pair's branch |
 
 After `sdd-spec`, a **spec-reviewer** sub-agent reads the spec cold, without the conversation,
-and reports what a developer would still have to guess.
+and reports what a developer would still have to guess. `sdd-spec` applies its own recommended fix
+for each finding to both copies, marks the ones that were guesses as assumptions, and shows the
+pair the result to comment on.
 
 ## The building blocks
 

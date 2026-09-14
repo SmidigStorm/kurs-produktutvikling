@@ -35,7 +35,8 @@ Answer one question: **could a developer build this without guessing?**
 8. **The two copies disagree.** The item, whether `item.md` or the Plane text in your brief, and
    the feature file must carry the same rules in the same order, the same example titles, and the
    same steps. Any difference is a finding: show it as two short columns, what the item says and
-   what the feature file says. If you were given no item at all, say so in one line.
+   what the feature file says. The `Background:` lives in the feature file only, by design; do not
+   report it. If you were given no item at all, say so in one line.
 9. **`@assumption` scenarios.** List them. This is not a finding, but the pair should know how
    many guesses the spec rests on.
 

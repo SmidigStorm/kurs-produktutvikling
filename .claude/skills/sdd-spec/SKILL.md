@@ -101,8 +101,17 @@ Plane mode, the item's text: read it back with `workitem` `retrieve_by_identifie
 description_html` and paste it into the brief, because the agent has no Plane tools. Nothing else.
 It has not seen this conversation, which is the point.
 
-Show its findings. Each fix the pair accepts goes into **both** copies, and then you commit again.
-If the reviewer finds nothing material, say so.
+Then **apply the fixes yourself, before showing anything.** For every finding, choose the answer
+you would recommend and write it into **both** copies. A finding that only tightens what was
+already decided (an assertion that was missing, a word the prose and the scenario disagree on) is
+just applied. A finding that settles something the pair never decided is applied *and* recorded
+as an assumption: under `## Assumptions` in the item, and as `@assumption` on every scenario that
+rests on it, exactly as in "Make up the rest". A finding that would widen the item is not applied;
+it is listed as a candidate item instead. Commit again as `spec: <ID> after review`.
+
+Then show the pair one table: each finding, what you changed for it (or "left out, candidate
+item"), and whether it is an assumption. The pair reads the result and comments; anything they
+change goes into both copies and is committed. If the reviewer finds nothing material, say so.
 
 ## 7. Hand off
 

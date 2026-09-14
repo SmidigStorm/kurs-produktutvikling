@@ -31,9 +31,17 @@ export const queueEntrySchema = z.object({
   estimatedWaitMinutes: z.number().int().nonnegative(),
 });
 
+/** The one patient in the consultation room, or null when it is free. */
+export const roomOccupantSchema = z.object({
+  id: z.string(),
+  patientName: z.string(),
+  level: triageLevelSchema,
+});
+
 export const queueResponseSchema = z.object({
   now: z.string(),
   entries: z.array(queueEntrySchema),
+  inConsultation: roomOccupantSchema.nullable(),
 });
 
 export const visitViewSchema = z.object({
@@ -48,4 +56,5 @@ export const visitViewSchema = z.object({
 export type RegisterArrival = z.infer<typeof registerArrivalSchema>;
 export type QueueEntry = z.infer<typeof queueEntrySchema>;
 export type QueueResponse = z.infer<typeof queueResponseSchema>;
+export type RoomOccupant = z.infer<typeof roomOccupantSchema>;
 export type VisitView = z.infer<typeof visitViewSchema>;

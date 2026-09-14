@@ -1,6 +1,6 @@
 # Tasks for LEGE-10
 
-- [ ] **1. Update contract/src/index.ts: queueResponseSchema gains inConsultation**
+- [x] **1. Update contract/src/index.ts: queueResponseSchema gains inConsultation**
   - Does: a `roomOccupantSchema` of `id`, `patientName`, `level`, and `inConsultation:
     roomOccupantSchema.nullable()` on `queueResponseSchema`, with the inferred `RoomOccupant` type
     exported. The backend and the frontend both read it from here

@@ -95,8 +95,10 @@ file and anything under `.sdd/<ID>/` as `spec: <ID> <title>`. Do not push. `sdd-
 ## 6. Cold read
 
 Dispatch the **spec-reviewer** agent, called `spec-reviewer`, or `sdd-lite:spec-reviewer` when the
-kit is installed as a plugin. Give it the feature file path and the `.sdd/<ID>/` folder path, and
-nothing else. It has not seen this conversation, which is the point.
+kit is installed as a plugin. Give it the feature file path, the `.sdd/<ID>/` folder path and, in
+Plane mode, the item's text: read it back with `workitem` `retrieve_by_identifier` and `fields:
+description_html` and paste it into the brief, because the agent has no Plane tools. Nothing else.
+It has not seen this conversation, which is the point.
 
 Show its findings. Each fix the pair accepts goes into **both** copies, and then you commit again.
 If the reviewer finds nothing material, say so.

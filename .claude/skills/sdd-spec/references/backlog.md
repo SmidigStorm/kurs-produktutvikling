@@ -66,7 +66,7 @@ One item = one feature request = one ID.
 | **The item** | The Plane work item, whose description holds the template below | `.sdd/<ID>/item.md`, the same template in markdown |
 | **Status** | Plane state: Backlog, Todo, In Progress, Done | a `Status:` line at the top of `item.md`, the same four values |
 | **Plan and tasks** | `.sdd/<ID>/plan.md`, `.sdd/<ID>/tasks.md` | same |
-| **Feature file** | `features/<id-lowercase>-<slug>.feature` | same |
+| **Feature file** | `features/<capability>.feature`, named for the capability, not the item. The item is the `@<ID>` tag inside | same |
 | **Branch** | whichever branch the pair is on. See below | same |
 
 Plane MCP tools used: `project` (`list`, `retrieve`), `workitem` (`retrieve_by_identifier`, `list` with a
@@ -132,7 +132,7 @@ Then …
 
 ## Files
 
-- Feature file: `features/<id>-<slug>.feature`
+- Feature file: `features/<capability>.feature`
 - Plan: `.sdd/<ID>/plan.md`
 ````
 

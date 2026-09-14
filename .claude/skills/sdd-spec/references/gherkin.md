@@ -26,9 +26,11 @@ Feature: Urgent arrivals
       Then they see position 2
 ```
 
-- **One feature file per item.** `Feature:` is the item's title. The ID tag (`@LEGE-3`) sits above
-  `Feature:` so every scenario inherits it. That tag is how `sdd-tasks` and `sdd-implement` find
-  the item's scenarios.
+- **One feature file per item, named for the capability.** The file is `<capability>.feature` and
+  `Feature:` is the same two or three words: `urgent-arrivals.feature`, `Feature: Urgent arrivals`.
+  Not the item's ID, not its title as the stakeholder wrote it. The ID tag (`@LEGE-3`) above
+  `Feature:` is what ties the file to the item; every scenario inherits it, and it is how
+  `sdd-tasks` and `sdd-implement` find the item's scenarios.
 - **`Rule:` = a rule from the item. `Scenario:` = one of its examples.** Same names, same order.
 - **`Background:`** only for `Given` steps that open every scenario in the file.
 - **`@assumption`** above a scenario that rests on a guess (see sdd-spec § "Make up the rest").

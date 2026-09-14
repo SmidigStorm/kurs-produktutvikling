@@ -84,7 +84,8 @@ Only once no open questions are left. Write both in one step:
 - Markdown: for a new request, `.sdd/ITEM-<next>/item.md`; for an existing one, update it.
   `Status: Todo`.
 
-**The feature file**, at `features/<id-lowercase>-<slug>.feature`, following
+**The feature file**, at `features/<capability>.feature`, named for the capability in two or three
+words (`triage-explanation.feature`, not the item's ID or title), following
 `references/gherkin.md`. Same rules, same examples, same order as the item. If the file exists,
 show the diff and ask before overwriting.
 

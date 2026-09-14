@@ -13,7 +13,7 @@ sdd-spec  →  sdd-plan  →  sdd-tasks  →  sdd-implement
 
 | Skill | Asks you | Writes |
 |---|---|---|
-| `sdd-spec` | one question at a time, each with a suggested answer | the work item (Plane or `.sdd/<ID>/item.md`) **and** `features/<id>-<slug>.feature` |
+| `sdd-spec` | one question at a time, each with a suggested answer | the work item (Plane or `.sdd/<ID>/item.md`) **and** `features/<capability>.feature` |
 | `sdd-plan` | once: which of two approaches | `.sdd/<ID>/plan.md` |
 | `sdd-tasks` | nothing | `.sdd/<ID>/tasks.md`, one task per concrete change |
 | `sdd-implement` | nothing, unless it gets stuck | code, unit tests, e2e steps; pushes the pair's branch |

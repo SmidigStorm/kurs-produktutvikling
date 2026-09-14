@@ -4,13 +4,14 @@ import {
   changeStatusSchema,
   registerArrivalSchema,
   retriageSchema,
+  updateSimulationSchema,
 } from 'contract';
 import { eq, ne } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { z } from 'zod';
-import type { Clock } from '../clock.ts';
+import type { Clock, ScaledClock } from '../clock.ts';
 import type { Db } from '../db/client.ts';
 import { triageEvents, visits } from '../db/schema.ts';
 import { seedDemoData } from '../db/seed.ts';
@@ -26,6 +27,8 @@ export type AppDeps = {
   db: Db;
   clock: Clock;
   allowTestRoutes?: boolean;
+  /** The simulator's clock, when the server runs the classroom simulation. */
+  simulation?: ScaledClock;
 };
 
 type WaitingRow = WaitingVisit & { patientName: string };
@@ -153,6 +156,22 @@ export function createApp(deps: AppDeps) {
     deps.db.update(visits).set({ status }).where(eq(visits.id, id)).run();
     return c.json({ id, status });
   });
+
+  // The simulator's controls, only when it runs. Absent otherwise, so the
+  // staff view hides its panel and the test suite never sees it.
+  if (deps.simulation) {
+    const sim = deps.simulation;
+    const view = () => ({ running: sim.running(), speed: sim.speed() });
+
+    app.get('/api/simulation', (c) => c.json(view()));
+
+    app.post('/api/simulation', zValidator('json', updateSimulationSchema), (c) => {
+      const { running, speed } = c.req.valid('json');
+      if (speed !== undefined) sim.setSpeed(speed);
+      if (running !== undefined) sim.setRunning(running);
+      return c.json(view());
+    });
+  }
 
   if (deps.allowTestRoutes) {
     app.post('/api/test/clock', zValidator('json', z.object({ now: z.string() })), (c) => {

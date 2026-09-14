@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
 
+// The classroom simulation is on in dev unless you say otherwise:
+// SIMULATE=false npm run dev
+const env = { SIMULATE: 'true', ...process.env };
+
 const children = [
-  spawn('npm', ['run', 'dev', '-w', 'backend'], { stdio: 'inherit', shell: true }),
+  spawn('npm', ['run', 'dev', '-w', 'backend'], { stdio: 'inherit', shell: true, env }),
   spawn('npm', ['run', 'dev', '-w', 'frontend'], { stdio: 'inherit', shell: true }),
 ];
 

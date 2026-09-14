@@ -2,24 +2,37 @@ import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { serve } from '@hono/node-server';
 import { createApp } from './api/app.ts';
-import { fixedClock, systemClock, type Clock } from './clock.ts';
+import { fixedClock, scaledClock, systemClock, type Clock, type ScaledClock } from './clock.ts';
 import { createDb } from './db/client.ts';
 import { resolveDbFile } from './db/paths.ts';
 import { applyMigrations } from './db/migrate.ts';
+import { runSimulation } from './simulation/loop.ts';
 
 const file = resolveDbFile();
 const port = Number(process.env.PORT ?? 3001);
 const allowTestRoutes = process.env.ALLOW_TEST_ROUTES === 'true';
+
+// The classroom simulation: the queue moves by itself on a scaled clock.
+// `npm run dev` turns it on; the test suite never does.
+const simulate = process.env.SIMULATE === 'true';
+const simulationSpeed = Number(process.env.SIMULATION_SPEED ?? 60);
 
 mkdirSync(dirname(file), { recursive: true });
 
 const db = createDb(file);
 applyMigrations(db);
 
+const simulation: ScaledClock | undefined = simulate ? scaledClock(new Date(), simulationSpeed) : undefined;
+
 const clock: Clock = process.env.CLOCK_FIXED_AT
   ? fixedClock(new Date(process.env.CLOCK_FIXED_AT))
-  : systemClock;
+  : (simulation ?? systemClock);
 
-serve({ fetch: createApp({ db, clock, allowTestRoutes }).fetch, port }, (info) => {
+if (simulation) {
+  runSimulation({ db, clock: simulation, random: Math.random, intervalMs: 250 });
+}
+
+serve({ fetch: createApp({ db, clock, allowTestRoutes, simulation }).fetch, port }, (info) => {
   console.log(`Backend listening on http://localhost:${info.port}`);
+  if (simulation) console.log(`Simulation on at ${simulationSpeed}x. Change it in the staff view.`);
 });

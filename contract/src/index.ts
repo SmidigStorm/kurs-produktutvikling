@@ -58,3 +58,12 @@ export type QueueEntry = z.infer<typeof queueEntrySchema>;
 export type QueueResponse = z.infer<typeof queueResponseSchema>;
 export type RoomOccupant = z.infer<typeof roomOccupantSchema>;
 export type VisitView = z.infer<typeof visitViewSchema>;
+
+/** The classroom simulator's controls. Present only when the server runs with SIMULATE=true. */
+export const SIMULATION_SPEEDS = [1, 10, 60, 120] as const;
+export const simulationSchema = z.object({
+  running: z.boolean(),
+  speed: z.number().positive(),
+});
+export const updateSimulationSchema = simulationSchema.partial();
+export type Simulation = z.infer<typeof simulationSchema>;

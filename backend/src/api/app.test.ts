@@ -1,7 +1,7 @@
 import type { TriageLevel } from 'contract';
 import { eq } from 'drizzle-orm';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { fixedClock } from '../clock.ts';
+import { fixedClock, scaledClock } from '../clock.ts';
 import type { Db } from '../db/client.ts';
 import { triageEvents, visits } from '../db/schema.ts';
 import { createTestDb } from '../db/testDb.ts';
@@ -204,5 +204,35 @@ describe('test-only routes', () => {
     await post(app, '/api/test/reset', {});
 
     expect((await (await app.request('/api/queue')).json()).entries).toHaveLength(0);
+  });
+});
+
+describe('the simulation controls', () => {
+  it('are absent unless the server runs the simulation', async () => {
+    const response = await createApp({ db, clock }).request('/api/simulation');
+
+    expect(response.status).toBe(404);
+  });
+
+  it('report and change speed and running', async () => {
+    const simulation = scaledClock(clock.now(), 60);
+    const app = createApp({ db, clock: simulation, simulation });
+
+    expect(await (await app.request('/api/simulation')).json()).toEqual({ running: true, speed: 60 });
+
+    const changed = await post(app, '/api/simulation', { speed: 120, running: false });
+
+    expect(await changed.json()).toEqual({ running: false, speed: 120 });
+    expect(simulation.speed()).toBe(120);
+    expect(simulation.running()).toBe(false);
+  });
+
+  it('reject a speed that is not positive', async () => {
+    const simulation = scaledClock(clock.now(), 60);
+    const response = await post(createApp({ db, clock: simulation, simulation }), '/api/simulation', {
+      speed: 0,
+    });
+
+    expect(response.status).toBe(400);
   });
 });

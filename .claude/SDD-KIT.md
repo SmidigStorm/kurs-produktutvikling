@@ -36,7 +36,7 @@ The kit is made of the three things the course teaches:
 | **The work item** | Plane, or `.sdd/<ID>/item.md` if you are not using Plane. Story, rules, examples, open questions |
 | **The acceptance criteria** | `features/*.feature`, the same rules and examples, as Gherkin. The tests run these |
 | **The plan** | `.sdd/<ID>/plan.md` |
-| **The tasks** | Sub-work-items under the item in Plane, one per piece of work, or `.sdd/<ID>/tasks.md` |
+| **The tasks** | Sub-work-items under the item in Plane, one per concrete change (this file, this function, this step, this test), or `.sdd/<ID>/tasks.md` |
 | **Your settings** | `.sdd/config.json`, written the first time you run `sdd-spec` |
 
 The work item and the feature file hold the same rules and examples. Whoever changes one changes

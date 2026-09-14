@@ -1,16 +1,16 @@
 ---
 name: sdd-tasks
-description: "Use when a work item has an approved plan and needs a task list. The user asks for tasks for LEGE-3 or ITEM-2, wants the plan broken down, or asks what comes after sdd-plan. Third step of the kit: spec, plan, tasks, implement. Writes the tasks as sub-work-items under the item in Plane, or as .sdd/<ID>/tasks.md, one task per piece of work, each carrying its files and the commands that prove it."
+description: "Use when a work item has an approved plan and needs a task list. The user asks for tasks for LEGE-3 or ITEM-2, wants the plan broken down, or asks what comes after sdd-plan. Third step of the kit: spec, plan, tasks, implement. Writes the tasks as sub-work-items under the item in Plane, or as .sdd/<ID>/tasks.md, one task per concrete change: create or update this file, this function, this step, this test, this document."
 ---
 
 <!-- Copied from skald-sdd/plugins/sdd-lite by scripts/sync-sdd-lite.sh — edit there, not here. -->
 
 # Tasks
 
-Turn the approved plan into a task list: **one task per piece of work**, in build order, each
-small enough to go red, then green, then commit. The list is the agent's plan for the change,
-written where the pair and the product owner can see it: as **sub-work-items under the item** in
-Plane, or as `.sdd/<ID>/tasks.md` in markdown mode.
+Turn the approved plan into a task list: **one task per concrete change**, create or update this
+file, this function, this step, this test, this document, in build order. The list is the work,
+written out where the pair and the product owner can see it before it is done: as **sub-work-items
+under the item** in Plane, or as `.sdd/<ID>/tasks.md` in markdown mode.
 
 No questions. This step runs straight through.
 
@@ -33,21 +33,35 @@ Then run **the drift check**. It stops on any difference.
 
 ## 3. Cut the work into tasks
 
-A task is one piece of work from the plan's file table: the table of strings, the rendering, the
-new step definition, the changed step, the new column, the endpoint. Order them so that each task
-ends with something that can be run, and so that the scenarios go green as early as possible
-rather than all at the end. A task that must exist before another one, such as a new database
-column or a shared helper, says which task it unblocks.
+A task is **one concrete change to one file**: create or update the file, and name the function,
+component, step or section that is added or changed, and what it does. The task list is the work,
+written out, so that anyone can see what the agent is about to do before it does it.
 
-Every task carries:
+Every change the plan's file table implies becomes a task, of one of these kinds:
 
-- the scenario or scenarios it serves
-- the unit test to write: the rule, tested directly, without the browser. A task whose behaviour
-  lives only in the UI says so instead
-- the steps: which already exist, and which are new or changed, and where they go
-- the code files
-- the proof: the command that shows it done. A unit test, `npm run typecheck`, or the scenario
-  command `npm run test:e2e -- --grep "<scenario title>"` for the task that makes a scenario pass
+| Kind | Title reads like |
+|---|---|
+| Code | `Create frontend/src/triageExplanations.ts: TRIAGE_EXPLANATION, the five strings keyed by level` |
+| Code | `Update frontend/src/PatientView.tsx: render the explanation under the level chip` |
+| Unit test | `Update backend/src/domain/queue.test.ts: RED sorts before GREEN regardless of arrival` |
+| E2E step | `Create step "they see the explanation {string}" in e2e/steps/queue.steps.ts` |
+| E2E step | `Update step "staff re-triage {string} to {string}" in e2e/steps/staff.steps.ts: works from the patient page` |
+| Documentation | `Update README.md: the patient view section, the explanation under the level` |
+
+Order them so the build runs top to bottom: a file before the file that imports it, a step
+before the scenario that uses it, the test that goes red before the code that makes it green. A
+task another one depends on says so.
+
+Every task body carries:
+
+- **Does:** what the change is, in two or three lines, precise enough to write from
+- **Serves:** the scenario or scenarios it is for
+- **Prove:** the command that shows it done: the unit test, `npm run typecheck`, or the scenario
+  command `npm run test:e2e -- --grep "<scenario title>"` for the task that turns a scenario green
+
+Where a kind has nothing to do, say so in the hand-off rather than inventing a task: no unit test
+when the behaviour lives only in the UI and the repo has no frontend test runner, no documentation
+when no document describes the thing that changed.
 
 **"Check that it works" is never a task.** Checking belongs to the task that built the thing.
 
@@ -65,23 +79,20 @@ state id from `state` `list`. Nothing is written to `.sdd/<ID>/` for the tasks.
 ```markdown
 # Tasks for <ID>
 
-- [ ] **1. The five explanations, keyed by level**
+- [ ] **1. Create frontend/src/triageExplanations.ts: TRIAGE_EXPLANATION, the five strings keyed by level**
+  - Does: `Record<TriageLevel, string>` with the five strings from the feature file verbatim,
+    keyed the way `triageStyles.ts` keys the chip colours, so a missing level is a type error
   - Serves: `A patient sees what their colour means`
-  - Unit test: none, the behaviour lives in the UI; the `Record` type proves completeness
-  - Steps: none
-  - Code: `frontend/src/triageExplanations.ts`
   - Prove: `npm run typecheck`
 
-- [ ] **2. The patient view shows the explanation under the level**
+- [ ] **2. Update frontend/src/PatientView.tsx: render the explanation under the level chip**
+  - Does: a `<p role="status" aria-label="What this means">` directly under the level, showing
+    `TRIAGE_EXPLANATION[visit.level]`. Needs 1
   - Serves: `A patient sees what their colour means`
-  - Unit test: none, UI only
-  - Steps: new `Then they see the explanation {string}` in `e2e/steps/queue.steps.ts`
-  - Code: `frontend/src/PatientView.tsx`
-  - Prove: `npm run test:e2e -- --grep "A patient sees what their colour means"`
+  - Prove: `npm run test:e2e -- --grep "A patient sees what their colour means"`, after task 3
 ```
 
-Same body in both modes. A task's title says what exists when it is done, in the words of the
-plan, not the name of a layer: "the patient view shows the explanation", not "frontend change".
+Same body in both modes.
 
 ## 5. Check the scenarios are all served
 
@@ -94,5 +105,5 @@ yet, and writing those definitions is `sdd-implement`'s work.
 
 Markdown mode: commit on the branch as `tasks: <ID>`. Plane mode: nothing to commit.
 
-One message: the task count, which tasks unblock others, where the tasks are (the item's children
-in Plane, or `tasks.md`), and the next step, which is `sdd-implement <ID>`.
+One message: the task count by kind, which kinds have nothing to do and why, where the tasks are
+(the item's children in Plane, or `tasks.md`), and the next step, which is `sdd-implement <ID>`.

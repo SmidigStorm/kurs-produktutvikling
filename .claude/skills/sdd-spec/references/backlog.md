@@ -66,7 +66,7 @@ One item = one feature request = one ID.
 | **The item** | The Plane work item, whose description holds the template below | `.sdd/<ID>/item.md`, the same template in markdown |
 | **Status** | Plane state: Backlog, Todo, In Progress, Done | a `Status:` line at the top of `item.md`, the same four values |
 | **Plan** | `.sdd/<ID>/plan.md` | same |
-| **Tasks** | Sub-work-items under the item, one per piece of work | `.sdd/<ID>/tasks.md` |
+| **Tasks** | Sub-work-items under the item, one per concrete change | `.sdd/<ID>/tasks.md` |
 | **Feature file** | `features/<id-lowercase>-<slug>.feature` | same |
 | **Branch** | whichever branch the pair is on. See below | same |
 

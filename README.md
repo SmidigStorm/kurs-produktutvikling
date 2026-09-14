@@ -47,6 +47,7 @@ downloads an Ubuntu build. That warning is expected and the browser works.
 | `npm run lint` | React hooks rules |
 | `npm test` | Unit and integration tests |
 | `npm run test:e2e` | Gherkin scenarios in a real browser |
+| `npm run test:e2e:demo` | The same scenarios, in a visible browser, slowed down for a room |
 | `npm run build` | Production build of the frontend |
 | `npm run deps:check` | Fails if a dependency needs native compilation |
 
@@ -66,8 +67,9 @@ That refusal is deliberate: reusing your dev server would point the tests at you
 
 | Path | Owner |
 |---|---|
-| `specs/`, `features/` | Product |
+| `features/`, `.sdd/` | Product |
 | `contract/`, `backend/`, `frontend/`, `e2e/` | Development |
+| `.claude/` | The SDD kit: four skills and one sub-agent, see `.claude/SDD-KIT.md` |
 
 `contract/` holds the domain vocabulary and the wire schemas. A triage level is
 declared there **once** and flows to the database column, the request validators

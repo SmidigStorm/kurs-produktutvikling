@@ -32,5 +32,7 @@ When('staff mark {string} as done', async ({ page }, name: string) => {
 
 Then('the queue shows {string} at position {int}', async ({ page }, name: string, position: number) => {
   const row = page.getByRole('row').filter({ hasText: name });
-  await expect(row).toContainText(String(position));
+  // The first cell is the position. Asserting on the whole row would also
+  // match the estimate: "15 min" contains "1".
+  await expect(row.getByRole('cell').first()).toHaveText(String(position));
 });

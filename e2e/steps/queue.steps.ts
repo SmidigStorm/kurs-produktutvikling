@@ -3,7 +3,7 @@ import { API, Given, NOW, Then, When } from './fixtures';
 
 Given('the clinic queue is empty', async ({ request, page }) => {
   await request.post(`${API}/api/test/reset`);
-  // A controllable browser clock, so the 15-second poll can be advanced
+  // A controllable browser clock, so the refresh poll (REFRESH_MS) can be advanced
   // deliberately instead of waited out. Must be installed before navigation.
   await page.clock.install();
 });

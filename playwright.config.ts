@@ -28,7 +28,14 @@ export default defineConfig({
   // Chromium: this is a teaching repo demonstrated on one machine, and every
   // extra browser is another download that can fail during pre-class setup.
   // Cross-browser coverage is a real concern for a real product, not for this.
-  projects: [{ name: 'chromium', use: { browserName: 'chromium' } }],
+  //
+  // `demo` is the same suite with a pause between actions, for showing the
+  // scenarios in front of a room. Only `npm run test:e2e:demo` selects it;
+  // `npm run test:e2e` pins `--project chromium` so the fast run stays fast.
+  projects: [
+    { name: 'chromium', use: { browserName: 'chromium' } },
+    { name: 'demo', use: { browserName: 'chromium', launchOptions: { slowMo: 600 } } },
+  ],
   webServer: [
     {
       command: 'npm run start -w backend',

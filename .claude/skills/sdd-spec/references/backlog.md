@@ -77,7 +77,8 @@ markdown: write it with `description_html`.
 
 **`workitem list` without a `project_id` answers 404** on a self-hosted Community Edition, which
 has no workspace-wide item list. Always pass the config's `planeProjectId`. (`workitem search` does
-work workspace-wide.)
+work workspace-wide.) **`pql` is refused outright** on Community Edition, so filter the list
+yourself: an item's tasks are the rows whose `parent` is the item's id.
 
 ## The branch
 

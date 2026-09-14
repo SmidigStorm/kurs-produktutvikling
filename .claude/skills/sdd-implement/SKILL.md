@@ -10,8 +10,11 @@ description: "Use when a work item has a task list and needs building. The user 
 Build the task list one task at a time, **test first, then code, then commit**, until every
 scenario of the item passes and both test suites are green. Then push the branch.
 
-The tasks are the item's children in Plane (`workitem` `list` with `pql: childOf("<ID>")`), or
-`.sdd/<ID>/tasks.md` in markdown mode. Build them in order.
+The tasks are the item's children in Plane, or `.sdd/<ID>/tasks.md` in markdown mode. Build
+them in order. To find the children, `workitem` `list` with the config's `planeProjectId` and
+`fields: id,sequence_id,name,state,parent`, and keep the rows whose `parent` is the item's id,
+sorted by `sequence_id`. Do not use `pql`: Community Edition answers every PQL query with an
+error, `childOf` included.
 
 It runs straight through, and stops only where it cannot go on (§5).
 

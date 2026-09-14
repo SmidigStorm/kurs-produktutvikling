@@ -15,7 +15,7 @@ sdd-spec  →  sdd-plan  →  sdd-tasks  →  sdd-implement
 |---|---|---|
 | `sdd-spec` | one question at a time, each with a suggested answer | the work item (Plane or `.sdd/<ID>/item.md`) **and** `features/<id>-<slug>.feature` |
 | `sdd-plan` | once: which of two approaches | `.sdd/<ID>/plan.md` |
-| `sdd-tasks` | nothing | the tasks, as sub-work-items under the item in Plane, or `.sdd/<ID>/tasks.md` |
+| `sdd-tasks` | nothing | `.sdd/<ID>/tasks.md`, one task per concrete change |
 | `sdd-implement` | nothing, unless it gets stuck | code, unit tests, e2e steps; pushes the pair's branch |
 
 After `sdd-spec`, a **spec-reviewer** sub-agent reads the spec cold, without the conversation,
@@ -35,8 +35,7 @@ The kit is made of the three things the course teaches:
 |---|---|
 | **The work item** | Plane, or `.sdd/<ID>/item.md` if you are not using Plane. Story, rules, examples, open questions |
 | **The acceptance criteria** | `features/*.feature`, the same rules and examples, as Gherkin. The tests run these |
-| **The plan** | `.sdd/<ID>/plan.md` |
-| **The tasks** | Sub-work-items under the item in Plane, one per concrete change (this file, this function, this step, this test), or `.sdd/<ID>/tasks.md` |
+| **Plan and tasks** | `.sdd/<ID>/`. A task is one concrete change: this file, this function, this step, this test |
 | **Your settings** | `.sdd/config.json`, written the first time you run `sdd-spec` |
 
 The work item and the feature file hold the same rules and examples. Whoever changes one changes

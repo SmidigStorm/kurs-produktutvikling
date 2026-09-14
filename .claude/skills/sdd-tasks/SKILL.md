@@ -1,6 +1,6 @@
 ---
 name: sdd-tasks
-description: "Use when a work item has an approved plan and needs a task list. The user asks for tasks for LEGE-3 or ITEM-2, wants the plan broken down, or asks what comes after sdd-plan. Third step of the kit: spec, plan, tasks, implement. Writes the tasks as sub-work-items under the item in Plane, or as .sdd/<ID>/tasks.md, one task per concrete change: create or update this file, this function, this step, this test, this document."
+description: "Use when a work item has an approved plan and needs a task list. The user asks for tasks for LEGE-3 or ITEM-2, wants the plan broken down, or asks what comes after sdd-plan. Third step of the kit: spec, plan, tasks, implement. Writes .sdd/<ID>/tasks.md, one task per concrete change: create or update this file, this function, this step, this test, this document."
 ---
 
 <!-- Copied from skald-sdd/plugins/sdd-lite by scripts/sync-sdd-lite.sh — edit there, not here. -->
@@ -9,8 +9,8 @@ description: "Use when a work item has an approved plan and needs a task list. T
 
 Turn the approved plan into a task list: **one task per concrete change**, create or update this
 file, this function, this step, this test, this document, in build order. The list is the work,
-written out where the pair and the product owner can see it before it is done: as **sub-work-items
-under the item** in Plane, or as `.sdd/<ID>/tasks.md` in markdown mode.
+written out in `.sdd/<ID>/tasks.md` before it is done. The task list lives in the repo in both
+backlog modes; Plane holds the item, not the tasks.
 
 No questions. This step runs straight through.
 
@@ -23,7 +23,7 @@ Read `../sdd-spec/references/backlog.md` first for the config, the item and the 
 | No `.sdd/config.json` | **Stop.** "Run `sdd-spec` first" |
 | No `plan.md`, or no `Approved:` line in it | **Stop.** "`sdd-plan <ID>` comes first" |
 | On `main` | Create `<pair>` and switch, as `backlog.md` describes. On any other branch, stay where they are |
-| Tasks already exist (children under the item, or `tasks.md`) | Say so. Tasks marked Done are work already done, so keep them and plan the rest around them |
+| `tasks.md` already exists | Say so. Ticked tasks are work already done, so keep them and plan the rest around them |
 
 Then run **the drift check**. It stops on any difference.
 
@@ -67,14 +67,9 @@ when no document describes the thing that changed.
 
 **Never estimate time**, anywhere.
 
-## 4. Write the tasks
+## 4. Write `tasks.md`
 
-**Plane.** One child work item per task: `workitem` `create` with the config's `planeProjectId`,
-`parent` set to the item's id, the name `<n>. <task title>`, and the body as `description_html`.
-Create them in order, so their sequence ids follow the build order. Move each to **Todo** with the
-state id from `state` `list`. Nothing is written to `.sdd/<ID>/` for the tasks.
-
-**Markdown.** `.sdd/<ID>/tasks.md`:
+`.sdd/<ID>/tasks.md`, in both backlog modes:
 
 ```markdown
 # Tasks for <ID>
@@ -92,8 +87,6 @@ state id from `state` `list`. Nothing is written to `.sdd/<ID>/` for the tasks.
   - Prove: `npm run test:e2e -- --grep "A patient sees what their colour means"`, after task 3
 ```
 
-Same body in both modes.
-
 ## 5. Check the scenarios are all served
 
 Every `Scenario:` and `Scenario Outline:` title in the feature file must appear under some task's
@@ -103,7 +96,7 @@ yet, and writing those definitions is `sdd-implement`'s work.
 
 ## 6. Hand off
 
-Markdown mode: commit on the branch as `tasks: <ID>`. Plane mode: nothing to commit.
+Commit on the branch as `tasks: <ID>`.
 
-One message: the task count by kind, which kinds have nothing to do and why, where the tasks are
-(the item's children in Plane, or `tasks.md`), and the next step, which is `sdd-implement <ID>`.
+One message: the task count by kind, which kinds have nothing to do and why, and the next step,
+which is `sdd-implement <ID>`.

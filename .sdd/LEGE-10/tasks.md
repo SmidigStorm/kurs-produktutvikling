@@ -65,7 +65,7 @@
     `Marking the patient in the room done frees the room`
   - Prove: `npm run test:e2e -- --grep "An empty room says so"`, red until task 9
 
-- [ ] **9. Update frontend/src/StaffView.tsx: the consultation room line above the table**
+- [x] **9. Update frontend/src/StaffView.tsx: the consultation room line above the table**
   - Does: keep `inConsultation` from the queue response in state beside `entries`. Above the
     table, `<p role="status" aria-label="Consultation room">` reading "Consultation room: free",
     or "Consultation room: Kari, GREEN" with the level as a chip and a Done button

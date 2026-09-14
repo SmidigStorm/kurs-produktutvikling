@@ -1,4 +1,4 @@
-import { TRIAGE_LEVELS, type QueueEntry, type TriageLevel } from 'contract';
+import { TRIAGE_LEVELS, type QueueEntry, type RoomOccupant, type TriageLevel } from 'contract';
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { changeStatus, fetchQueue, registerArrival, retriage } from './api';
 import { REFRESH_MS } from './config';
@@ -9,13 +9,16 @@ const FIELD =
 
 export function StaffView() {
   const [entries, setEntries] = useState<QueueEntry[]>([]);
+  const [room, setRoom] = useState<RoomOccupant | null>(null);
   const [name, setName] = useState('');
   const [level, setLevel] = useState<TriageLevel>('GREEN');
   const [error, setError] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
     try {
-      setEntries((await fetchQueue()).entries);
+      const queue = await fetchQueue();
+      setEntries(queue.entries);
+      setRoom(queue.inConsultation);
       setError(null);
     } catch (cause) {
       setError(String(cause));
@@ -114,6 +117,39 @@ export function StaffView() {
         </section>
 
         <section className="overflow-hidden rounded-2xl border border-line bg-surface">
+          {/* One line, always in the same place, so the eye finds the room
+              before the queue. Its Done button is named like the rows' buttons;
+              a patient is never both in the room and in the table, so the
+              name stays unique on the page. */}
+          <div
+            role="status"
+            aria-label="Consultation room"
+            className="flex items-center gap-3 border-b border-line px-6 py-4 text-[15px]"
+          >
+            {room ? (
+              <>
+                <span className="text-ink-muted">Consultation room:</span>
+                <a href={`#/visit/${room.id}`} className="font-bold underline-offset-2 hover:underline">
+                  {room.patientName}
+                </a>
+                <span className="text-ink-faint">,</span>
+                <span
+                  className={`inline-block rounded-full px-2.5 py-1 text-[12px] font-bold tracking-[0.05em] ${TRIAGE_CHIP[room.level]}`}
+                >
+                  {room.level}
+                </span>
+                <button
+                  aria-label={`Mark ${room.patientName} done`}
+                  onClick={() => void changeStatus(room.id, 'DONE').then(reload)}
+                  className="ml-auto h-9 rounded-[9px] bg-ink px-3.5 text-[13px] font-bold text-canvas hover:bg-ink-muted"
+                >
+                  Done
+                </button>
+              </>
+            ) : (
+              <span className="text-ink-muted">Consultation room: free</span>
+            )}
+          </div>
           <table className="w-full border-collapse text-left">
             <thead>
               <tr className="border-b border-line-soft text-[12px] tracking-[0.07em] text-ink-ghost">

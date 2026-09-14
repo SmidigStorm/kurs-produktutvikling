@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { TriageLevel } from 'contract';
-import { estimatedWaitMinutes, orderQueue, positionOf, type WaitingVisit } from './queue.ts';
+import { estimatedWaitMinutes, orderQueue, positionOf, roomIsFree, type WaitingVisit } from './queue.ts';
 
 const at = (hhmm: string): Date => new Date(`2026-03-01T${hhmm}:00.000Z`);
 
@@ -72,5 +72,41 @@ describe('estimatedWaitMinutes', () => {
 
   it('returns null for a visit that is not in the queue', () => {
     expect(estimatedWaitMinutes([], 'nobody')).toBeNull();
+  });
+});
+
+describe('estimatedWaitMinutes with a patient in the consultation room', () => {
+  it('counts the occupant as ahead of the patient at the front', () => {
+    expect(estimatedWaitMinutes([visit('a', 'GREEN', '09:00')], 'a', { level: 'GREEN' })).toBe(15);
+  });
+
+  it('adds the occupant average, at the occupant level, to everyone waiting', () => {
+    const queue = [
+      visit('red', 'RED', '09:30'),
+      visit('green-first', 'GREEN', '09:00'),
+      visit('green-second', 'GREEN', '09:05'),
+    ];
+
+    expect(estimatedWaitMinutes(queue, 'green-second', { level: 'RED' })).toBe(75);
+  });
+
+  it('changes nothing when the room is free', () => {
+    const queue = [visit('a', 'GREEN', '09:00'), visit('b', 'GREEN', '09:05')];
+
+    expect(estimatedWaitMinutes(queue, 'b', null)).toBe(15);
+  });
+});
+
+describe('roomIsFree', () => {
+  it('is free when there are no visits', () => {
+    expect(roomIsFree([])).toBe(true);
+  });
+
+  it('is free when the patient who was in the room is done', () => {
+    expect(roomIsFree([{ status: 'DONE' }, { status: 'WAITING' }])).toBe(true);
+  });
+
+  it('is taken while a patient is in consultation', () => {
+    expect(roomIsFree([{ status: 'WAITING' }, { status: 'IN_CONSULTATION' }])).toBe(false);
   });
 });

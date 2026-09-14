@@ -7,7 +7,7 @@
   - Serves: `The patient in the room is shown above the waiting queue`, `An empty room says so`
   - Prove: `npm run typecheck`
 
-- [ ] **2. Update backend/src/domain/queue.test.ts: the estimate counts the occupant, roomIsFree**
+- [x] **2. Update backend/src/domain/queue.test.ts: the estimate counts the occupant, roomIsFree**
   - Does: `estimatedWaitMinutes` with a GREEN occupant adds 15 to everyone's estimate and gives
     the front patient 15, not 0; without an occupant the existing numbers are unchanged.
     `roomIsFree` is true for no visits, true when the only in-room patient is DONE, false when

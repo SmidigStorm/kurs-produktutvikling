@@ -5,7 +5,7 @@ import {
   registerArrivalSchema,
   retriageSchema,
 } from 'contract';
-import { eq } from 'drizzle-orm';
+import { eq, ne } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
@@ -18,6 +18,7 @@ import {
   estimatedWaitMinutes,
   orderQueue,
   positionOf,
+  roomIsFree,
   type WaitingVisit,
 } from '../domain/queue.ts';
 
@@ -43,6 +44,12 @@ function waitingVisits(db: Db): WaitingRow[] {
     }));
 }
 
+/** The one patient in the consultation room, or null while it is free. */
+function roomOccupant(db: Db) {
+  const row = db.select().from(visits).where(eq(visits.status, 'IN_CONSULTATION')).get();
+  return row ? { id: row.id, patientName: row.patientName, level: row.level } : null;
+}
+
 export function createApp(deps: AppDeps) {
   const app = new Hono();
 
@@ -60,6 +67,7 @@ export function createApp(deps: AppDeps) {
 
   app.get('/api/queue', (c) => {
     const waiting = waitingVisits(deps.db);
+    const occupant = roomOccupant(deps.db);
     const byId = new Map(waiting.map((row) => [row.id, row]));
 
     const entries = orderQueue(waiting).map((visit, index) => ({
@@ -67,10 +75,10 @@ export function createApp(deps: AppDeps) {
       patientName: byId.get(visit.id)?.patientName ?? '',
       level: visit.level,
       position: index + 1,
-      estimatedWaitMinutes: estimatedWaitMinutes(waiting, visit.id) ?? 0,
+      estimatedWaitMinutes: estimatedWaitMinutes(waiting, visit.id, occupant) ?? 0,
     }));
 
-    return c.json({ now: deps.clock.now().toISOString(), entries });
+    return c.json({ now: deps.clock.now().toISOString(), entries, inConsultation: occupant });
   });
 
   app.get('/api/visits/:id', (c) => {
@@ -79,6 +87,7 @@ export function createApp(deps: AppDeps) {
     if (!row) return c.json({ error: 'visit not found' }, 404);
 
     const waiting = waitingVisits(deps.db);
+    const occupant = roomOccupant(deps.db);
 
     return c.json({
       id: row.id,
@@ -86,7 +95,7 @@ export function createApp(deps: AppDeps) {
       level: row.level,
       status: row.status,
       position: positionOf(waiting, id),
-      estimatedWaitMinutes: estimatedWaitMinutes(waiting, id),
+      estimatedWaitMinutes: estimatedWaitMinutes(waiting, id, occupant),
     });
   });
 
@@ -134,6 +143,12 @@ export function createApp(deps: AppDeps) {
 
     const row = deps.db.select().from(visits).where(eq(visits.id, id)).get();
     if (!row) return c.json({ error: 'visit not found' }, 404);
+
+    // One room. Setting the patient who is already in it again is fine.
+    if (status === 'IN_CONSULTATION') {
+      const others = deps.db.select().from(visits).where(ne(visits.id, id)).all();
+      if (!roomIsFree(others)) return c.json({ error: 'room is taken' }, 409);
+    }
 
     deps.db.update(visits).set({ status }).where(eq(visits.id, id)).run();
     return c.json({ id, status });

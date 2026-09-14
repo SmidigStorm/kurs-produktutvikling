@@ -33,7 +33,7 @@
     `A waiting patient's estimate includes the patient in the room`
   - Prove: `npx vitest run backend/src/api/app.test.ts`, red
 
-- [ ] **5. Update backend/src/api/app.ts: the occupant in both reads, 409 on a taken room**
+- [x] **5. Update backend/src/api/app.ts: the occupant in both reads, 409 on a taken room**
   - Does: a `roomOccupant(db)` helper selecting the visit with status IN_CONSULTATION, if any.
     `/api/queue` passes it to `estimatedWaitMinutes` for every entry and returns it as
     `inConsultation`. `/api/visits/:id` passes it too. The status route, when the new status is

@@ -1,6 +1,13 @@
-import { TRIAGE_LEVELS, type QueueEntry, type RoomOccupant, type TriageLevel } from 'contract';
+import {
+  SIMULATION_SPEEDS,
+  TRIAGE_LEVELS,
+  type QueueEntry,
+  type RoomOccupant,
+  type Simulation,
+  type TriageLevel,
+} from 'contract';
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { changeStatus, fetchQueue, registerArrival, retriage } from './api';
+import { changeStatus, fetchQueue, fetchSimulation, registerArrival, retriage, updateSimulation } from './api';
 import { REFRESH_MS } from './config';
 import { TRIAGE_CHIP } from './triageStyles';
 
@@ -10,6 +17,8 @@ const FIELD =
 export function StaffView() {
   const [entries, setEntries] = useState<QueueEntry[]>([]);
   const [room, setRoom] = useState<RoomOccupant | null>(null);
+  // Null means the server is not simulating, and the panel stays hidden.
+  const [simulation, setSimulation] = useState<Simulation | null>(null);
   const [name, setName] = useState('');
   const [level, setLevel] = useState<TriageLevel>('GREEN');
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +39,15 @@ export function StaffView() {
     const timer = setInterval(() => void reload(), REFRESH_MS);
     return () => clearInterval(timer);
   }, [reload]);
+
+  useEffect(() => {
+    // Once: whether the simulator runs does not change while the server is up.
+    fetchSimulation().then(setSimulation, () => setSimulation(null));
+  }, []);
+
+  const changeSimulation = async (changes: Partial<Simulation>) => {
+    setSimulation(await updateSimulation(changes));
+  };
 
   const onRegister = async (event: FormEvent) => {
     event.preventDefault();
@@ -53,6 +71,32 @@ export function StaffView() {
           <span className="font-normal text-ink-muted">Queue</span>
         </span>
         <span className="flex items-center gap-5 text-[14px] text-ink-faint">
+          {simulation && (
+            <span role="group" aria-label="Simulation" className="flex items-center gap-2">
+              <span>Simulation</span>
+              <button
+                onClick={() => void changeSimulation({ running: !simulation.running })}
+                className="h-8 rounded-[8px] border border-line bg-canvas px-3 text-[13px] text-ink hover:border-ink-faint"
+              >
+                {simulation.running ? 'Pause' : 'Run'}
+              </button>
+              <label htmlFor="simulation-speed" className="sr-only">
+                Speed
+              </label>
+              <select
+                id="simulation-speed"
+                value={simulation.speed}
+                onChange={(e) => void changeSimulation({ speed: Number(e.target.value) })}
+                className="h-8 rounded-[8px] border border-line bg-canvas px-2 text-[13px] text-ink"
+              >
+                {SIMULATION_SPEEDS.map((speed) => (
+                  <option key={speed} value={speed}>
+                    {speed}x
+                  </option>
+                ))}
+              </select>
+            </span>
+          )}
           <span>
             {entries.length} waiting · longest {longestWait} min
           </span>

@@ -1,4 +1,4 @@
-import type { QueueResponse, TriageLevel, VisitStatus, VisitView } from 'contract';
+import type { QueueResponse, Simulation, TriageLevel, VisitStatus, VisitView } from 'contract';
 
 async function json<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, init);
@@ -28,3 +28,14 @@ export const retriage = (id: string, level: TriageLevel) =>
 
 export const changeStatus = (id: string, status: VisitStatus) =>
   post<{ id: string }>(`/api/visits/${id}/status`, { status });
+
+/** Null when the server is not running the classroom simulation. */
+export const fetchSimulation = async (): Promise<Simulation | null> => {
+  const response = await fetch('/api/simulation');
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error(`GET /api/simulation failed: ${response.status}`);
+  return response.json() as Promise<Simulation>;
+};
+
+export const updateSimulation = (changes: Partial<Simulation>) =>
+  post<Simulation>('/api/simulation', changes);

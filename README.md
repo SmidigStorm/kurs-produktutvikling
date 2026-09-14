@@ -93,6 +93,24 @@ Open pages re-fetch every **5 seconds** (`frontend/src/config.ts`, declared once
 for both views). That is a teaching choice: the app is demonstrated live, and a
 longer interval reads as "nothing is happening".
 
+## The classroom simulation
+
+`npm run dev` starts the backend with `SIMULATE=true`, and the queue then moves by itself: the
+patient at the front goes into the one consultation room when it is free, stays for their level's
+average consultation time plus a random minus 5 to plus 10 minutes, and is marked done; new
+patients arrive at random intervals averaging one every 15 minutes, with a level weighted toward
+green and yellow. The names are fictional.
+
+It runs on a **scaled clock**, which is the app's own clock while the simulation is on: at the
+default 60x, one real second is one simulated minute, so a 15-minute consultation takes 15 real
+seconds while the screen still says 15 minutes. The staff view shows a **Simulation** panel with
+pause and a speed choice. `SIMULATE=false npm run dev` turns it off, and the test suite never
+turns it on.
+
+The simulator is instructor tooling, not a product feature: its decisions are pure functions in
+`backend/src/simulation/simulator.ts` with unit tests, and the loop that applies them is separate.
+Nothing in `features/` describes it.
+
 ## Styling
 
 Tailwind v4, wired through `@tailwindcss/vite` — no config file, no PostCSS. One

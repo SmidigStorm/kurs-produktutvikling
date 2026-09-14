@@ -7,8 +7,11 @@ description: "Use when a work item has a task list and needs building. The user 
 
 # Implement
 
-Build `tasks.md` one task at a time, **test first, then code, then commit**, until every scenario
-of the item passes and both test suites are green. Then push the branch.
+Build the task list one task at a time, **test first, then code, then commit**, until every
+scenario of the item passes and both test suites are green. Then push the branch.
+
+The tasks are the item's children in Plane (`workitem` `list` with `pql: childOf("<ID>")`), or
+`.sdd/<ID>/tasks.md` in markdown mode. Build them in order.
 
 It runs straight through, and stops only where it cannot go on (§5).
 
@@ -19,7 +22,7 @@ Read `../sdd-spec/references/backlog.md` first for the config, the item and the 
 | Situation | Do |
 |---|---|
 | No `.sdd/config.json` | **Stop.** "Run `sdd-spec` first" |
-| No `tasks.md` | **Stop.** "`sdd-tasks <ID>` comes first" |
+| No tasks (no children under the item, or no `tasks.md`) | **Stop.** "`sdd-tasks <ID>` comes first" |
 | On `main` | Create `<pair>` and switch, as `backlog.md` describes. On any other branch, stay where they are |
 | Uncommitted changes that are not this item's | **Stop** and show them. Never commit someone else's work |
 | The app is running (`npm run dev`, ports 3001 and 5173) | Ask the pair to stop it. The e2e suite starts its own servers and fails on busy ports |
@@ -31,20 +34,21 @@ Move the item to **In Progress**: in Plane by reading `state` `list` and passing
 
 **Resuming?** Run the item's scenarios first with `npm run test:e2e -- --grep "@<ID>\b"`, where the
 `\b` stops `@LEGE-3` matching `@LEGE-30`. Green scenarios are done, so start at the first red one.
-Ticks in `tasks.md` are a convenience; the test run is the truth.
+A task's Done state is a convenience; the test run is the truth.
 
 ## 2. The loop, one task at a time
 
-For each unticked task, in order:
+For each task not yet Done, in order: move it to **In Progress** (Plane: the state id from
+`state` `list`; markdown: leave the box empty), then
 
-1. **Red.** Write the unit test the task names, and the new step definitions it needs. Run both
-   proof commands and **see them fail for the right reason**, which is a missing behaviour rather
-   than a typo or a missing import. A test that passes before the code exists proves nothing.
-2. **Green.** Write the smallest code that makes both pass, following the plan's files.
-3. **Tidy.** Clean up what you just wrote while it is green, then re-run the proofs.
-4. **Tick** the task in `tasks.md` and **commit** as `<ID>: <scenario title>`.
-
-Prep tasks follow the same loop with a unit test as their proof.
+1. **Red.** Write the unit test the task names, and the new or changed step definitions it needs.
+   Run the proof and **see it fail for the right reason**, which is a missing behaviour rather
+   than a typo or a missing import. A test that passes before the code exists proves nothing. A
+   task whose proof is `npm run typecheck` has no red; say so and go on.
+2. **Green.** Write the smallest code that makes the proof pass, following the plan's files.
+3. **Tidy.** Clean up what you just wrote while it is green, then re-run the proof.
+4. **Done.** Move the task to Done (Plane) or tick it (markdown), and **commit** as
+   `<ID>: <task title>`.
 
 **Never weaken a test to make it pass.** Not by editing a scenario to match the code, not by a
 step definition that asserts nothing, and not by skipping. It is the one failure nobody would see.

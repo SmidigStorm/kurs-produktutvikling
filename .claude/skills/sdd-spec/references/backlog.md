@@ -65,12 +65,13 @@ One item = one feature request = one ID.
 | **ID** | Plane's, such as `LEGE-3` | `ITEM-<n>`, the next free number under `.sdd/` |
 | **The item** | The Plane work item, whose description holds the template below | `.sdd/<ID>/item.md`, the same template in markdown |
 | **Status** | Plane state: Backlog, Todo, In Progress, Done | a `Status:` line at the top of `item.md`, the same four values |
-| **Plan and tasks** | `.sdd/<ID>/plan.md`, `.sdd/<ID>/tasks.md` | same |
+| **Plan** | `.sdd/<ID>/plan.md` | same |
+| **Tasks** | Sub-work-items under the item, one per piece of work | `.sdd/<ID>/tasks.md` |
 | **Feature file** | `features/<id-lowercase>-<slug>.feature` | same |
 | **Branch** | whichever branch the pair is on. See below | same |
 
 Plane MCP tools used: `project` (`list`, `retrieve`), `workitem` (`retrieve_by_identifier`, `list` with a
-`project_id`, `create`, `update`), `state` (`list` with a `project_id`, to look the state id up by
+`project_id`, `create` with `parent` for a task, `update`), `state` (`list` with a `project_id`, to look the state id up by
 name before moving an item), `workitem_comment` (`create`). A Plane description is **HTML**, not
 markdown: write it with `description_html`.
 

@@ -23,7 +23,7 @@
   - Serves: `A waiting patient's estimate includes the patient in the room`
   - Prove: `npx vitest run backend/src/domain/queue.test.ts`, green
 
-- [ ] **4. Update backend/src/api/app.test.ts: inConsultation in the queue, the estimate, the 409**
+- [x] **4. Update backend/src/api/app.test.ts: inConsultation in the queue, the estimate, the 409**
   - Does: `/api/queue` returns `inConsultation: null` for a waiting-only queue and the occupant's
     id, name and level when one visit is IN_CONSULTATION; a waiting patient's
     `estimatedWaitMinutes` from `/api/visits/:id` includes the occupant's average; `POST

@@ -128,6 +128,68 @@ describe('staff actions', () => {
   });
 });
 
+describe('the consultation room', () => {
+  const callIn = (id: string) =>
+    db.update(visits).set({ status: 'IN_CONSULTATION' }).where(eq(visits.id, id)).run();
+
+  it('is reported free in the queue response while nobody is in consultation', async () => {
+    arrive('kari', 'GREEN', 60);
+
+    const body = await (await createApp({ db, clock }).request('/api/queue')).json();
+
+    expect(body.inConsultation).toBeNull();
+  });
+
+  it('names the patient in consultation, who is no longer a queue entry', async () => {
+    arrive('kari', 'GREEN', 60);
+    arrive('ola', 'GREEN', 30);
+    callIn('kari');
+
+    const body = await (await createApp({ db, clock }).request('/api/queue')).json();
+
+    expect(body.inConsultation).toEqual({ id: 'kari', patientName: 'kari', level: 'GREEN' });
+    expect(body.entries.map((e: { id: string }) => e.id)).toEqual(['ola']);
+  });
+
+  it('counts the patient in the room as ahead of everyone waiting', async () => {
+    arrive('kari', 'GREEN', 60);
+    arrive('ola', 'GREEN', 30);
+    callIn('kari');
+    const app = createApp({ db, clock });
+
+    const visit = await (await app.request('/api/visits/ola')).json();
+    const queue = await (await app.request('/api/queue')).json();
+
+    expect(visit.position).toBe(1);
+    expect(visit.estimatedWaitMinutes).toBe(15);
+    expect(queue.entries[0].estimatedWaitMinutes).toBe(15);
+  });
+
+  it('refuses a second patient in consultation with 409 while the room is taken', async () => {
+    arrive('kari', 'GREEN', 60);
+    arrive('ola', 'GREEN', 30);
+    callIn('kari');
+
+    const response = await post(createApp({ db, clock }), '/api/visits/ola/status', {
+      status: 'IN_CONSULTATION',
+    });
+
+    expect(response.status).toBe(409);
+    expect(db.select().from(visits).where(eq(visits.id, 'ola')).get()?.status).toBe('WAITING');
+  });
+
+  it('accepts the patient already in the room being set to in consultation again', async () => {
+    arrive('kari', 'GREEN', 60);
+    callIn('kari');
+
+    const response = await post(createApp({ db, clock }), '/api/visits/kari/status', {
+      status: 'IN_CONSULTATION',
+    });
+
+    expect(response.status).toBe(200);
+  });
+});
+
 describe('test-only routes', () => {
   it('are absent unless test routes are allowed', async () => {
     const response = await post(createApp({ db, clock }), '/api/test/reset', {});

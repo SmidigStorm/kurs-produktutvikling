@@ -38,6 +38,7 @@ Feature: Urgent arrivals
 | Do | Not |
 |---|---|
 | **Reuse the repo's phrasing.** Read the other feature files first and say things the way they do | A step one word different from an existing one, for no new behaviour |
+| **An unhappy path per rule** where one exists: refused, empty, too late. Something happens and a person sees it | Only the happy path |
 | **Concrete values:** "Kari", "60 minutes ago", "GREEN" | "a patient with a low priority" |
 | **Declarative:** what happens, in the domain's words | Buttons, fields, URLs, CSS: "clicks the Save button" |
 | **One `When` per scenario:** one behaviour | Two actions, or "if X then Y, otherwise Z" |
@@ -46,8 +47,11 @@ Feature: Urgent arrivals
 
 **The empty case.** Anything list-shaped needs a scenario for when the list is empty.
 
-**No unhappy paths, and no negative scenarios.** A scenario shows what happens, not what is
-rejected and not what does not appear. Say the rule in prose instead, as "Staff do not see it".
+**Unhappy path, not negative scenario.** An unhappy path has an outcome a person can check:
+the arrival is refused and staff see "Enter the patient's name"; the patient marked done sees
+"You have been seen". A negative scenario only asserts that something is absent, "Then staff do
+not see the explanation", which also passes on a blank page. Never write those. Say the rule in
+prose instead, as "Staff do not see it".
 
 Keep it small. The smallest set of rules that makes the request testable, and one or two examples
 each, beats twelve rules nobody reads.

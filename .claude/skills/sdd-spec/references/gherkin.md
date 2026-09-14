@@ -43,9 +43,11 @@ Feature: Urgent arrivals
 | **One `When` per scenario:** one behaviour | Two actions, or "if X then Y, otherwise Z" |
 | **An observable `Then`:** something a person could check | "Then the system handles it correctly" |
 | **Titles say the outcome:** "A red arrival moves ahead of a green patient" | Titles naming code: "QueueService.sort handles RED" |
-| **An unhappy path per rule** where one exists: rejected, empty, too late | Only the happy path |
 
 **The empty case.** Anything list-shaped needs a scenario for when the list is empty.
+
+**No unhappy paths, and no negative scenarios.** A scenario shows what happens, not what is
+rejected and not what does not appear. Say the rule in prose instead, as "Staff do not see it".
 
 Keep it small. The smallest set of rules that makes the request testable, and one or two examples
 each, beats twelve rules nobody reads.

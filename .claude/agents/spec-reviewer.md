@@ -28,7 +28,8 @@ Answer one question: **could a developer build this without guessing?**
 4. **Declarative steps.** Buttons, fields, URLs or code names in a step or title are findings.
 5. **Concrete values.** "A patient with low priority" is a finding; `"Kari" … "GREEN"` is not.
 6. **One `When` per scenario.** Two behaviours in one scenario is a finding.
-7. **Missing unhappy path or empty case** where the rule obviously has one.
+7. **Missing empty case** where a rule is about a list. Do not ask for an unhappy path, and do
+   not ask for a scenario that proves something is absent: this kit writes neither.
 8. **The two copies disagree.** The item, whether `item.md` or the Plane text in your brief, and
    the feature file must carry the same rules in the same order, the same example titles, and the
    same steps. Any difference is a finding: show it as two short columns, what the item says and

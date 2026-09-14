@@ -28,6 +28,9 @@ Written by `sdd-spec` the first time it runs in a repo, read by every skill afte
 | `planeProject` | The Plane project's identifier (the prefix in `LEGE-3`). Plane mode only |
 | `planeProjectId` | The project's UUID. Plane mode only. See below: on an old instance it cannot be looked up |
 
+The file is per pair, so it is not committed: `sdd-spec` adds `.sdd/config.json` to `.gitignore`
+when it writes it, if the line is not there already.
+
 **Only `sdd-spec` creates the config file.** Every other skill stops when it is missing and
 says: "No `.sdd/config.json`. Run `sdd-spec` first."
 

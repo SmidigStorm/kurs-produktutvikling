@@ -15,7 +15,7 @@
   - Serves: `A waiting patient's estimate includes the patient in the room`
   - Prove: `npx vitest run backend/src/domain/queue.test.ts`, red
 
-- [ ] **3. Update backend/src/domain/queue.ts: estimatedWaitMinutes takes an occupant, roomIsFree**
+- [x] **3. Update backend/src/domain/queue.ts: estimatedWaitMinutes takes an occupant, roomIsFree**
   - Does: `estimatedWaitMinutes(visits, visitId, occupant?: { level: TriageLevel })` adds
     `AVERAGE_CONSULTATION_MINUTES[occupant.level]` to the sum when an occupant is given.
     `roomIsFree(visits: { status: VisitStatus }[])` returns true when none is `IN_CONSULTATION`.

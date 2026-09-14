@@ -58,3 +58,34 @@ Then('they see an estimated wait of {int} minutes', async ({ page }, expected: n
     `${expected} minutes`,
   );
 });
+
+/**
+ * Puts a registered patient into the one consultation room through the API.
+ * Registered twice so it reads as a Given ("is in consultation") and as a When
+ * ("is called in"); it is the same event.
+ */
+async function callIn(
+  request: Parameters<Parameters<typeof Given>[1]>[0]['request'],
+  visitIds: Map<string, string>,
+  name: string,
+) {
+  const id = visitIds.get(name);
+  expect(id, `no visit registered for ${name}`).toBeTruthy();
+  const response = await request.post(`${API}/api/visits/${id}/status`, {
+    data: { status: 'IN_CONSULTATION' },
+  });
+  expect(response.ok(), `could not call ${name} in: ${response.status()}`).toBeTruthy();
+}
+
+Given('{string} is in consultation', async ({ request, visitIds }, name: string) => {
+  await callIn(request, visitIds, name);
+});
+
+When('{string} is called in', async ({ request, visitIds }, name: string) => {
+  await callIn(request, visitIds, name);
+});
+
+Then('they see {string}', async ({ page }, text: string) => {
+  // The main region only, so text in the header can never satisfy this.
+  await expect(page.getByRole('main')).toContainText(text);
+});

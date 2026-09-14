@@ -43,14 +43,14 @@
     `A waiting patient's estimate includes the patient in the room`
   - Prove: `npx vitest run backend/src/api/app.test.ts`, green, and `npm test`
 
-- [ ] **6. Create step "{string} is in consultation" in e2e/steps/queue.steps.ts**
+- [x] **6. Create step "{string} is in consultation" in e2e/steps/queue.steps.ts**
   - Does: posts `{ status: 'IN_CONSULTATION' }` to `/api/visits/<id>/status` for the visit id
     registered under that name. One definition with two phrasings: `{string} is in consultation`
     and `{string} is called in`, so it reads as Given and as When
   - Serves: every scenario of the item except `An empty room says so`
   - Prove: `npx bddgen` lists no missing step for either phrasing
 
-- [ ] **7. Create step "they see {string}" in e2e/steps/queue.steps.ts**
+- [x] **7. Create step "they see {string}" in e2e/steps/queue.steps.ts**
   - Does: `await expect(page.getByRole('main')).toContainText(text)`, next to the other patient
     page assertions
   - Serves: `The patient in the room sees they are being seen`,

@@ -36,3 +36,18 @@ Then('the queue shows {string} at position {int}', async ({ page }, name: string
   // match the estimate: "15 min" contains "1".
   await expect(row.getByRole('cell').first()).toHaveText(String(position));
 });
+
+const consultationRoom = (page: Parameters<Parameters<typeof Then>[1]>[0]['page']) =>
+  page.getByRole('status', { name: 'Consultation room' });
+
+Then(
+  'the consultation room shows {string}, {string}',
+  async ({ page }, name: string, level: string) => {
+    await expect(consultationRoom(page)).toContainText(name);
+    await expect(consultationRoom(page)).toContainText(level);
+  },
+);
+
+Then('the consultation room is shown as free', async ({ page }) => {
+  await expect(consultationRoom(page)).toHaveText('Consultation room: free');
+});

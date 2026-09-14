@@ -58,7 +58,7 @@
   - Prove: `npm run test:e2e -- --grep "The patient in the room sees they are being seen"`, red
     until task 10
 
-- [ ] **8. Create steps "the consultation room shows {string}, {string}" and "the consultation room is shown as free" in e2e/steps/staff.steps.ts**
+- [x] **8. Create steps "the consultation room shows {string}, {string}" and "the consultation room is shown as free" in e2e/steps/staff.steps.ts**
   - Does: both assert on `page.getByRole('status', { name: 'Consultation room' })`: the first
     `toContainText` of the name and of the level, the second `toHaveText('Consultation room: free')`
   - Serves: `The patient in the room is shown above the waiting queue`, `An empty room says so`,

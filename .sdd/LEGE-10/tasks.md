@@ -75,7 +75,7 @@
     `Marking the patient in the room done frees the room`
   - Prove: `npm run test:e2e -- --grep "Consultation room"` for the three staff scenarios, green
 
-- [ ] **10. Update frontend/src/PatientView.tsx: "You are being seen" replaces position and wait**
+- [x] **10. Update frontend/src/PatientView.tsx: "You are being seen" replaces position and wait**
   - Does: when `visit.status === 'IN_CONSULTATION'`, render `<p role="status" aria-label="Being
     seen">You are being seen</p>` in place of the position and estimated-wait blocks; branch on
     status, never on a null position. The level chip and the explanation stay. Needs 7

@@ -77,22 +77,32 @@ export function PatientView({ visitId }: { visitId: string }) {
 
             <hr className="border-line-soft" />
 
-            <p role="status" aria-label="Queue position" className="text-[17px] leading-snug text-ink-muted">
-              You are number{' '}
-              <strong className="font-display text-[76px] font-normal leading-none tracking-tight text-ink align-middle">
-                {visit.position ?? '-'}
-              </strong>{' '}
-              in the queue
-            </p>
+            {/* Branch on status, never on a null position: a patient who is
+                done also has no position, and must not read "being seen". */}
+            {visit.status === 'IN_CONSULTATION' ? (
+              <p role="status" aria-label="Being seen" className="font-display text-[34px] leading-tight text-ink">
+                You are being seen
+              </p>
+            ) : (
+              <>
+                <p role="status" aria-label="Queue position" className="text-[17px] leading-snug text-ink-muted">
+                  You are number{' '}
+                  <strong className="font-display text-[76px] font-normal leading-none tracking-tight text-ink align-middle">
+                    {visit.position ?? '-'}
+                  </strong>{' '}
+                  in the queue
+                </p>
 
-            <p
-              role="status"
-              aria-label="Estimated wait"
-              className="flex items-center justify-between gap-3 rounded-2xl bg-sunk px-4 py-4 text-[15px] text-ink-muted"
-            >
-              Estimated wait:{' '}
-              <strong className="text-[22px] text-ink">{visit.estimatedWaitMinutes ?? '-'} minutes</strong>
-            </p>
+                <p
+                  role="status"
+                  aria-label="Estimated wait"
+                  className="flex items-center justify-between gap-3 rounded-2xl bg-sunk px-4 py-4 text-[15px] text-ink-muted"
+                >
+                  Estimated wait:{' '}
+                  <strong className="text-[22px] text-ink">{visit.estimatedWaitMinutes ?? '-'} minutes</strong>
+                </p>
+              </>
+            )}
           </section>
 
           <aside className="flex gap-3 rounded-2xl border border-line bg-surface px-4 py-4">

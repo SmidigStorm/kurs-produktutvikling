@@ -23,7 +23,7 @@ Written by `sdd-spec` the first time it runs in a repo, read by every skill afte
 
 | Field | Meaning |
 |---|---|
-| `pair` | Short lowercase name for the pair. Prefixes every branch, so two pairs never collide. With Plane it is the project identifier, lowercased |
+| `pair` | Short lowercase name for the pair. Names their branch, so two pairs never collide. With Plane it is the project identifier, lowercased |
 | `backlog` | `plane` or `markdown` |
 | `planeProject` | The Plane project's identifier (the prefix in `LEGE-3`). Plane mode only |
 | `planeProjectId` | The project's UUID. Plane mode only. See below: on an old instance it cannot be looked up |
@@ -34,7 +34,7 @@ says: "No `.sdd/config.json`. Run `sdd-spec` first."
 **Creating it** (`sdd-spec` only). Ask, in one message:
 
 1. "Are you using Plane? If so, what is your project called?"
-2. Markdown mode only: "What short name should your branches use?" (suggest one from the repo's
+2. Markdown mode only: "What should your branch be called?" (suggest one from the repo's
    git user, e.g. `kari-ola`)
 
 In Plane mode, call `project` `list` and match what the pair said against both `name` and
@@ -64,7 +64,7 @@ One item = one feature request = one ID.
 | **Status** | Plane state: Backlog, Todo, In Progress, Done | a `Status:` line at the top of `item.md`, the same four values |
 | **Plan and tasks** | `.sdd/<ID>/plan.md`, `.sdd/<ID>/tasks.md` | same |
 | **Feature file** | `features/<id-lowercase>-<slug>.feature` | same |
-| **Branch** | `<pair>/<ID>`, such as `lege/LEGE-3` | `team-blue/ITEM-2` |
+| **Branch** | whichever branch the pair is on. See below | same |
 
 Plane MCP tools used: `project` (`list`, `retrieve`), `workitem` (`retrieve_by_identifier`, `list` with a
 `project_id`, `create`, `update`), `state` (`list` with a `project_id`, to look the state id up by
@@ -74,6 +74,22 @@ markdown: write it with `description_html`.
 **`workitem list` without a `project_id` answers 404** on a self-hosted Community Edition, which
 has no workspace-wide item list. Always pass the config's `planeProjectId`. (`workitem search` does
 work workspace-wide.)
+
+## The branch
+
+**One branch for everything the pair builds, not one per item.** A class is a day long and a pair
+works through several items; switching branches between them costs time and teaches nothing.
+
+Every skill starts by reading the current branch:
+
+| Where they are | Do |
+|---|---|
+| On any branch except `main` | **Stay there.** Whatever it is called, that is the pair's branch |
+| On `main` | Create `<pair>` from it, switch, and say so in one line |
+
+**Never create a branch per item, and never switch away from a branch the pair is already on.**
+They may have named it themselves, or be sharing it with the other half of the pair. Only the move
+off `main` is yours to make, and only once.
 
 ## The template
 

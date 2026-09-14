@@ -22,7 +22,7 @@ Read `../sdd-spec/references/backlog.md` first for the config, the item and the 
 | No `.sdd/config.json` | **Stop.** "Run `sdd-spec` first" |
 | No feature file for the item | **Stop.** "`sdd-spec <ID>` has not finished" |
 | The item has open questions | **Stop.** They block. The pair asks the product owner, or runs `sdd-spec` and says "make up the rest" |
-| Not on `<pair>/<ID>` | Switch to it. If it does not exist, create it from `main` |
+| On `main` | Create `<pair>` and switch, as `backlog.md` describes. On any other branch, stay where they are |
 | `plan.md` already exists | Say so, show its approval line, and ask: keep it, or plan again? |
 
 Then run **the drift check**. It stops on any difference.

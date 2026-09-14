@@ -28,9 +28,10 @@ Find the request. It is one of:
   *revision*, so start from what it says rather than from scratch.
 - **Text**, a pasted feature request. The item is created when you write in §5, not before.
 
-Read in parallel: every file in `features/` and `e2e/steps/`, which give you the phrasing to reuse
-and what the app already does, plus the item if there is one. **Do not read the application code.**
-It pulls the spec toward whatever the code happens to do today.
+Read in parallel: every file in `features/`, which gives you the phrasing to reuse and what the app
+already does, plus the item if there is one. **Do not read the application code or `e2e/steps/`.**
+Code pulls the spec toward whatever the app happens to do today, and step definitions are
+implementation: `sdd-implement` writes whatever steps the scenarios need.
 
 ## 2. Propose
 
@@ -38,7 +39,7 @@ In one message, propose:
 
 - the story, as "as a …, I want …, so that …"
 - the rules: the smallest set that makes the request testable, and say what you left out
-- one or two examples per rule, as Gherkin, in the repo's existing step phrasing
+- one or two examples per rule, as Gherkin, in the phrasing the existing feature files use
 - what is unclear: the things you could not decide from the request
 
 Anything you can find out by reading, whether in the existing features, the steps or the item,
@@ -87,9 +88,9 @@ Only once no open questions are left. Write both in one step:
 `references/gherkin.md`. Same rules, same examples, same order as the item. If the file exists,
 show the diff and ask before overwriting.
 
-**The branch.** Create `<pair>/<ID>` from the current `main`, or switch to it if it exists, and
-commit the feature file and anything under `.sdd/<ID>/` as `spec: <ID> <title>`. Do not push.
-`sdd-implement` pushes.
+**The branch.** Settle it as `references/backlog.md` describes: stay on whatever branch the pair is
+already on, and only when they are on `main` create `<pair>` and switch. Then commit the feature
+file and anything under `.sdd/<ID>/` as `spec: <ID> <title>`. Do not push. `sdd-implement` pushes.
 
 ## 6. Cold read
 

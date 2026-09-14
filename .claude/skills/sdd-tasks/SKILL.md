@@ -20,7 +20,7 @@ Read `../sdd-spec/references/backlog.md` first for the config, the item and the 
 |---|---|
 | No `.sdd/config.json` | **Stop.** "Run `sdd-spec` first" |
 | No `plan.md`, or no `Approved:` line in it | **Stop.** "`sdd-plan <ID>` comes first" |
-| Not on `<pair>/<ID>` | Switch to it |
+| On `main` | Create `<pair>` and switch, as `backlog.md` describes. On any other branch, stay where they are |
 | `tasks.md` already exists | Say so. Ticked tasks are work already done, so keep them and plan the rest around them |
 
 Then run **the drift check**. It stops on any difference.

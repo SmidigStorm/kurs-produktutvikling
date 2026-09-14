@@ -37,7 +37,7 @@ Feature: Urgent arrivals
 
 | Do | Not |
 |---|---|
-| **Reuse the repo's steps.** Read `e2e/steps/` first and phrase scenarios in the words that already have definitions | A step one word different from an existing one, which costs a new definition for no new behaviour |
+| **Reuse the repo's phrasing.** Read the other feature files first and say things the way they do | A step one word different from an existing one, for no new behaviour |
 | **Concrete values:** "Kari", "60 minutes ago", "GREEN" | "a patient with a low priority" |
 | **Declarative:** what happens, in the domain's words | Buttons, fields, URLs, CSS: "clicks the Save button" |
 | **One `When` per scenario:** one behaviour | Two actions, or "if X then Y, otherwise Z" |

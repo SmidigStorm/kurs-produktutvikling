@@ -16,7 +16,7 @@ sdd-spec  →  sdd-plan  →  sdd-tasks  →  sdd-implement
 | `sdd-spec` | one question at a time, each with a suggested answer | the work item (Plane or `.sdd/<ID>/item.md`) **and** `features/<id>-<slug>.feature` |
 | `sdd-plan` | once: which of two approaches | `.sdd/<ID>/plan.md` |
 | `sdd-tasks` | nothing | `.sdd/<ID>/tasks.md` |
-| `sdd-implement` | nothing, unless it gets stuck | code, unit tests, e2e steps; pushes `<pair>/<ID>` |
+| `sdd-implement` | nothing, unless it gets stuck | code, unit tests, e2e steps; pushes the pair's branch |
 
 After `sdd-spec`, a **spec-reviewer** sub-agent reads the spec cold, without the conversation,
 and reports what a developer would still have to guess.
@@ -63,4 +63,6 @@ records each answer as an assumption, and tags the scenarios resting on one `@as
 Stop `npm run dev` before running `sdd-implement`: the end-to-end tests start their own servers
 and the ports will already be taken.
 
-Every item is built on the branch `<pair>/<ID>` and pushed there. Nothing writes to `main`.
+The pair works on one branch for the whole class, not one per item. The kit stays on whatever
+branch you are on, and creates `<pair>` only when you are still on `main`. Nothing writes to
+`main`.

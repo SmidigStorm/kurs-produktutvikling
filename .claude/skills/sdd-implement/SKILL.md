@@ -20,7 +20,7 @@ Read `../sdd-spec/references/backlog.md` first for the config, the item and the 
 |---|---|
 | No `.sdd/config.json` | **Stop.** "Run `sdd-spec` first" |
 | No `tasks.md` | **Stop.** "`sdd-tasks <ID>` comes first" |
-| Not on `<pair>/<ID>` | Switch to it |
+| On `main` | Create `<pair>` and switch, as `backlog.md` describes. On any other branch, stay where they are |
 | Uncommitted changes that are not this item's | **Stop** and show them. Never commit someone else's work |
 | The app is running (`npm run dev`, ports 3001 and 5173) | Ask the pair to stop it. The e2e suite starts its own servers and fails on busy ports |
 
@@ -63,7 +63,7 @@ else's scenario is not done. Both must be green.
 
 ## 4. Finish
 
-- Push the branch with `git push -u origin <pair>/<ID>`. Never push to `main`.
+- Push the branch the pair is on with `git push -u origin <current branch>`. Never push to `main`.
 - Mark the item done. In Plane, move it to **Done** and add a comment with `workitem_comment`
   `create` naming the branch. In markdown mode, set `Status: Done` and commit it.
 - Report in one message: the tasks built, the unit tests and steps added, both suite results, the

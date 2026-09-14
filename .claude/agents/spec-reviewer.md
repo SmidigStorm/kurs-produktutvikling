@@ -7,8 +7,9 @@ tools: Read, Glob, Grep
 <!-- Copied from skald-sdd/plugins/sdd-lite by scripts/sync-sdd-lite.sh — edit there, not here. -->
 
 You review one spec. You are given a feature file path and a `.sdd/<ID>/` folder path. Read the
-feature file, anything in the folder, and `e2e/steps/`, so you know which step phrasings already
-exist. Read nothing else.
+feature file, anything in the folder, and the other files in `features/`, so you know the words the
+spec already uses. Read nothing else. In particular, do not read `e2e/steps/` or the application
+code: which steps have definitions is an implementation question, not a spec question.
 
 You have not seen the conversation that produced these files, **and that is the point**: whatever
 you cannot work out from the files is exactly what the developer will not be able to work out
@@ -27,8 +28,7 @@ Answer one question: **could a developer build this without guessing?**
 5. **Concrete values.** "A patient with low priority" is a finding; `"Kari" … "GREEN"` is not.
 6. **One `When` per scenario.** Two behaviours in one scenario is a finding.
 7. **Missing unhappy path or empty case** where the rule obviously has one.
-8. **A step with no definition in `e2e/steps/`** that is one word away from one that exists.
-9. **`@assumption` scenarios.** List them. This is not a finding, but the pair should know how
+8. **`@assumption` scenarios.** List them. This is not a finding, but the pair should know how
    many guesses the spec rests on.
 
 ## Report

@@ -1,13 +1,12 @@
 import {
-  SIMULATION_SPEEDS,
   TRIAGE_LEVELS,
   type QueueEntry,
   type RoomOccupant,
-  type Simulation,
   type TriageLevel,
 } from 'contract';
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { changeStatus, fetchQueue, fetchSimulation, registerArrival, retriage, updateSimulation } from './api';
+import { changeStatus, fetchQueue, registerArrival, retriage } from './api';
+import { SimulationControls } from './SimulationControls';
 import { REFRESH_MS } from './config';
 import { TRIAGE_CHIP } from './triageStyles';
 
@@ -17,20 +16,20 @@ const FIELD =
 export function StaffView() {
   const [entries, setEntries] = useState<QueueEntry[]>([]);
   const [room, setRoom] = useState<RoomOccupant | null>(null);
-  // Null means the server is not simulating, and the panel stays hidden.
-  const [simulation, setSimulation] = useState<Simulation | null>(null);
   const [name, setName] = useState('');
   const [level, setLevel] = useState<TriageLevel>('GREEN');
-  const [error, setError] = useState<string | null>(null);
+  const [pollError, setPollError] = useState<string | null>(null);
+
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
     try {
       const queue = await fetchQueue();
       setEntries(queue.entries);
       setRoom(queue.inConsultation);
-      setError(null);
+      setPollError(null);
     } catch (cause) {
-      setError(String(cause));
+      setPollError(String(cause));
     }
   }, []);
 
@@ -40,21 +39,23 @@ export function StaffView() {
     return () => clearInterval(timer);
   }, [reload]);
 
-  useEffect(() => {
-    // Once: whether the simulator runs does not change while the server is up.
-    fetchSimulation().then(setSimulation, () => setSimulation(null));
-  }, []);
-
-  const changeSimulation = async (changes: Partial<Simulation>) => {
-    setSimulation(await updateSimulation(changes));
+  const runAction = async (action: () => Promise<unknown>) => {
+    try {
+      await action();
+      setActionError(null);
+      await reload();
+    } catch (cause) {
+      setActionError(String(cause));
+    }
   };
 
   const onRegister = async (event: FormEvent) => {
     event.preventDefault();
     if (!name.trim()) return;
-    await registerArrival(name, level);
-    setName('');
-    await reload();
+    await runAction(async () => {
+      await registerArrival(name, level);
+      setName('');
+    });
   };
 
   const longestWait = entries.length > 0 ? Math.max(...entries.map((e) => e.estimatedWaitMinutes)) : 0;
@@ -71,32 +72,7 @@ export function StaffView() {
           <span className="font-normal text-ink-muted">Queue</span>
         </span>
         <span className="flex items-center gap-5 text-[14px] text-ink-faint">
-          {simulation && (
-            <span role="group" aria-label="Simulation" className="flex items-center gap-2">
-              <span>Simulation</span>
-              <button
-                onClick={() => void changeSimulation({ running: !simulation.running })}
-                className="h-8 rounded-[8px] border border-line bg-canvas px-3 text-[13px] text-ink hover:border-ink-faint"
-              >
-                {simulation.running ? 'Pause' : 'Run'}
-              </button>
-              <label htmlFor="simulation-speed" className="sr-only">
-                Speed
-              </label>
-              <select
-                id="simulation-speed"
-                value={simulation.speed}
-                onChange={(e) => void changeSimulation({ speed: Number(e.target.value) })}
-                className="h-8 rounded-[8px] border border-line bg-canvas px-2 text-[13px] text-ink"
-              >
-                {SIMULATION_SPEEDS.map((speed) => (
-                  <option key={speed} value={speed}>
-                    {speed}x
-                  </option>
-                ))}
-              </select>
-            </span>
-          )}
+          <SimulationControls />
           <span>
             {entries.length} waiting · longest {longestWait} min
           </span>
@@ -113,9 +89,15 @@ export function StaffView() {
       <main className="grid grid-cols-1 items-start gap-7 px-8 py-7 lg:grid-cols-[320px_minmax(0,1fr)]">
         <section className="rounded-2xl border border-line bg-surface p-6">
           <h2 className="text-[15px] font-bold">Register arrival</h2>
-          {error && (
+          {pollError && (
             <p role="alert" className="mt-3 text-[13px] text-triage-red">
-              {error}
+              {pollError}
+            </p>
+          )}
+
+          {actionError && (
+            <p role="alert" className="mt-3 text-[13px] text-triage-red">
+              {actionError}
             </p>
           )}
 
@@ -184,7 +166,7 @@ export function StaffView() {
                 </span>
                 <button
                   aria-label={`Mark ${room.patientName} done`}
-                  onClick={() => void changeStatus(room.id, 'DONE').then(reload)}
+                  onClick={() => void runAction(() => changeStatus(room.id, 'DONE'))}
                   className="ml-auto h-9 rounded-[9px] bg-ink px-3.5 text-[13px] font-bold text-canvas hover:bg-ink-muted"
                 >
                   Done
@@ -230,7 +212,7 @@ export function StaffView() {
                       <select
                         aria-label={`Triage level for ${entry.patientName}`}
                         value={entry.level}
-                        onChange={(e) => void retriage(entry.id, e.target.value as TriageLevel).then(reload)}
+                        onChange={(e) => void runAction(() => retriage(entry.id, e.target.value as TriageLevel))}
                         className="h-9 rounded-[9px] border border-line bg-canvas px-2 text-[13px] text-ink-muted"
                       >
                         {TRIAGE_LEVELS.map((option) => (
@@ -241,7 +223,7 @@ export function StaffView() {
                       </select>
                       <button
                         aria-label={`Mark ${entry.patientName} done`}
-                        onClick={() => void changeStatus(entry.id, 'DONE').then(reload)}
+                        onClick={() => void runAction(() => changeStatus(entry.id, 'DONE'))}
                         className="h-9 rounded-[9px] bg-ink px-3.5 text-[13px] font-bold text-canvas hover:bg-ink-muted"
                       >
                         Done

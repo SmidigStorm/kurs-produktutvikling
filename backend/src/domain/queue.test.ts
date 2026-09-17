@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { TriageLevel } from 'contract';
-import { estimatedWaitMinutes, orderQueue, positionOf, roomIsFree, type WaitingVisit } from './queue.ts';
+import { annotateQueue, estimatedWaitMinutes, orderQueue, positionOf, roomIsFree, type WaitingVisit } from './queue.ts';
 
 const at = (hhmm: string): Date => new Date(`2026-03-01T${hhmm}:00.000Z`);
 
@@ -30,6 +30,37 @@ describe('orderQueue', () => {
     orderQueue(queue);
 
     expect(queue.map((v) => v.id)).toEqual(before);
+  });
+});
+
+describe('annotateQueue', () => {
+  it.each([
+    [undefined, 0],
+    [null, 0],
+    [{ level: 'RED' as const }, 30],
+  ])('sorts and annotates the whole queue with occupant %j', (occupant, offset) => {
+    const queue = [
+      { ...visit('second', 'GREEN', '09:05'), patientName: 'Second' },
+      { ...visit('first', 'GREEN', '09:00'), patientName: 'First' },
+      { ...visit('urgent', 'RED', '09:30'), patientName: 'Urgent' },
+    ];
+    const before = structuredClone(queue);
+
+    expect(orderQueue(queue).map((entry) => entry.patientName)).toEqual(['Urgent', 'First', 'Second']);
+    expect(annotateQueue(queue, occupant).map((entry) => ({
+      name: entry.patientName,
+      position: entry.position,
+      wait: entry.estimatedWaitMinutes,
+    }))).toEqual([
+      { name: 'Urgent', position: 1, wait: offset },
+      { name: 'First', position: 2, wait: offset + 30 },
+      { name: 'Second', position: 3, wait: offset + 45 },
+    ]);
+    expect(queue).toEqual(before);
+  });
+
+  it('returns no entries when only the room is occupied', () => {
+    expect(annotateQueue([], { level: 'RED' })).toEqual([]);
   });
 });
 

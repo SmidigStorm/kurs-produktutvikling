@@ -75,6 +75,16 @@ describe('GET /api/visits/:id', () => {
     expect(body.estimatedWaitMinutes).toBe(15);
   });
 
+  it.each(['DONE', 'IN_CONSULTATION'] as const)('returns null queue annotations for %s', async (status) => {
+    arrive('a', 'GREEN', 60);
+    db.update(visits).set({ status }).where(eq(visits.id, 'a')).run();
+
+    const body = await (await createApp({ db, clock }).request('/api/visits/a')).json();
+
+    expect(body.position).toBeNull();
+    expect(body.estimatedWaitMinutes).toBeNull();
+  });
+
   it('returns 404 for an unknown visit', async () => {
     const response = await createApp({ db, clock }).request('/api/visits/nobody');
 
@@ -191,15 +201,31 @@ describe('the consultation room', () => {
 });
 
 describe('test-only routes', () => {
-  it('are absent unless test routes are allowed', async () => {
-    const response = await post(createApp({ db, clock }), '/api/test/reset', {});
+  it.each(['reset', 'clock', 'seed'])('leaves /api/test/%s absent without test configuration', async (route) => {
+    const response = await post(createApp({ db, clock }), `/api/test/${route}`, {});
 
     expect(response.status).toBe(404);
   });
 
+  it('sets the configured test clock, which subsequent requests observe', async () => {
+    const app = createApp({ db, clock, test: { clock } });
+    const now = '2026-03-02T12:00:00.000Z';
+
+    expect((await post(app, '/api/test/clock', { now })).status).toBe(200);
+    expect((await (await app.request('/api/queue')).json()).now).toBe(now);
+  });
+
+  it('rejects an invalid date without changing the clock', async () => {
+    const app = createApp({ db, clock, test: { clock } });
+    const before = clock.now();
+
+    expect((await post(app, '/api/test/clock', { now: 'invalid' })).status).toBe(400);
+    expect(clock.now()).toEqual(before);
+  });
+
   it('reset empties the queue when allowed', async () => {
     arrive('someone', 'GREEN', 10);
-    const app = createApp({ db, clock, allowTestRoutes: true });
+    const app = createApp({ db, clock, test: { clock } });
 
     await post(app, '/api/test/reset', {});
 

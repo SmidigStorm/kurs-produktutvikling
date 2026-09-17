@@ -11,14 +11,12 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { z } from 'zod';
-import type { Clock, ScaledClock } from '../clock.ts';
+import type { Clock, ScaledClock, TestClock } from '../clock.ts';
 import type { Db } from '../db/client.ts';
 import { triageEvents, visits } from '../db/schema.ts';
 import { seedDemoData } from '../db/seed.ts';
 import {
-  estimatedWaitMinutes,
-  orderQueue,
-  positionOf,
+  annotateQueue,
   roomIsFree,
   type WaitingVisit,
 } from '../domain/queue.ts';
@@ -26,7 +24,7 @@ import {
 export type AppDeps = {
   db: Db;
   clock: Clock;
-  allowTestRoutes?: boolean;
+  test?: { clock: TestClock };
   /** The simulator's clock, when the server runs the classroom simulation. */
   simulation?: ScaledClock;
 };
@@ -71,14 +69,12 @@ export function createApp(deps: AppDeps) {
   app.get('/api/queue', (c) => {
     const waiting = waitingVisits(deps.db);
     const occupant = roomOccupant(deps.db);
-    const byId = new Map(waiting.map((row) => [row.id, row]));
-
-    const entries = orderQueue(waiting).map((visit, index) => ({
+    const entries = annotateQueue(waiting, occupant).map((visit) => ({
       id: visit.id,
-      patientName: byId.get(visit.id)?.patientName ?? '',
+      patientName: visit.patientName,
       level: visit.level,
-      position: index + 1,
-      estimatedWaitMinutes: estimatedWaitMinutes(waiting, visit.id, occupant) ?? 0,
+      position: visit.position,
+      estimatedWaitMinutes: visit.estimatedWaitMinutes,
     }));
 
     return c.json({ now: deps.clock.now().toISOString(), entries, inConsultation: occupant });
@@ -92,13 +88,15 @@ export function createApp(deps: AppDeps) {
     const waiting = waitingVisits(deps.db);
     const occupant = roomOccupant(deps.db);
 
+    const entry = annotateQueue(waiting, occupant).find((visit) => visit.id === id);
+
     return c.json({
       id: row.id,
       patientName: row.patientName,
       level: row.level,
       status: row.status,
-      position: positionOf(waiting, id),
-      estimatedWaitMinutes: estimatedWaitMinutes(waiting, id, occupant),
+      position: entry?.position ?? null,
+      estimatedWaitMinutes: entry?.estimatedWaitMinutes ?? null,
     });
   });
 
@@ -173,16 +171,14 @@ export function createApp(deps: AppDeps) {
     });
   }
 
-  if (deps.allowTestRoutes) {
+  if (deps.test) {
+    const testClock = deps.test.clock;
     app.post('/api/test/clock', zValidator('json', z.object({ now: z.string() })), (c) => {
       const { now } = c.req.valid('json');
       const parsed = new Date(now);
       if (Number.isNaN(parsed.getTime())) return c.json({ error: 'invalid date' }, 400);
 
-      const settable = deps.clock as { set?: (next: Date) => void };
-      if (!settable.set) return c.json({ error: 'clock is not settable' }, 400);
-
-      settable.set(parsed);
+      testClock.set(parsed);
       return c.json({ now });
     });
 

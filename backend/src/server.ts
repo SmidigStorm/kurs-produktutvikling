@@ -24,15 +24,17 @@ applyMigrations(db);
 
 const simulation: ScaledClock | undefined = simulate ? scaledClock(new Date(), simulationSpeed) : undefined;
 
-const clock: Clock = process.env.CLOCK_FIXED_AT
+const fixed = process.env.CLOCK_FIXED_AT
   ? fixedClock(new Date(process.env.CLOCK_FIXED_AT))
-  : (simulation ?? systemClock);
+  : undefined;
+const test = allowTestRoutes ? { clock: fixed ?? fixedClock(systemClock.now()) } : undefined;
+const clock: Clock = test?.clock ?? fixed ?? simulation ?? systemClock;
 
 if (simulation) {
   runSimulation({ db, clock: simulation, random: Math.random, intervalMs: 250 });
 }
 
-serve({ fetch: createApp({ db, clock, allowTestRoutes, simulation }).fetch, port }, (info) => {
+serve({ fetch: createApp({ db, clock, test, simulation }).fetch, port }, (info) => {
   console.log(`Backend listening on http://localhost:${info.port}`);
   if (simulation) console.log(`Simulation on at ${simulationSpeed}x. Change it in the staff view.`);
 });

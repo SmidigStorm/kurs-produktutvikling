@@ -1,5 +1,6 @@
 import type { TriageLevel } from 'contract';
-import { AVERAGE_CONSULTATION_MINUTES, TRIAGE_PRIORITY } from '../domain/triage.ts';
+import { orderQueue } from '../domain/queue.ts';
+import { AVERAGE_CONSULTATION_MINUTES } from '../domain/triage.ts';
 
 /**
  * The simulated day, as decisions. Instructor tooling for the classroom, not
@@ -151,11 +152,7 @@ export function decide(
 
 /** Who is seen next: the queue invariant, on a snapshot of waiting patients. */
 export function frontOf(waiting: { id: string; level: TriageLevel; arrivedAt: Date }[]) {
-  const [first] = [...waiting].sort(
-    (a, b) =>
-      TRIAGE_PRIORITY[a.level] - TRIAGE_PRIORITY[b.level] ||
-      a.arrivedAt.getTime() - b.arrivedAt.getTime(),
-  );
+  const [first] = orderQueue(waiting);
   return first ? { id: first.id, level: first.level } : null;
 }
 

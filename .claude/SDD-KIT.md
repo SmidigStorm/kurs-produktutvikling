@@ -13,19 +13,18 @@ sdd-spec  →  sdd-plan  →  sdd-tasks  →  sdd-implement
 
 | Skill | Asks you | Writes |
 |---|---|---|
-| `sdd-spec` | one question at a time, each with a suggested answer | the work item (Plane or `.sdd/<ID>/item.md`) **and** `features/<capability>.feature` |
+| `sdd-spec` | one at a time, each with a suggested answer | the work item (Plane or `.sdd/<ID>/item.md`) and `features/<capability>.feature` |
 | `sdd-plan` | once: which of two approaches | `.sdd/<ID>/plan.md` |
 | `sdd-tasks` | nothing | `.sdd/<ID>/tasks.md`, one task per concrete change |
 | `sdd-implement` | nothing, unless it gets stuck | code, unit tests, e2e steps; pushes the pair's branch |
 
-After `sdd-spec`, a **spec-reviewer** sub-agent reads the spec cold, without the conversation,
-and reports what a developer would still have to guess. `sdd-spec` applies its own recommended fix
-for each finding to both copies, marks the ones that were guesses as assumptions, and shows the
-pair the result to comment on.
+After `sdd-spec`, a `spec-reviewer` sub-agent reads the spec cold, without the conversation, and
+reports what a developer would still have to guess. `sdd-spec` fixes each finding in both copies,
+marks the guesses as assumptions, and shows the pair the result.
 
 ## The building blocks
 
-The kit is made of the three things the course teaches:
+The three things the course teaches:
 
 - Skills: the four steps above, plain markdown in `skills/`
 - An MCP server: the Plane connector, for the work item
@@ -35,36 +34,35 @@ The kit is made of the three things the course teaches:
 
 | | |
 |---|---|
-| **The work item** | Plane, or `.sdd/<ID>/item.md` if you are not using Plane. Story, rules, examples, open questions |
-| **The acceptance criteria** | `features/*.feature`, the same rules and examples, as Gherkin. The tests run these |
+| **The work item** | Plane, or `.sdd/<ID>/item.md`. Story, rules, examples, open questions |
+| **The acceptance criteria** | `features/*.feature`, the same rules and examples as Gherkin. The tests run these |
 | **Plan and tasks** | `.sdd/<ID>/`. A task is one concrete change: this file, this function, this step, this test |
 | **Your settings** | `.sdd/config.json`, written the first time you run `sdd-spec` |
 
 The work item and the feature file hold the same rules and examples. Whoever changes one changes
-both, and every step after `sdd-spec` checks they still agree before it starts.
+both, and every step after `sdd-spec` checks they still agree.
 
 ## Install
 
-In the course repo it is **already installed**: the skills sit in `.claude/skills/` and the
-agent in `.claude/agents/`, so a `git clone` is the whole setup. Run `/sdd-spec` with a feature
-request.
+In the course repo it is already installed: skills in `.claude/skills/`, the agent in
+`.claude/agents/`, so a `git clone` is the whole setup. Run `/sdd-spec` with a feature request.
 
-In another repo, either copy those folders in, or install the plugin from the `skald-sdd`
-marketplace: `/plugin install sdd-lite@skald-sdd`. The agent is then called
-`sdd-lite:spec-reviewer`.
+Elsewhere, copy those folders in or install the plugin from the `skald-sdd` marketplace:
+`/plugin install sdd-lite@skald-sdd`. The agent is then called `sdd-lite:spec-reviewer`.
 
-Plane is optional. Without it, answer "no" when `sdd-spec` asks, and the work item is a markdown
-file.
+Plane is optional. A committed `.sdd/course.json` with `{ "backlog": "markdown" }` or
+`{ "backlog": "plane" }` sets the default for everyone, and `sdd-spec` then skips the question.
+Without it, answer "no" when `sdd-spec` asks. In markdown mode the work item is a markdown file.
+A pair can switch by editing `backlog` in their own `.sdd/config.json`.
 
 ## Tips
 
-Tired of questions? Say **"make up the rest."** `sdd-spec` then answers what is left itself,
-records each answer as an assumption, and tags the scenarios resting on one `@assumption`, so
-`grep -rn @assumption features/` tells you afterwards how much of the spec was a guess.
+Tired of questions? Say **"make up the rest."** `sdd-spec` answers the rest itself, records each as
+an assumption, and tags every scenario resting on one `@assumption`, so
+`grep -rn @assumption features/` shows how much of the spec was a guess.
 
-Stop `npm run dev` before running `sdd-implement`: the end-to-end tests start their own servers
-and the ports will already be taken.
+Stop `npm run dev` before `sdd-implement`: the end-to-end tests start their own servers and the
+ports will be taken.
 
-The pair works on one branch for the whole class, not one per item. The kit stays on whatever
-branch you are on, and creates `<pair>` only when you are still on `main`. Nothing writes to
-`main`.
+The pair works on one branch for the whole class, not one per item. The kit stays on whatever branch
+you are on, and creates `<pair>` only from `main`. Nothing writes to `main`.

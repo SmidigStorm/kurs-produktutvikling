@@ -7,12 +7,12 @@ description: "Use when a work item has an approved plan and needs a task list. T
 
 # Tasks
 
-Turn the approved plan into a task list: **one task per concrete change**, create or update this
-file, this function, this step, this test, this document, in build order. The list is the work,
-written out in `.sdd/<ID>/tasks.md` before it is done. The task list lives in the repo in both
-backlog modes; Plane holds the item, not the tasks.
+Turn the approved plan into a task list: one task per concrete change, create or update this file,
+this function, this step, this test, this document, in build order. The list is the work written out
+before it is done, and it lives in `.sdd/<ID>/tasks.md` in both backlog modes: Plane holds the item,
+not the tasks.
 
-No questions. This step runs straight through.
+No questions; this runs straight through.
 
 Read `../sdd-spec/references/backlog.md` first for the config, the item and the drift check.
 
@@ -25,7 +25,7 @@ Read `../sdd-spec/references/backlog.md` first for the config, the item and the 
 | On `main` | Create `<pair>` and switch, as `backlog.md` describes. On any other branch, stay where they are |
 | `tasks.md` already exists | Say so. Ticked tasks are work already done, so keep them and plan the rest around them |
 
-Then run **the drift check**. It stops on any difference.
+Then run the drift check. It stops on any difference.
 
 ## 2. Read
 
@@ -33,9 +33,9 @@ Then run **the drift check**. It stops on any difference.
 
 ## 3. Cut the work into tasks
 
-A task is **one concrete change to one file**: create or update the file, and name the function,
-component, step or section that is added or changed, and what it does. The task list is the work,
-written out, so that anyone can see what the agent is about to do before it does it.
+A task is one concrete change to one file: create or update it, name the function, component, step
+or section added or changed, and say what it does. Anyone can then see what the agent will do before
+it does it.
 
 Every change the plan's file table implies becomes a task, of one of these kinds:
 
@@ -48,9 +48,9 @@ Every change the plan's file table implies becomes a task, of one of these kinds
 | E2E step | `Update step "staff re-triage {string} to {string}" in e2e/steps/staff.steps.ts: works from the patient page` |
 | Documentation | `Update README.md: the patient view section, the explanation under the level` |
 
-Order them so the build runs top to bottom: a file before the file that imports it, a step
-before the scenario that uses it, the test that goes red before the code that makes it green. A
-task another one depends on says so.
+Order them so the build runs top to bottom: a file before the file that imports it, a step before
+the scenario using it, the red test before the code that makes it green. A task that depends on
+another says so.
 
 Every task body carries:
 
@@ -61,11 +61,11 @@ Every task body carries:
 
 Where a kind has nothing to do, say so in the hand-off rather than inventing a task: no unit test
 when the behaviour lives only in the UI and the repo has no frontend test runner, no documentation
-when no document describes the thing that changed.
+when nothing describes what changed.
 
 **"Check that it works" is never a task.** Checking belongs to the task that built the thing.
 
-**Never estimate time**, anywhere.
+Never estimate time, anywhere.
 
 ## 4. Write `tasks.md`
 
@@ -90,13 +90,13 @@ when no document describes the thing that changed.
 ## 5. Check the scenarios are all served
 
 Every `Scenario:` and `Scenario Outline:` title in the feature file must appear under some task's
-"Serves", and no two tasks may carry the same title. Check against the feature file, not against
-`playwright test --list`: the generator will not list a scenario whose steps have no definition
-yet, and writing those definitions is `sdd-implement`'s work.
+"Serves", and no two tasks may carry the same title. Check against the feature file, not
+`playwright test --list`: the generator will not list a scenario whose steps have no definition yet,
+and writing those is `sdd-implement`'s work.
 
 ## 6. Hand off
 
 Commit on the branch as `tasks: <ID>`.
 
 One message: the task count by kind, which kinds have nothing to do and why, and the next step,
-which is `sdd-implement <ID>`.
+`sdd-implement <ID>`.

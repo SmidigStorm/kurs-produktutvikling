@@ -27,10 +27,10 @@ Feature: Urgent arrivals
 ```
 
 - **One feature file per item, named for the capability.** The file is `<capability>.feature` and
-  `Feature:` is the same two or three words: `urgent-arrivals.feature`, `Feature: Urgent arrivals`.
-  Not the item's ID, not its title as the stakeholder wrote it. The ID tag (`@LEGE-3`) above
-  `Feature:` is what ties the file to the item; every scenario inherits it, and it is how
-  `sdd-tasks` and `sdd-implement` find the item's scenarios.
+  `Feature:` the same two or three words: `urgent-arrivals.feature`, `Feature: Urgent arrivals`. Not
+  the item's ID, not its title as the stakeholder wrote it. The `@LEGE-3` tag above `Feature:` ties
+  the file to the item; every scenario inherits it, and it is how `sdd-tasks` and `sdd-implement`
+  find the item's scenarios.
 - **`Rule:` = a rule from the item. `Scenario:` = one of its examples.** Same names, same order.
 - **`Background:`** only for `Given` steps that open every scenario in the file.
 - **`@assumption`** above a scenario that rests on a guess (see sdd-spec § "Make up the rest").
@@ -39,7 +39,7 @@ Feature: Urgent arrivals
 
 | Do | Not |
 |---|---|
-| **Reuse the repo's phrasing.** Read the other feature files first and say things the way they do | A step one word different from an existing one, for no new behaviour |
+| **Reuse the repo's phrasing.** Read the other feature files first and say things their way | A step one word different from an existing one, for no new behaviour |
 | **An unhappy path per rule** where one exists: refused, empty, too late. Something happens and a person sees it | Only the happy path |
 | **Concrete values:** "Kari", "60 minutes ago", "GREEN" | "a patient with a low priority" |
 | **Declarative:** what happens, in the domain's words | Buttons, fields, URLs, CSS: "clicks the Save button" |
@@ -49,11 +49,11 @@ Feature: Urgent arrivals
 
 **The empty case.** Anything list-shaped needs a scenario for when the list is empty.
 
-**Unhappy path, not negative scenario.** An unhappy path has an outcome a person can check:
-the arrival is refused and staff see "Enter the patient's name"; the patient marked done sees
-"You have been seen". A negative scenario only asserts that something is absent, "Then staff do
-not see the explanation", which also passes on a blank page. Never write those. Say the rule in
-prose instead, as "Staff do not see it".
+**Unhappy path, not negative scenario.** An unhappy path has an outcome a person can check: the
+arrival is refused and staff see "Enter the patient's name"; the patient marked done sees "You have
+been seen". A negative scenario only asserts something is absent ("Then staff do not see the
+explanation"), which also passes on a blank page. Never write one: say the rule in prose, as "Staff
+do not see it".
 
-Keep it small. The smallest set of rules that makes the request testable, and one or two examples
-each, beats twelve rules nobody reads.
+Keep it small. The smallest set of rules that makes the request testable, one or two examples each,
+beats twelve rules nobody reads.

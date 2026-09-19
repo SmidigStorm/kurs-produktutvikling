@@ -77,7 +77,7 @@ not done. Both must be green.
 | **The example.** The code does what the rule says, and the example illustrates it badly | Fix the example in both copies, the feature file and the item, as `backlog.md` describes. Re-run and list the change in the report |
 | **The rule** seems wrong | Build what the rule says anyway, and put the doubt at the top of the report. Changing a rule is the product owner's call, through `sdd-spec` |
 | A scenario would have to be deleted to go green | **Stop.** Deleting coverage passes every check there is |
-| The plan does not fit the code | **Stop** and say why. Building something else quietly is the failure the plan exists to prevent |
+| The plan does not fit the code | **Stop** and say why. Building something else without saying so is the failure the plan exists to prevent |
 | Three attempts failed | **Stop.** Show the failing test, the last error, and what was tried |
 
 A stop leaves the branch as it is, every green task already committed. Running `sdd-implement`

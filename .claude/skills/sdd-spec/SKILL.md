@@ -10,7 +10,9 @@ description: "Use when a feature request needs turning into a spec. The user pas
 Turn one feature request into rules and concrete examples a developer could build without guessing,
 in the work item and the feature file at once.
 
-A short Example Mapping session with the pair: you propose, they decide.
+A short Example Mapping session with the pair: you propose, they decide. It runs in one of two
+ways, and the pair picks which: an **interview**, one question at a time, or a **workshop dump**,
+where the pair pastes what a requirements workshop produced and you work from that.
 
 Read `references/backlog.md` first for the config, the item template and both backlog modes, and
 `references/gherkin.md` before writing a scenario.
@@ -31,6 +33,22 @@ Read in parallel every file in `features/`, for the phrasing to reuse and what t
 plus the item if there is one. Do not read the application code or `e2e/steps/`: code pulls the spec
 toward whatever the app does today, and `sdd-implement` writes whatever steps the scenarios need.
 
+## 1a. Interview or workshop dump
+
+Ask once, before proposing anything: **"Interview, or do you have notes from a requirements
+workshop to paste?"** Recommend the interview when all you have is a short request, and the dump
+when the pair says they have talked it through with the product owner already.
+
+- **Interview:** §2, then §3, one question per message.
+- **Workshop dump:** the pair pastes the notes, in whatever shape they are: decisions, examples,
+  a transcript, a photo's worth of sticky notes typed up. Read them the way you read the item.
+  Then §2 as usual, but everything the notes settle is stated as fact and credited to the
+  workshop, and the unclear list holds only what the notes do not settle. Instead of §3, put that
+  whole list in **one message**, each question with your recommended answer, and take the answers
+  in one reply. "Don't know" still becomes an open question, and "make up the rest" still works.
+
+Either way the result is the same: the rules and examples, written to both copies in §5.
+
 ## 2. Propose
 
 In one message, propose:
@@ -45,7 +63,8 @@ you cannot find out, and that would change what gets built, is unclear.
 
 ## 3. Ask, one question at a time
 
-Work through the unclear list one question per message. Each question carries your recommended
+Interview mode only; the workshop dump takes its questions in one message (§1a). Work through the
+unclear list one question per message. Each question carries your recommended
 answer and one line of why, so the pair can just say yes.
 
 "Don't know" is a good answer: it becomes an open question for the product owner, in the pair's

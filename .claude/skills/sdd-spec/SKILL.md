@@ -106,7 +106,7 @@ the diff and ask before overwriting.
 
 **The branch.** Settle it as `references/backlog.md` describes: stay on whatever branch the pair is
 on, and only from `main` create `<pair>` and switch. Then commit the feature file and anything under
-`.sdd/<ID>/` as `spec: <ID> <title>`. Do not push; `sdd-implement` pushes.
+`.sdd/<ID>/` as `spec: <ID> <title>`. Do not push.
 
 ## 6. Cold read
 

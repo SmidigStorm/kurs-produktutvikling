@@ -7,22 +7,38 @@ doctor. Recorded as given.
 
 ## How this document is used in the course
 
-**These are requests, not acceptance criteria — and that is deliberate.**
+**These are requests, not acceptance criteria, and that is deliberate.**
 
 Each feature below is written the way a real stakeholder describes one: what they
 want, and not enough to build from. The questions under each are the ones a pair
 will hit the moment they try to write a specification.
 
-**Pairs are expected to bring those questions to the product owner** and get them
-answered in the room, then write the answers into their feature file. Working out
-*which* questions have to be asked before you can specify anything is the point;
-the answers are cheap once you know what to ask.
+**The pair decides the answers themselves**, in the pair, and writes them into
+the work item and the feature file. The developer and the product person have to
+agree; it is not one of them deciding while the other watches. The instructor is
+the escape hatch, not the source of truth, and answers only when a pair is truly
+stuck.
+
+Working out *which* questions have to be asked before you can specify anything is
+the point. The answers are cheap once you know what to ask.
 
 So: do not pre-answer these. A question left open here is course material.
 
-The one resolved item below — what a patient sees across two stages — is left in
-as a worked example of what a clarification produces, and of how much a single
+The one resolved item below, what a patient sees across two stages, is left in as
+a worked example of what a clarification produces, and of how much a single
 answer settles.
+
+### What the pairs actually read
+
+The exercise pages at vitki.ai/docs hold the request and the open questions, one
+page per feature, in that order of size. They do not hold the "What the research
+found" sections or the shape assessments.
+
+Those two are instructor material. The research is what the published sources
+actually say, and several of the findings reframe the requirement rather than
+answer it, so handing it over in advance would do half the specification work for
+the pair. It is used afterwards instead: when the pairs have delivered, compare
+what they decided with what the sources say.
 
 ---
 

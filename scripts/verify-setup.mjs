@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 import { execFileSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const failures = [];
+const tmpShot = join(tmpdir(), 'kurs-verify-setup.png');
 
 const check = (label, fn) => {
   try {
@@ -38,10 +41,22 @@ check('Unit tests pass', () => {
 });
 
 check('A browser is installed for Playwright', () => {
-  execFileSync('npx', ['playwright', 'install', '--dry-run', 'chromium'], {
-    stdio: 'pipe',
-    shell: true,
-  });
+  // `playwright install --dry-run` prints where the browser would go and exits 0
+  // whether or not it is there, so it can never fail. Launch the browser instead:
+  // that is the thing the end-to-end suite needs, and the only way to know.
+  execFileSync(
+    'npx',
+    [
+      'playwright',
+      'screenshot',
+      '--browser',
+      'chromium',
+      'about:blank',
+      tmpShot,
+    ],
+    { stdio: 'pipe', shell: true },
+  );
+  rmSync(tmpShot, { force: true });
 });
 
 if (failures.length === 0) {

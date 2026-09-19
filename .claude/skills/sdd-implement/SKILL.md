@@ -1,6 +1,6 @@
 ---
 name: sdd-implement
-description: "Use when a work item has a task list and needs building. The user asks to implement LEGE-3 or ITEM-2, build the tasks, make the scenarios pass, continue implementing, or asks what comes after sdd-tasks. Last step of the kit: spec, plan, tasks, implement. Builds each task red then green with new unit tests and e2e steps, runs both test suites, pushes the branch and marks the item done."
+description: "Use when a work item has a task list and needs building. The user asks to implement LEGE-3 or ITEM-2, build the tasks, make the scenarios pass, continue implementing, or asks what comes after sdd-tasks. Last step of the kit: spec, plan, tasks, implement. Builds each task red then green with new unit tests and e2e steps, runs both test suites and marks the item done."
 ---
 
 <!-- Copied from skald-sdd/plugins/sdd-lite by scripts/sync-sdd-lite.sh — edit there, not here. -->
@@ -8,7 +8,7 @@ description: "Use when a work item has a task list and needs building. The user 
 # Implement
 
 Build `tasks.md` one task at a time, test first, then code, then commit, until every scenario of
-the item passes and both suites are green. Then push the branch. It runs straight through, stopping
+the item passes and both suites are green. It runs straight through, stopping
 only where it cannot go on (§5).
 
 Read `../sdd-spec/references/backlog.md` first for the config, the item and the drift check.
@@ -61,7 +61,6 @@ not done. Both must be green.
 
 ## 4. Finish
 
-- Push the branch the pair is on with `git push -u origin <current branch>`. Never push to `main`.
 - Mark the item done. In Plane, move it to Done and add a comment with `workitem_comment` `create`
   naming the branch. In markdown mode, set `Status: Done` and commit it.
 - Report in one message: the tasks built, the unit tests and steps added, both suite results, the
@@ -86,5 +85,5 @@ again resumes from the tests (§1).
 ## Rules
 
 - **Test first, always.** Red before green.
-- **Never push to `main`, never merge.** The branch is the result.
+- **Never push, never merge.** The work stays on the branch, on this machine.
 - **Don't narrate.** Do the work, then report what happened.

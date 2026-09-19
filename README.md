@@ -13,10 +13,11 @@ on the morning of the course.
 
 1. Install Node 22 or newer: https://nodejs.org
 2. Clone this repository
-3. Install and check:
+3. Install, install the browser the tests run in, and check:
 
    ```bash
    npm install
+   npx playwright install chromium
    npm run verify-setup
    ```
 

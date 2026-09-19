@@ -16,7 +16,7 @@ sdd-spec  →  sdd-plan  →  sdd-tasks  →  sdd-implement
 | `sdd-spec` | first: interview, or paste the notes from a requirements workshop? Then one question at a time, or one batch of what the notes left open, each with a suggested answer | the work item (Plane or `.sdd/<ID>/item.md`) and `features/<capability>.feature` |
 | `sdd-plan` | once: which of two approaches | `.sdd/<ID>/plan.md` |
 | `sdd-tasks` | nothing | `.sdd/<ID>/tasks.md`, one task per concrete change |
-| `sdd-implement` | nothing, unless it gets stuck | code, unit tests, e2e steps; pushes the pair's branch |
+| `sdd-implement` | nothing, unless it gets stuck | code, unit tests, e2e steps, on the pair's branch |
 
 After `sdd-spec`, a `spec-reviewer` sub-agent reads the spec cold, without the conversation, and
 reports what a developer would still have to guess. `sdd-spec` fixes each finding in both copies,

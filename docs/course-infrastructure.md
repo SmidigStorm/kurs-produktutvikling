@@ -1,5 +1,9 @@
 # Course infrastructure
 
+> Plane ble tatt ut av kursdagen 19. september 2026. Backloggen er markdown i
+> repoet, og verken `.mcp.json` eller en student-oppsettside finnes lenger.
+> Dette dokumentet beskriver serveren som fortsatt står, ikke kursopplegget.
+
 Working notes for Plan D. **No credentials in this file, ever.**
 
 ## Coolify

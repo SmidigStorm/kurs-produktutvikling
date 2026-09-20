@@ -96,17 +96,22 @@ longer interval reads as "nothing is happening".
 
 ## The classroom simulation
 
-`npm run dev` starts the backend with `SIMULATE=true`, and the queue then moves by itself: the
+`npm run dev` starts the backend with `SIMULATE=true`, and the queue can then move by itself: the
 patient at the front goes into the one consultation room when it is free, stays for their level's
 average consultation time plus a random minus 5 to plus 10 minutes, and is marked done; new
 patients arrive at random intervals averaging one every 15 minutes, with a level weighted toward
 green and yellow. The names are fictional.
 
+**It starts paused**, so the first thing on screen is the seeded queue: five patients waiting,
+standing still until someone presses **Run** in the staff view's Simulation panel. Paused means
+nothing happens at all, not merely that the clock is held: calling the front patient in has no
+time condition of its own, so a paused tick would otherwise still empty one patient into the room.
+
 It runs on a **scaled clock**, which is the app's own clock while the simulation is on: at the
 default 60x, one real second is one simulated minute, so a 15-minute consultation takes 15 real
 seconds while the screen still says 15 minutes. The staff view shows a **Simulation** panel with
-pause and a speed choice. `SIMULATE=false npm run dev` turns it off, and the test suite never
-turns it on.
+Run, Pause and a speed choice. `SIMULATE=false npm run dev` leaves the panel out altogether, and
+the test suite never turns the simulation on.
 
 The simulator is instructor tooling, not a product feature: its decisions are pure functions in
 `backend/src/simulation/simulator.ts` with unit tests, and the loop that applies them is separate.

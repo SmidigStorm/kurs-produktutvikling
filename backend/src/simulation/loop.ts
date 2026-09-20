@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
-import type { Clock } from '../clock.ts';
+import type { ScaledClock } from '../clock.ts';
 import type { Db } from '../db/client.ts';
 import { visits } from '../db/schema.ts';
 import { decide, frontOf, initialState, type Action, type Random } from './simulator.ts';
@@ -10,10 +10,11 @@ export type Simulation = { stop(): void };
 /**
  * Applies the simulator's decisions to the database on a real-time interval.
  * Reads the queue fresh each tick, so anything staff do in between is respected.
+ * While the clock is paused the tick does nothing at all.
  */
 export function runSimulation(deps: {
   db: Db;
-  clock: Clock;
+  clock: ScaledClock;
   random: Random;
   intervalMs: number;
 }): Simulation {
@@ -52,6 +53,11 @@ export function runSimulation(deps: {
   };
 
   const tick = () => {
+    // Paused means nothing happens. Freezing the clock is not enough on its own:
+    // calling the front patient in has no time condition, so a paused tick would
+    // still empty one patient into the room.
+    if (!clock.running()) return;
+
     const result = decide(clock.now().getTime(), state, snapshot(), random);
     state = result.state;
     result.actions.forEach(apply);

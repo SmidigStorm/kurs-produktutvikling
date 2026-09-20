@@ -24,6 +24,11 @@ applyMigrations(db);
 
 const simulation: ScaledClock | undefined = simulate ? scaledClock(new Date(), simulationSpeed) : undefined;
 
+// Paused on purpose. The queue the room is shown at startup is the seeded one,
+// five patients waiting; it starts moving when someone presses Run in the staff
+// view's Simulation panel.
+simulation?.setRunning(false);
+
 const fixed = process.env.CLOCK_FIXED_AT
   ? fixedClock(new Date(process.env.CLOCK_FIXED_AT))
   : undefined;
@@ -36,5 +41,5 @@ if (simulation) {
 
 serve({ fetch: createApp({ db, clock, test, simulation }).fetch, port }, (info) => {
   console.log(`Backend listening on http://localhost:${info.port}`);
-  if (simulation) console.log(`Simulation on at ${simulationSpeed}x. Change it in the staff view.`);
+  if (simulation) console.log(`Simulation paused at ${simulationSpeed}x. Press Run in the staff view.`);
 });

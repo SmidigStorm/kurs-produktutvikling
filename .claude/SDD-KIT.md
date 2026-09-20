@@ -24,11 +24,12 @@ marks the guesses as assumptions, and shows the pair the result.
 
 ## The building blocks
 
-The three things the course teaches:
+The pieces a process is made of:
 
 - Skills: the four steps above, plain markdown in `skills/`
-- An MCP server: the Plane connector, for the work item
 - A sub-agent: `spec-reviewer`, fresh eyes on the spec
+- An MCP server, optional: the Plane connector, when the work item lives outside the repo.
+  The kit keeps the item in markdown unless a repo or a pair says otherwise
 
 ## Where things live
 

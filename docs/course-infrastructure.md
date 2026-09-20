@@ -6,6 +6,39 @@
 
 Working notes for Plan D. **No credentials in this file, ever.**
 
+## Switching the kit to Plane for a demo
+
+The course default is markdown: `.sdd/course.json` is committed as
+`{ "backlog": "markdown" }`, and the pairs never see Plane. The instructor can switch
+their own machine over and show the MCP instead, because `.sdd/config.json` is per
+machine and gitignored — it wins over the course default and nothing else changes.
+
+1. **Wire the MCP once, at local scope**, so it stays on this machine and out of the
+   repo. The token and the workspace slug live in `~/.config/plane-demo.env`:
+
+   ```bash
+   set -a; . ~/.config/plane-demo.env; set +a
+   claude mcp add --scope local --transport http plane \
+     https://plane-mcp.smidigakademiet.no/http/api-key/mcp \
+     --header "Authorization: Bearer $PLANE_API_KEY" \
+     --header "X-Workspace-slug: $PLANE_WORKSPACE_SLUG"
+   ```
+
+   `claude mcp list` should say **Connected**. A project-scoped `.mcp.json` would reach
+   the students' clones, which is why this one is local.
+
+2. **Point the kit at a project** by editing `.sdd/config.json`:
+
+   ```json
+   { "pair": "lege", "backlog": "plane", "planeProject": "LEGEVAKTAP", "planeProjectId": "48e94fa6-f768-4cc4-9a20-af5751aaac11" }
+   ```
+
+   Back to `{ "pair": "lege", "backlog": "markdown" }` afterwards.
+
+Verified 2026-09-20: the MCP answers, and `storm-testworkspace` holds `LEGEVAKTAP`
+(Legevakt App) and `SDDTEST`. The `carasent-kurs` workspace refuses both keys in
+`plane-demo.env`, and the `LEGE` project the old config pointed at is gone with it.
+
 ## Coolify
 
 | | |
